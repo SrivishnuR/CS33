@@ -1,0 +1,13 @@
+2.72
+
+A.
+This is because size_t is unsigned. Even though maxbytes is signed, the expression maxbytes-sizeof(val) is 
+interpreted as unsigned as a result. Unsigned numbers will always be more than 0, so this expression is always true.
+
+B.
+A rewrite could be 
+
+if ((int) (maxbytes - sizeof(val)) >= 0))
+
+Which would work as the bit pattern is then cast as a signed integer which can be less than 0.
+

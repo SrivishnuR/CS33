@@ -1,0 +1,12 @@
+A.
+Element = A + (i * S * T + j * T + k) * sizeof(element)
+
+B.
+R = 7
+S = 5
+T = 13
+
+The assembly code translates to (65i + 13j + k)
+This implies that there is T = 13
+and 65/13 = S
+Using the fact that the array takes a total of 3640 bytes or 450 elements, if we divide that by 65 we get 7 for R.

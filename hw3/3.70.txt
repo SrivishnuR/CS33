@@ -1,0 +1,34 @@
+Homework Problem 3.70
+
+A.
+e1.p has an offset of 0
+e1.y has an offset of 8 (since long and long * both have an alignment of 8)
+e2.x has an offset of 0 (since it is a union)
+e2.next has an offset of 8 (since long and union ele * have an alignment of 8)
+
+B.
+In total the structure requires 16 bytes. This is since struct e1 requires 16 bytes and struct e2 requires 16 bytes and they are both in a union.
+
+C.
+void proc (union ele *up) {
+     up->e2.x = *(*(up->e2.next).e1.p) - *(up->e2.next).e1.y;
+}
+
+up->e2.x is given from the last command movq %rdx, (%rdi). (%rdi) is either long *p or long x. Since the other two arguments we access are just long, we can assume we are talking about long x.
+
+*(*up->e2.next).e1.p) is given by the previous arguments.
+movq 8(%rdi), %rax
+movq (%rax), %rdx
+movq (%rdx), %rdx
+
+gets e2.next, dereferences it, gets *p, and also dereferences it
+
+*(up->e2.next).e1.y is given by
+8(%rax)
+
+%rax contains e2.next. 8(%rax) dereferences %rax and gets e1.y.
+
+subq 8(%rax), %rdx
+
+does
+*(*(up->e2.next).e1.p) - *(up->e2.next).e1.y

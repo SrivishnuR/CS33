@@ -1,0 +1,219 @@
+OpenMP lab log -
+
+tar -xvzf openmplab.tgz // untar the openmplab.tgz file
+cd openmplab // enter the unzipped file
+make // used to make the file
+./filter // running the executable that has been formed
+
+### Output ###
+FUNC TIME : 0.488948
+TOTAL TIME : 2.380816
+###
+
+make clean // removing executable and output files
+make GPROF=1 // make again with GPROF support
+./filter // running the executable to create the gmon.out file
+gprof filter // viewing the statistics
+
+### Gprof Output ###
+  %   cumulative   self              self     total
+ time   seconds   seconds    calls  ms/call  ms/call  name
+ 65.61      0.38     0.38       15    25.37    26.76  func1
+ 18.99      0.49     0.11  5177344     0.00     0.00  rand2
+  5.18      0.52     0.03        1    30.04   119.28  addSeed
+  3.45      0.54     0.02                             sequence
+  1.73      0.55     0.01   491520     0.00     0.00  findIndexBin
+  1.73      0.56     0.01       15     0.67     0.67  func4
+  1.73      0.57     0.01        1    10.01    10.01  imdilateDisk
+  1.73      0.58     0.01                             filter
+  0.00      0.58     0.00   983042     0.00     0.00  round
+  0.00      0.58     0.00       16     0.00     0.00  dilateMatrix
+  0.00      0.58     0.00       15     0.00     0.00  func2
+  0.00      0.58     0.00       15     0.00     0.00  func3
+  0.00      0.58     0.00       15     0.00     0.67  func5
+  0.00      0.58     0.00       15     0.00     0.00  rand1
+  0.00      0.58     0.00        2     0.00     0.00  get_time
+  0.00      0.58     0.00        1     0.00     0.00  elapsed_time
+  0.00      0.58     0.00        1     0.00     0.00  fillMatrix
+  0.00      0.58     0.00        1     0.00     0.00  func0
+  0.00      0.58     0.00        1     0.00     0.00  getNeighbors
+###
+
+###
+As we can see, func1 takes the most ammount of time, so we should optimize this first.
+Other than that, we can also optimize func4 to save some more time.
+###
+
+cp func.c old_func.c // backing up func.c just in case
+emacs func.c // now to modify function 1
+
+###
+From experimentation, it seems that around 55 threads gives the fastest performance
+Once I sped up function 1, I was able to get times of around .084. This is about a 5.7x speedup
+I used gprof again and now func1 barely takes any time. Interestingly enough however, func5 seems to take more time now as shown below
+
+  %   cumulative   self              self     total
+ time   seconds   seconds    calls  ms/call  ms/call  name
+ 69.32      0.45     0.45                             filter
+ 18.48      0.57     0.12  4222999     0.00     0.00  rand2
+  3.08      0.59     0.02       15     1.34     2.00  func5
+  3.08      0.61     0.02                             sequence
+  1.54      0.62     0.01   491520     0.00     0.00  findIndexBin
+  1.54      0.63     0.01       15     0.67     0.67  func4
+  1.54      0.64     0.01        1    10.01   129.35  addSeed
+  1.54      0.65     0.01        1    10.01    10.01  imdilateDisk
+  0.00      0.65     0.00    47132     0.00     0.00  round
+  0.00      0.65     0.00       16     0.00     0.00  dilateMatrix
+  0.00      0.65     0.00       15     0.00     0.00  func1
+  0.00      0.65     0.00       15     0.00     0.00  func2
+  0.00      0.65     0.00       15     0.00     0.00  func3
+  0.00      0.65     0.00       15     0.00     0.00  rand1
+  0.00      0.65     0.00        2     0.00     0.00  get_time
+  0.00      0.65     0.00        1     0.00     0.00  elapsed_time
+  0.00      0.65     0.00        1     0.00     0.00  fillMatrix
+  0.00      0.65     0.00        1     0.00     0.00  func0
+  0.00      0.65     0.00        1     0.00     0.00  getNeighbors
+
+So now the next step is to optimize func5
+After optimizing func5, we get the gprof
+
+
+  %   cumulative   self              self     total
+ time   seconds   seconds    calls  ms/call  ms/call  name
+ 60.07      0.45     0.45                             filter
+ 22.69      0.62     0.17  4223665     0.00     0.00  rand2
+  8.01      0.68     0.06    13178     0.00     0.00  findIndexBin
+  4.00      0.71     0.03        1    30.04   199.06  addSeed
+  2.67      0.73     0.02                             sequence
+  1.33      0.74     0.01       15     0.67     0.67  func2
+  1.33      0.75     0.01        1    10.01    10.01  imdilateDisk
+  0.00      0.75     0.00    51562     0.00     0.00  round
+  0.00      0.75     0.00       16     0.00     0.00  dilateMatrix
+  0.00      0.75     0.00       15     0.00     0.00  func1
+  0.00      0.75     0.00       15     0.00     0.00  func3
+  0.00      0.75     0.00       15     0.00     0.00  func4
+  0.00      0.75     0.00       15     0.00     0.00  func5
+  0.00      0.75     0.00       15     0.00     0.00  rand1
+  0.00      0.75     0.00        2     0.00     0.00  get_time
+  0.00      0.75     0.00        1     0.00     0.00  elapsed_time
+  0.00      0.75     0.00        1     0.00     0.00  fillMatrix
+  0.00      0.75     0.00        1     0.00     0.00  func0
+  0.00      0.75     0.00        1     0.00     0.00  getNeighbors
+
+And so now we optimize func2
+Now we get the gprof
+
+  %   cumulative   self              self     total
+ time   seconds   seconds    calls  ms/call  ms/call  name
+ 65.41      0.49     0.49                             filter
+ 21.36      0.65     0.16  4230593     0.00     0.00  rand2
+  5.34      0.69     0.04    15328     0.00     0.00  findIndexBin
+  4.00      0.72     0.03        1    30.04   188.85  addSeed
+  2.67      0.74     0.02                             sequence
+  1.33      0.75     0.01        1    10.01    10.01  imdilateDisk
+  0.00      0.75     0.00    62679     0.00     0.00  round
+  0.00      0.75     0.00       16     0.00     0.00  dilateMatrix
+  0.00      0.75     0.00       15     0.00     0.00  func1
+  0.00      0.75     0.00       15     0.00     0.00  func2
+  0.00      0.75     0.00       15     0.00     0.00  func3
+  0.00      0.75     0.00       15     0.00     0.00  func4
+  0.00      0.75     0.00       15     0.00     0.00  func5
+  0.00      0.75     0.00       15     0.00     0.00  rand1
+  0.00      0.75     0.00        2     0.00     0.00  get_time
+  0.00      0.75     0.00        1     0.00     0.00  elapsed_time
+  0.00      0.75     0.00        1     0.00     0.00  fillMatrix
+  0.00      0.75     0.00        1     0.00     0.00  func0
+  0.00      0.75     0.00        1     0.00     0.00  getNeighbors
+
+After this point, gprof is no longer helpful to us. So I try to optomize func0, func3, and func4 and then compile and run to see if I get any performance increases.
+However, trying to parallelize these functions often gave very negligible performance increases and sometimes even decreased performance.
+###
+
+make clean // I make a clean version
+make
+./omp // and run it
+
+### Output ###
+FUNC TIME : 0.049384
+TOTAL TIME : 1.955365
+###
+
+###
+Our original function time was 0.488948, so this gives us a speed up of 10x!
+###
+
+diff output.txt correct.txt // outputs nothing, so the programs both work identically!
+
+make clean
+make MTRACE=1
+./omp
+make checkmem
+
+### CheckMem output ###
+Memory not freed:
+-----------------
+           Address     Size     Caller
+0x0000000001d260c0     0xd0  at 0x7f08625c2869
+0x0000000001d261a0   0x33a8  at 0x7f08625c2869
+0x0000000001d29550     0xc0  at 0x7f08625c2869
+0x0000000001d29620    0x1c0  at 0x7f08625c28b9
+0x0000000001d297f0    0x240  at 0x7f0862af2f45
+0x0000000001d29a40    0x240  at 0x7f0862af2f45
+0x0000000001d29c90    0x240  at 0x7f0862af2f45
+0x0000000001d29ee0    0x240  at 0x7f0862af2f45
+0x0000000001d2a130    0x240  at 0x7f0862af2f45
+0x0000000001d2a380    0x240  at 0x7f0862af2f45
+0x0000000001d2a5d0    0x240  at 0x7f0862af2f45
+0x0000000001d2a820    0x240  at 0x7f0862af2f45
+0x0000000001d2aa70    0x240  at 0x7f0862af2f45
+0x0000000001d2acc0    0x240  at 0x7f0862af2f45
+0x0000000001d2af10    0x240  at 0x7f0862af2f45
+0x0000000001d2b160    0x240  at 0x7f0862af2f45
+0x0000000001d2b3b0    0x240  at 0x7f0862af2f45
+0x0000000001d2b600    0x240  at 0x7f0862af2f45
+0x0000000001d2b850    0x240  at 0x7f0862af2f45
+0x0000000001d2baa0    0x240  at 0x7f0862af2f45
+0x0000000001d2bcf0    0x240  at 0x7f0862af2f45
+0x0000000001d2bf40    0x240  at 0x7f0862af2f45
+0x0000000001d2c190    0x240  at 0x7f0862af2f45
+0x0000000001d2c3e0    0x240  at 0x7f0862af2f45
+0x0000000001d2c630    0x240  at 0x7f0862af2f45
+0x0000000001d2c880    0x240  at 0x7f0862af2f45
+0x0000000001d2cad0    0x240  at 0x7f0862af2f45
+0x0000000001d2cd20    0x240  at 0x7f0862af2f45
+0x0000000001d2cf70    0x240  at 0x7f0862af2f45
+0x0000000001d2d1c0    0x240  at 0x7f0862af2f45
+0x0000000001d2d410    0x240  at 0x7f0862af2f45
+0x0000000001d2d660    0x240  at 0x7f0862af2f45
+0x0000000001d2d8b0    0x240  at 0x7f0862af2f45
+0x0000000001d2db00    0x240  at 0x7f0862af2f45
+0x0000000001d2dd50    0x240  at 0x7f0862af2f45
+0x0000000001d2dfa0    0x240  at 0x7f0862af2f45
+0x0000000001d2e1f0    0x240  at 0x7f0862af2f45
+0x0000000001d2e440    0x240  at 0x7f0862af2f45
+0x0000000001d2e690    0x240  at 0x7f0862af2f45
+0x0000000001d2e8e0    0x240  at 0x7f0862af2f45
+0x0000000001d2eb30    0x240  at 0x7f0862af2f45
+0x0000000001d2ed80    0x240  at 0x7f0862af2f45
+0x0000000001d2efd0    0x240  at 0x7f0862af2f45
+0x0000000001d2f220    0x240  at 0x7f0862af2f45
+0x0000000001d2f470    0x240  at 0x7f0862af2f45
+0x0000000001d2f6c0    0x240  at 0x7f0862af2f45
+0x0000000001d2f910    0x240  at 0x7f0862af2f45
+0x0000000001d2fb60    0x240  at 0x7f0862af2f45
+0x0000000001d2fdb0    0x240  at 0x7f0862af2f45
+0x0000000001d30000    0x240  at 0x7f0862af2f45
+0x0000000001d30250    0x240  at 0x7f0862af2f45
+0x0000000001d304a0    0x240  at 0x7f0862af2f45
+0x0000000001d306f0    0x240  at 0x7f0862af2f45
+0x0000000001d30940    0x240  at 0x7f0862af2f45
+0x0000000001d30b90    0x240  at 0x7f0862af2f45
+0x0000000001d30de0    0x240  at 0x7f0862af2f45
+0x0000000001d31030    0x240  at 0x7f0862af2f45
+0x0000000001d31280    0x240  at 0x7f0862af2f45
+###
+
+###
+As we can see, there is a lot of memory that is not freed, and I am not sure what the cause of it is.
+On the Piazza, it says that there will be no penalty for this.
+###

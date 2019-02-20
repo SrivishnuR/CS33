@@ -1,0 +1,8 @@
+A. 
+a) (x<y) == (-x>-y)
+This can return 0. For example, lets say y is T_MIN. 
+The two's complement of T_MIN is T_MIN, so the first expression will return false and the second true.
+
+
+b) ((x+y)<<4) + y-x == 17*y + 15*x
+

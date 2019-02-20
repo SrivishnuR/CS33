@@ -1,0 +1,18 @@
+Homework Problem 3.68
+
+A = 9
+B = 5
+
+Since t has an offset of 8 and it is an int, we know that B can vary from 5 - 8. This is due to the fact that if B is 4, then t would instead be located at offset 4 since int is 4-byte aligned.
+
+Since u has an offset of 32 and it is a long, we know A can vary from 7 - 10. If a is 7, then we get char array[B] to take 8 bytes, int t to take 4 bytes, and short s[A] to take 14 bytes. This all adds up to 28 bytes. There will be a padding of 6 bytes to make it 32 bytes since u is a long and is 8-byte aligned. (32/8 is an integer) At max if A is 10, then there will be 0 padding since everything before will take at max 32 bytes.
+
+Lastly, the large int array x can have either 45 or 46 elements. This is due to the fact that y has an offset of 184. 184/4 is 46. However, since y is a long and is 8-byte aligned, the array x could also have a max of 180/4 or 45 elelements.
+
+So we get
+A is 5-8
+B is 7-10
+A*B is 45 or 46.
+For these conditions to be true, we need A to be 5, B to be 9, and A*B to be 45.
+
+So A is 5 and B is 9

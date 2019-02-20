@@ -1,0 +1,10852 @@
+	.file	"libhttpd.c"
+	.text
+	.p2align 4,,15
+	.type	hexit, @function
+hexit:
+.LFB26:
+	.cfi_startproc
+	leal	-48(%rdi), %eax
+	cmpb	$9, %al
+	jbe	.L7
+	leal	-97(%rdi), %eax
+	cmpb	$5, %al
+	jbe	.L8
+	leal	-65(%rdi), %edx
+	xorl	%eax, %eax
+	cmpb	$5, %dl
+	ja	.L1
+	movsbl	%dil, %edi
+	leal	-55(%rdi), %eax
+.L1:
+	rep ret
+	.p2align 4,,10
+	.p2align 3
+.L8:
+	movsbl	%dil, %edi
+	leal	-87(%rdi), %eax
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L7:
+	movsbl	%dil, %edi
+	leal	-48(%rdi), %eax
+	ret
+	.cfi_endproc
+.LFE26:
+	.size	hexit, .-hexit
+	.p2align 4,,15
+	.type	bufgets, @function
+bufgets:
+.LFB34:
+	.cfi_startproc
+	movq	168(%rdi), %r9
+	movq	160(%rdi), %rcx
+	cmpq	%rcx, %r9
+	jnb	.L19
+	movq	144(%rdi), %rsi
+	leaq	(%rsi,%r9), %r8
+	movzbl	(%r8), %edx
+	cmpb	$10, %dl
+	je	.L12
+	addq	%rsi, %rcx
+	cmpb	$13, %dl
+	leaq	1(%rsi,%r9), %rax
+	jne	.L14
+	jmp	.L12
+	.p2align 4,,10
+	.p2align 3
+.L18:
+	movzbl	(%rax), %edx
+	movq	%rax, %r8
+	addq	$1, %rax
+	cmpb	$10, %dl
+	je	.L12
+	cmpb	$13, %dl
+	je	.L12
+.L14:
+	movq	%rax, %rdx
+	subq	%rsi, %rdx
+	cmpq	%rcx, %rax
+	movq	%rdx, 168(%rdi)
+	jne	.L18
+.L19:
+	xorl	%eax, %eax
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L12:
+	movb	$0, (%r8)
+	movq	168(%rdi), %rax
+	cmpb	$13, %dl
+	leaq	1(%rax), %rcx
+	movq	144(%rdi), %rax
+	movq	%rcx, 168(%rdi)
+	je	.L16
+.L17:
+	movslq	%r9d, %r9
+	addq	%r9, %rax
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L16:
+	cmpq	160(%rdi), %rcx
+	jnb	.L17
+	addq	%rax, %rcx
+	cmpb	$10, (%rcx)
+	jne	.L17
+	movb	$0, (%rcx)
+	addq	$1, 168(%rdi)
+	movq	144(%rdi), %rax
+	jmp	.L17
+	.cfi_endproc
+.LFE34:
+	.size	bufgets, .-bufgets
+	.p2align 4,,15
+	.type	free_httpd_server, @function
+free_httpd_server:
+.LFB3:
+	.cfi_startproc
+	pushq	%rbx
+	.cfi_def_cfa_offset 16
+	.cfi_offset 3, -16
+	movq	%rdi, %rbx
+	movq	(%rdi), %rdi
+	testq	%rdi, %rdi
+	je	.L24
+	call	free
+.L24:
+	movq	64(%rbx), %rdi
+	testq	%rdi, %rdi
+	je	.L25
+	call	free
+.L25:
+	movq	24(%rbx), %rdi
+	testq	%rdi, %rdi
+	je	.L26
+	call	free
+.L26:
+	movq	40(%rbx), %rdi
+	testq	%rdi, %rdi
+	je	.L27
+	call	free
+.L27:
+	movq	48(%rbx), %rdi
+	testq	%rdi, %rdi
+	je	.L28
+	call	free
+.L28:
+	movq	112(%rbx), %rdi
+	testq	%rdi, %rdi
+	je	.L29
+	call	free
+.L29:
+	movq	120(%rbx), %rdi
+	testq	%rdi, %rdi
+	je	.L30
+	call	free
+.L30:
+	movq	%rbx, %rdi
+	popq	%rbx
+	.cfi_def_cfa_offset 8
+	jmp	free
+	.cfi_endproc
+.LFE3:
+	.size	free_httpd_server, .-free_httpd_server
+	.p2align 4,,15
+	.type	init_mime, @function
+init_mime:
+.LFB39:
+	.cfi_startproc
+	pushq	%rbx
+	.cfi_def_cfa_offset 16
+	.cfi_offset 3, -16
+	movl	$ext_compare, %ecx
+	movl	$32, %edx
+	movl	$4, %esi
+	movl	$enc_tab, %edi
+	movl	$enc_tab, %ebx
+	call	qsort
+	movl	$ext_compare, %ecx
+	movl	$32, %edx
+	movl	$190, %esi
+	movl	$typ_tab, %edi
+	call	qsort
+.L54:
+	movq	(%rbx), %rdi
+	addq	$32, %rbx
+	call	strlen
+	movq	-16(%rbx), %rdi
+	movq	%rax, -24(%rbx)
+	call	strlen
+	movq	%rax, -8(%rbx)
+	cmpq	$enc_tab+128, %rbx
+	jne	.L54
+	movl	$typ_tab, %ebx
+	.p2align 4,,10
+	.p2align 3
+.L55:
+	movq	(%rbx), %rdi
+	addq	$32, %rbx
+	call	strlen
+	movq	-16(%rbx), %rdi
+	movq	%rax, -24(%rbx)
+	call	strlen
+	movq	%rax, -8(%rbx)
+	cmpq	$typ_tab+6080, %rbx
+	jne	.L55
+	popq	%rbx
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE39:
+	.size	init_mime, .-init_mime
+	.p2align 4,,15
+	.type	ext_compare, @function
+ext_compare:
+.LFB38:
+	.cfi_startproc
+	movq	(%rsi), %rsi
+	movq	(%rdi), %rdi
+	jmp	strcmp
+	.cfi_endproc
+.LFE38:
+	.size	ext_compare, .-ext_compare
+	.p2align 4,,15
+	.type	name_compare, @function
+name_compare:
+.LFB43:
+	.cfi_startproc
+	movq	(%rsi), %rsi
+	movq	(%rdi), %rdi
+	jmp	strcmp
+	.cfi_endproc
+.LFE43:
+	.size	name_compare, .-name_compare
+	.p2align 4,,15
+	.type	my_snprintf, @function
+my_snprintf:
+.LFB61:
+	.cfi_startproc
+	subq	$216, %rsp
+	.cfi_def_cfa_offset 224
+	testb	%al, %al
+	movq	%rcx, 56(%rsp)
+	movq	%r8, 64(%rsp)
+	movq	%r9, 72(%rsp)
+	je	.L63
+	movaps	%xmm0, 80(%rsp)
+	movaps	%xmm1, 96(%rsp)
+	movaps	%xmm2, 112(%rsp)
+	movaps	%xmm3, 128(%rsp)
+	movaps	%xmm4, 144(%rsp)
+	movaps	%xmm5, 160(%rsp)
+	movaps	%xmm6, 176(%rsp)
+	movaps	%xmm7, 192(%rsp)
+.L63:
+	leaq	224(%rsp), %rax
+	leaq	8(%rsp), %rcx
+	movq	%rax, 16(%rsp)
+	leaq	32(%rsp), %rax
+	movl	$24, 8(%rsp)
+	movl	$48, 12(%rsp)
+	movq	%rax, 24(%rsp)
+	call	vsnprintf
+	addq	$216, %rsp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE61:
+	.size	my_snprintf, .-my_snprintf
+	.p2align 4,,15
+	.type	strdecode, @function
+strdecode:
+.LFB27:
+	.cfi_startproc
+	pushq	%r12
+	.cfi_def_cfa_offset 16
+	.cfi_offset 12, -16
+	pushq	%rbp
+	.cfi_def_cfa_offset 24
+	.cfi_offset 6, -24
+	movq	%rdi, %rbp
+	pushq	%rbx
+	.cfi_def_cfa_offset 32
+	.cfi_offset 3, -32
+	movzbl	(%rsi), %ebx
+	testb	%bl, %bl
+	je	.L66
+	movq	%rsi, %r12
+	jmp	.L69
+	.p2align 4,,10
+	.p2align 3
+.L67:
+	movq	%r12, %rax
+	movb	%bl, 0(%rbp)
+	addq	$1, %rbp
+	movzbl	1(%rax), %ebx
+	leaq	1(%rax), %r12
+	testb	%bl, %bl
+	je	.L66
+.L69:
+	cmpb	$37, %bl
+	jne	.L67
+	call	__ctype_b_loc
+	movsbq	1(%r12), %rdx
+	movq	(%rax), %rax
+	testb	$16, 1(%rax,%rdx,2)
+	movq	%rdx, %rdi
+	je	.L67
+	movsbq	2(%r12), %rdx
+	testb	$16, 1(%rax,%rdx,2)
+	movq	%rdx, %rcx
+	je	.L67
+	call	hexit
+	movl	%eax, %esi
+	movsbl	%cl, %edi
+	addq	$1, %rbp
+	call	hexit
+	sall	$4, %esi
+	addl	%esi, %eax
+	movb	%al, -1(%rbp)
+	leaq	2(%r12), %rax
+	movzbl	1(%rax), %ebx
+	leaq	1(%rax), %r12
+	testb	%bl, %bl
+	jne	.L69
+.L66:
+	movb	$0, 0(%rbp)
+	popq	%rbx
+	.cfi_def_cfa_offset 24
+	popq	%rbp
+	.cfi_def_cfa_offset 16
+	popq	%r12
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE27:
+	.size	strdecode, .-strdecode
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC0:
+	.string	"//"
+.LC1:
+	.string	"./"
+.LC2:
+	.string	"/./"
+.LC3:
+	.string	"../"
+.LC4:
+	.string	"/../"
+.LC5:
+	.string	"/.."
+	.text
+	.p2align 4,,15
+	.type	de_dotdot, @function
+de_dotdot:
+.LFB35:
+	.cfi_startproc
+	pushq	%r12
+	.cfi_def_cfa_offset 16
+	.cfi_offset 12, -16
+	pushq	%rbp
+	.cfi_def_cfa_offset 24
+	.cfi_offset 6, -24
+	pushq	%rbx
+	.cfi_def_cfa_offset 32
+	.cfi_offset 3, -32
+	movq	%rdi, %rbx
+	jmp	.L82
+	.p2align 4,,10
+	.p2align 3
+.L83:
+	leaq	1(%rax), %rdi
+	call	strcpy
+.L82:
+	movl	$.LC0, %esi
+	movq	%rbx, %rdi
+	call	strstr
+	testq	%rax, %rax
+	je	.L109
+	cmpb	$47, 2(%rax)
+	leaq	2(%rax), %rsi
+	jne	.L83
+.L84:
+	addq	$1, %rsi
+	cmpb	$47, (%rsi)
+	jne	.L83
+	addq	$1, %rsi
+	cmpb	$47, (%rsi)
+	jne	.L83
+	jmp	.L84
+	.p2align 4,,10
+	.p2align 3
+.L109:
+	movl	$.LC1, %ebp
+	leaq	2(%rbx), %r12
+	jmp	.L86
+	.p2align 4,,10
+	.p2align 3
+.L87:
+	movq	%r12, %rsi
+	movq	%rbx, %rdi
+	call	strcpy
+.L86:
+	movl	$2, %ecx
+	movq	%rbx, %rsi
+	movq	%rbp, %rdi
+	repz cmpsb
+	je	.L87
+	jmp	.L88
+	.p2align 4,,10
+	.p2align 3
+.L89:
+	leaq	2(%rax), %rsi
+	movq	%rax, %rdi
+	call	strcpy
+.L88:
+	movl	$.LC2, %esi
+	movq	%rbx, %rdi
+	call	strstr
+	testq	%rax, %rax
+	jne	.L89
+	leaq	-1(%rbx), %r12
+	movl	$.LC3, %ebp
+.L90:
+	movl	$3, %ecx
+	movq	%rbx, %rsi
+	movq	%rbp, %rdi
+	repz cmpsb
+	je	.L91
+.L112:
+	movl	$.LC4, %esi
+	movq	%rbx, %rdi
+	call	strstr
+	testq	%rax, %rax
+	je	.L110
+	leaq	-1(%rax), %rdi
+	cmpq	%rdi, %rbx
+	ja	.L101
+	cmpb	$47, -1(%rax)
+	jne	.L111
+.L101:
+	movq	%rax, %rdi
+.L93:
+	leaq	4(%rax), %rsi
+	call	strcpy
+	movl	$3, %ecx
+	movq	%rbx, %rsi
+	movq	%rbp, %rdi
+	repz cmpsb
+	jne	.L112
+.L91:
+	leaq	3(%rbx), %rsi
+	movq	%rbx, %rdi
+	call	strcpy
+	jmp	.L90
+	.p2align 4,,10
+	.p2align 3
+.L111:
+	leaq	-1(%rdi), %rdx
+	cmpq	%r12, %rdx
+	je	.L93
+.L113:
+	cmpb	$47, -1(%rdi)
+	je	.L93
+	movq	%rdx, %rdi
+	leaq	-1(%rdi), %rdx
+	cmpq	%r12, %rdx
+	jne	.L113
+	jmp	.L93
+	.p2align 4,,10
+	.p2align 3
+.L110:
+	movq	%rbx, %rdi
+	leaq	-1(%rbx), %rbp
+	call	strlen
+	cmpl	$3, %eax
+	jle	.L81
+	.p2align 4,,10
+	.p2align 3
+.L114:
+	cltq
+	movl	$.LC5, %edi
+	movl	$4, %ecx
+	leaq	-3(%rbx,%rax), %rdx
+	movq	%rdx, %rsi
+	repz cmpsb
+	jne	.L81
+	leaq	-1(%rdx), %rax
+	cmpq	%rax, %rbx
+	ja	.L81
+	cmpb	$47, -1(%rdx)
+	je	.L97
+.L98:
+	subq	$1, %rax
+	cmpq	%rbp, %rax
+	je	.L81
+	cmpb	$47, (%rax)
+	jne	.L98
+.L97:
+	movb	$0, (%rax)
+	movq	%rbx, %rdi
+	call	strlen
+	cmpl	$3, %eax
+	jg	.L114
+.L81:
+	popq	%rbx
+	.cfi_def_cfa_offset 24
+	popq	%rbp
+	.cfi_def_cfa_offset 16
+	popq	%r12
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE35:
+	.size	de_dotdot, .-de_dotdot
+	.section	.rodata.str1.1
+.LC6:
+	.string	"killed CGI process %d"
+.LC7:
+	.string	"tmr_create(cgi_kill2) failed"
+	.text
+	.p2align 4,,15
+	.type	cgi_kill, @function
+cgi_kill:
+.LFB42:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushq	%rbx
+	.cfi_def_cfa_offset 24
+	.cfi_offset 3, -24
+	movq	%rsi, %rbp
+	movl	$2, %esi
+	movq	%rdi, %rbx
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 32
+	call	kill
+	testl	%eax, %eax
+	je	.L118
+.L115:
+	addq	$8, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 24
+	popq	%rbx
+	.cfi_def_cfa_offset 16
+	popq	%rbp
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L118:
+	.cfi_restore_state
+	movl	%ebx, %edx
+	movl	$.LC6, %esi
+	movl	$3, %edi
+	call	syslog
+	xorl	%r8d, %r8d
+	movl	$5000, %ecx
+	movq	%rbx, %rdx
+	movl	$cgi_kill2, %esi
+	movq	%rbp, %rdi
+	call	tmr_create
+	testq	%rax, %rax
+	jne	.L115
+	movl	$2, %edi
+	movl	$.LC7, %esi
+	call	syslog
+	movl	$1, %edi
+	call	exit
+	.cfi_endproc
+.LFE42:
+	.size	cgi_kill, .-cgi_kill
+	.section	.rodata.str1.1
+.LC8:
+	.string	"hard-killed CGI process %d"
+	.text
+	.p2align 4,,15
+	.type	cgi_kill2, @function
+cgi_kill2:
+.LFB41:
+	.cfi_startproc
+	pushq	%rbx
+	.cfi_def_cfa_offset 16
+	.cfi_offset 3, -16
+	movl	$9, %esi
+	movq	%rdi, %rbx
+	call	kill
+	testl	%eax, %eax
+	je	.L122
+	popq	%rbx
+	.cfi_remember_state
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L122:
+	.cfi_restore_state
+	movl	%ebx, %edx
+	movl	$.LC8, %esi
+	movl	$3, %edi
+	popq	%rbx
+	.cfi_def_cfa_offset 8
+	jmp	syslog
+	.cfi_endproc
+.LFE41:
+	.size	cgi_kill2, .-cgi_kill2
+	.section	.rodata.str1.1
+.LC9:
+	.string	"/_.-~"
+.LC10:
+	.string	"%%%02x"
+	.text
+	.p2align 4,,15
+	.type	strencode, @function
+strencode:
+.LFB28:
+	.cfi_startproc
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	movq	%rdi, %r13
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 64
+	movzbl	(%rdx), %ebx
+	testb	%bl, %bl
+	je	.L124
+	cmpl	$4, %esi
+	movl	%esi, %r12d
+	jle	.L124
+	movq	%rdx, %rbp
+	xorl	%r14d, %r14d
+	call	__ctype_b_loc
+	movq	%rax, %r15
+	jmp	.L128
+	.p2align 4,,10
+	.p2align 3
+.L125:
+	addq	$1, %rbp
+	movb	%bl, 0(%r13)
+	addl	$1, %r14d
+	movzbl	0(%rbp), %ebx
+	addq	$1, %r13
+	testb	%bl, %bl
+	je	.L124
+.L137:
+	leal	4(%r14), %eax
+	cmpl	%r12d, %eax
+	jge	.L124
+.L128:
+	movq	(%r15), %rdx
+	movsbq	%bl, %rax
+	testb	$8, (%rdx,%rax,2)
+	jne	.L125
+	movsbl	%bl, %esi
+	movl	$.LC9, %edi
+	call	strchr
+	testq	%rax, %rax
+	jne	.L125
+	movzbl	%bl, %edx
+	movq	%r13, %rdi
+	xorl	%eax, %eax
+	addq	$1, %rbp
+	movl	$.LC10, %esi
+	addq	$3, %r13
+	call	sprintf
+	movzbl	0(%rbp), %ebx
+	addl	$3, %r14d
+	testb	%bl, %bl
+	jne	.L137
+.L124:
+	movb	$0, 0(%r13)
+	addq	$8, %rsp
+	.cfi_def_cfa_offset 56
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE28:
+	.size	strencode, .-strencode
+	.p2align 4,,15
+	.type	sockaddr_check.isra.0, @function
+sockaddr_check.isra.0:
+.LFB65:
+	.cfi_startproc
+	cmpw	$2, %di
+	je	.L141
+	cmpw	$10, %di
+	je	.L141
+	xorl	%eax, %eax
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L141:
+	movl	$1, %eax
+	ret
+	.cfi_endproc
+.LFE65:
+	.size	sockaddr_check.isra.0, .-sockaddr_check.isra.0
+	.p2align 4,,15
+	.type	sockaddr_len.isra.1, @function
+sockaddr_len.isra.1:
+.LFB66:
+	.cfi_startproc
+	cmpw	$2, %di
+	movl	$16, %eax
+	je	.L148
+	cmpw	$10, %di
+	movl	$28, %eax
+	movl	$0, %edx
+	cmovne	%rdx, %rax
+.L148:
+	rep ret
+	.cfi_endproc
+.LFE66:
+	.size	sockaddr_len.isra.1, .-sockaddr_len.isra.1
+	.section	.text.unlikely,"ax",@progbits
+	.type	make_argp.isra.2, @function
+make_argp.isra.2:
+.LFB67:
+	.cfi_startproc
+	pushq	%r14
+	.cfi_def_cfa_offset 16
+	.cfi_offset 14, -16
+	pushq	%r13
+	.cfi_def_cfa_offset 24
+	.cfi_offset 13, -24
+	xorl	%eax, %eax
+	pushq	%r12
+	.cfi_def_cfa_offset 32
+	.cfi_offset 12, -32
+	pushq	%rbp
+	.cfi_def_cfa_offset 40
+	.cfi_offset 6, -40
+	orq	$-1, %rcx
+	pushq	%rbx
+	.cfi_def_cfa_offset 48
+	.cfi_offset 3, -48
+	movq	%rdi, %rbx
+	movq	%rsi, %rdi
+	movq	%rsi, %rbp
+	repnz scasb
+	movq	%rcx, %rdx
+	negq	%rdx
+	leaq	0(,%rdx,8), %rdi
+	call	malloc
+	testq	%rax, %rax
+	movq	%rax, %r13
+	je	.L154
+	movq	%rbx, %rdi
+	movl	$47, %esi
+	call	strrchr
+	leaq	1(%rax), %rdx
+	testq	%rax, %rax
+	movl	$61, %esi
+	movq	%rbp, %rdi
+	cmovne	%rdx, %rbx
+	movq	%rbx, 0(%r13)
+	movl	$1, %ebx
+	call	strchr
+	testq	%rax, %rax
+	jne	.L159
+	movq	%rbp, %r12
+	movl	$1, %ebx
+.L158:
+	movb	0(%rbp), %al
+	movslq	%ebx, %rdx
+	leaq	0(%r13,%rdx,8), %r14
+	testb	%al, %al
+	je	.L167
+	incq	%rbp
+	cmpb	$43, %al
+	jne	.L158
+	movq	%r12, %rsi
+	movq	%r12, %rdi
+	movb	$0, -1(%rbp)
+	call	strdecode
+	incl	%ebx
+	movq	%r12, (%r14)
+	movq	%rbp, %r12
+	jmp	.L158
+.L167:
+	cmpq	%r12, %rbp
+	je	.L159
+	movq	%r12, %rsi
+	movq	%r12, %rdi
+	incl	%ebx
+	call	strdecode
+	movq	%r12, (%r14)
+.L159:
+	movslq	%ebx, %rbx
+	movq	$0, 0(%r13,%rbx,8)
+.L154:
+	popq	%rbx
+	.cfi_def_cfa_offset 40
+	movq	%r13, %rax
+	popq	%rbp
+	.cfi_def_cfa_offset 32
+	popq	%r12
+	.cfi_def_cfa_offset 24
+	popq	%r13
+	.cfi_def_cfa_offset 16
+	popq	%r14
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE67:
+	.size	make_argp.isra.2, .-make_argp.isra.2
+	.text
+	.p2align 4,,15
+	.type	b64_decode.constprop.5, @function
+b64_decode.constprop.5:
+.LFB72:
+	.cfi_startproc
+	movsbq	(%rdi), %rdx
+	xorl	%eax, %eax
+	testb	%dl, %dl
+	je	.L192
+	xorl	%ecx, %ecx
+	xorl	%r8d, %r8d
+.L171:
+	movl	b64_decode_table(,%rdx,4), %edx
+	cmpl	$-1, %edx
+	je	.L297
+	cmpl	$2, %r8d
+	je	.L174
+	cmpl	$3, %r8d
+	je	.L215
+	cmpl	$1, %r8d
+	je	.L176
+.L173:
+	movq	%rdi, %r9
+	movl	%edx, %ecx
+	addq	$1, %rdi
+.L190:
+	movsbq	1(%r9), %rdx
+	testb	%dl, %dl
+	je	.L168
+	movl	b64_decode_table(,%rdx,4), %edx
+	leaq	1(%rdi), %r9
+	cmpl	$-1, %edx
+	jne	.L177
+	movsbq	1(%rdi), %rdx
+	testb	%dl, %dl
+	je	.L168
+	movl	b64_decode_table(,%rdx,4), %edx
+	cmpl	$-1, %edx
+	je	.L298
+	movq	%r9, %rdi
+	.p2align 4,,10
+	.p2align 3
+.L176:
+	leaq	1(%rdi), %r9
+.L177:
+	cmpl	$498, %eax
+	jle	.L179
+.L302:
+	movsbq	1(%rdi), %rcx
+	testb	%cl, %cl
+	je	.L168
+	movl	b64_decode_table(,%rcx,4), %ecx
+	leaq	1(%r9), %r8
+	cmpl	$-1, %ecx
+	je	.L299
+.L180:
+	movsbq	1(%r9), %rdx
+	testb	%dl, %dl
+	je	.L168
+	movl	b64_decode_table(,%rdx,4), %edx
+	cmpl	$-1, %edx
+	je	.L300
+.L183:
+	movsbq	1(%r8), %rcx
+	testb	%cl, %cl
+	je	.L168
+	movl	b64_decode_table(,%rcx,4), %ecx
+	leaq	2(%r8), %rdi
+	movsbq	2(%r8), %r9
+	cmpl	$-1, %ecx
+	je	.L301
+	testb	%r9b, %r9b
+	je	.L168
+	movl	b64_decode_table(,%r9,4), %edx
+	leaq	3(%r8), %r9
+	cmpl	$-1, %edx
+	je	.L294
+	cmpl	$498, %eax
+	jg	.L302
+	.p2align 4,,10
+	.p2align 3
+.L179:
+	movl	%edx, %r8d
+	sall	$2, %ecx
+	leal	1(%rax), %r10d
+	sarl	$4, %r8d
+	cltq
+	andl	$3, %r8d
+	orl	%r8d, %ecx
+	movb	%cl, (%rsi,%rax)
+	movsbq	1(%rdi), %rax
+	testb	%al, %al
+	je	.L206
+	movl	b64_decode_table(,%rax,4), %ecx
+	leaq	1(%r9), %r8
+	cmpl	$-1, %ecx
+	jne	.L191
+	movsbq	1(%r9), %rax
+	testb	%al, %al
+	je	.L206
+	movl	b64_decode_table(,%rax,4), %r11d
+	cmpl	$-1, %r11d
+	je	.L303
+	movl	%edx, %ecx
+	movl	%r10d, %eax
+	movq	%r8, %rdi
+	movl	%r11d, %edx
+	.p2align 4,,10
+	.p2align 3
+.L174:
+	movl	%eax, %r10d
+	leaq	1(%rdi), %r8
+	movl	%ecx, %eax
+	movq	%rdi, %r9
+	movl	%edx, %ecx
+	movl	%eax, %edx
+.L191:
+	cmpl	$498, %r10d
+	jg	.L304
+	movl	%ecx, %edi
+	sall	$4, %edx
+	leal	1(%r10), %eax
+	sarl	$2, %edi
+	movslq	%r10d, %r10
+	andl	$15, %edi
+	orl	%edi, %edx
+	movb	%dl, (%rsi,%r10)
+	movsbq	1(%r9), %rdx
+	testb	%dl, %dl
+	je	.L305
+	movl	b64_decode_table(,%rdx,4), %edx
+	cmpl	$-1, %edx
+	je	.L306
+.L175:
+	cmpl	$498, %eax
+	jg	.L183
+	sall	$6, %ecx
+	leal	1(%rax), %r10d
+	cltq
+	orl	%edx, %ecx
+	movb	%cl, (%rsi,%rax)
+	movsbq	1(%r8), %rax
+	testb	%al, %al
+	je	.L206
+	movl	b64_decode_table(,%rax,4), %ecx
+	leaq	2(%r8), %rdi
+	movsbq	2(%r8), %rax
+	cmpl	$-1, %ecx
+	je	.L307
+	testb	%al, %al
+	je	.L206
+	movl	b64_decode_table(,%rax,4), %edx
+	leaq	3(%r8), %r9
+	movl	%r10d, %eax
+	cmpl	$-1, %edx
+	jne	.L177
+.L294:
+	movsbq	3(%r8), %rdx
+	testb	%dl, %dl
+	je	.L168
+	movl	b64_decode_table(,%rdx,4), %edx
+	movq	%r9, %rdi
+	cmpl	$-1, %edx
+	jne	.L176
+	movsbq	4(%r8), %rdx
+	leaq	4(%r8), %rdi
+	testb	%dl, %dl
+	je	.L168
+	movl	b64_decode_table(,%rdx,4), %edx
+	cmpl	$-1, %edx
+	jne	.L176
+	movq	%rdi, %r9
+.L282:
+	movl	$1, %r8d
+	jmp	.L178
+	.p2align 4,,10
+	.p2align 3
+.L297:
+	movq	%rdi, %r9
+.L178:
+	movsbq	1(%r9), %rdx
+	leaq	1(%r9), %rdi
+	testb	%dl, %dl
+	jne	.L171
+	rep ret
+	.p2align 4,,10
+	.p2align 3
+.L168:
+	rep ret
+	.p2align 4,,10
+	.p2align 3
+.L306:
+	movsbq	1(%r8), %rdx
+	leaq	1(%r8), %rdi
+	testb	%dl, %dl
+	je	.L168
+	movl	b64_decode_table(,%rdx,4), %edx
+	cmpl	$-1, %edx
+	je	.L308
+	.p2align 4,,10
+	.p2align 3
+.L215:
+	movq	%rdi, %r8
+	jmp	.L175
+	.p2align 4,,10
+	.p2align 3
+.L206:
+	movl	%r10d, %eax
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L304:
+	movl	%r10d, %eax
+	jmp	.L180
+	.p2align 4,,10
+	.p2align 3
+.L192:
+	rep ret
+	.p2align 4,,10
+	.p2align 3
+.L307:
+	testb	%al, %al
+	je	.L206
+	movl	b64_decode_table(,%rax,4), %ecx
+	leaq	3(%r8), %r11
+	cmpl	$-1, %ecx
+	je	.L309
+	movq	%rdi, %r9
+	movl	%r10d, %eax
+	movq	%r11, %rdi
+	jmp	.L190
+	.p2align 4,,10
+	.p2align 3
+.L300:
+	movsbq	1(%r8), %rdx
+	leaq	1(%r8), %r9
+	testb	%dl, %dl
+	je	.L168
+	movl	b64_decode_table(,%rdx,4), %edx
+	cmpl	$-1, %edx
+	je	.L310
+.L184:
+	movq	%r9, %r8
+	jmp	.L183
+	.p2align 4,,10
+	.p2align 3
+.L299:
+	movsbq	1(%r9), %rcx
+	testb	%cl, %cl
+	je	.L168
+	movl	b64_decode_table(,%rcx,4), %r10d
+	cmpl	$-1, %r10d
+	je	.L311
+	movl	%edx, %ecx
+	movq	%r8, %rdi
+	movl	%r10d, %edx
+	jmp	.L174
+	.p2align 4,,10
+	.p2align 3
+.L301:
+	testb	%r9b, %r9b
+	je	.L168
+	movl	b64_decode_table(,%r9,4), %ecx
+	movq	%rdi, %r9
+	leaq	3(%r8), %rdi
+	cmpl	$-1, %ecx
+	jne	.L190
+	movsbq	3(%r8), %rcx
+	testb	%cl, %cl
+	je	.L168
+	movl	b64_decode_table(,%rcx,4), %ecx
+	cmpl	$-1, %ecx
+	je	.L312
+.L214:
+	movl	%ecx, %edx
+	jmp	.L173
+	.p2align 4,,10
+	.p2align 3
+.L305:
+	rep ret
+	.p2align 4,,10
+	.p2align 3
+.L308:
+	movsbq	2(%r8), %rdx
+	leaq	2(%r8), %r9
+	testb	%dl, %dl
+	je	.L168
+	movl	b64_decode_table(,%rdx,4), %edx
+	movq	%r9, %r8
+	cmpl	$-1, %edx
+	jne	.L175
+.L285:
+	movl	$3, %r8d
+	jmp	.L178
+.L312:
+	movsbq	4(%r8), %rcx
+	leaq	4(%r8), %rdi
+	testb	%cl, %cl
+	je	.L168
+	movl	b64_decode_table(,%rcx,4), %ecx
+	cmpl	$-1, %ecx
+	jne	.L214
+.L290:
+	movl	%edx, %ecx
+	movq	%rdi, %r9
+	xorl	%r8d, %r8d
+	jmp	.L178
+	.p2align 4,,10
+	.p2align 3
+.L309:
+	movsbq	3(%r8), %rax
+	testb	%al, %al
+	je	.L206
+	movl	b64_decode_table(,%rax,4), %ecx
+	cmpl	$-1, %ecx
+	je	.L313
+	movl	%r10d, %eax
+	movq	%r11, %rdi
+	movl	%ecx, %edx
+	jmp	.L173
+	.p2align 4,,10
+	.p2align 3
+.L311:
+	movsbq	2(%r9), %rcx
+	leaq	2(%r9), %rdi
+	testb	%cl, %cl
+	je	.L168
+	movl	b64_decode_table(,%rcx,4), %r8d
+	cmpl	$-1, %r8d
+	je	.L284
+.L289:
+	movl	%edx, %ecx
+	movl	%r8d, %edx
+	jmp	.L174
+	.p2align 4,,10
+	.p2align 3
+.L303:
+	movsbq	2(%r9), %rax
+	leaq	2(%r9), %rdi
+	testb	%al, %al
+	je	.L206
+	movl	b64_decode_table(,%rax,4), %r8d
+	movl	%r10d, %eax
+	cmpl	$-1, %r8d
+	jne	.L289
+.L284:
+	movl	%edx, %ecx
+	movq	%rdi, %r9
+	movl	$2, %r8d
+	jmp	.L178
+	.p2align 4,,10
+	.p2align 3
+.L310:
+	movsbq	2(%r8), %rdx
+	leaq	2(%r8), %r9
+	testb	%dl, %dl
+	je	.L168
+	movl	b64_decode_table(,%rdx,4), %edx
+	cmpl	$-1, %edx
+	jne	.L184
+	jmp	.L285
+	.p2align 4,,10
+	.p2align 3
+.L298:
+	movsbq	2(%rdi), %rdx
+	leaq	2(%rdi), %r9
+	testb	%dl, %dl
+	je	.L168
+	movl	b64_decode_table(,%rdx,4), %edx
+	movq	%r9, %rdi
+	cmpl	$-1, %edx
+	jne	.L176
+	jmp	.L282
+.L313:
+	movsbq	4(%r8), %rax
+	leaq	4(%r8), %rdi
+	testb	%al, %al
+	je	.L206
+	movl	b64_decode_table(,%rax,4), %ecx
+	movl	%r10d, %eax
+	cmpl	$-1, %ecx
+	je	.L290
+	movl	%ecx, %edx
+	jmp	.L173
+	.cfi_endproc
+.LFE72:
+	.size	b64_decode.constprop.5, .-b64_decode.constprop.5
+	.p2align 4,,15
+	.type	defang.constprop.6, @function
+defang.constprop.6:
+.LFB71:
+	.cfi_startproc
+	movzbl	(%rdi), %eax
+	testb	%al, %al
+	je	.L315
+	movq	%rsi, %rcx
+	jmp	.L320
+	.p2align 4,,10
+	.p2align 3
+.L330:
+	cmpb	$62, %al
+	jne	.L329
+	leaq	3(%rsi), %rax
+	movl	$997484326, (%rsi)
+.L319:
+	addq	$1, %rdi
+	leaq	1(%rax), %rsi
+	movzbl	(%rdi), %eax
+	testb	%al, %al
+	je	.L315
+.L331:
+	movq	%rsi, %rdx
+	subq	%rcx, %rdx
+	cmpq	$994, %rdx
+	jg	.L315
+.L320:
+	cmpb	$60, %al
+	jne	.L330
+	leaq	3(%rsi), %rax
+	addq	$1, %rdi
+	movl	$997485606, (%rsi)
+	leaq	1(%rax), %rsi
+	movzbl	(%rdi), %eax
+	testb	%al, %al
+	jne	.L331
+.L315:
+	movb	$0, (%rsi)
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L329:
+	movb	%al, (%rsi)
+	movq	%rsi, %rax
+	jmp	.L319
+	.cfi_endproc
+.LFE71:
+	.size	defang.constprop.6, .-defang.constprop.6
+	.p2align 4,,15
+	.type	__bswap_32.constprop.7, @function
+__bswap_32.constprop.7:
+.LFB70:
+	.cfi_startproc
+	movl	$-65536, %eax
+	ret
+	.cfi_endproc
+.LFE70:
+	.size	__bswap_32.constprop.7, .-__bswap_32.constprop.7
+	.p2align 4,,15
+	.globl	httpd_set_logfp
+	.type	httpd_set_logfp, @function
+httpd_set_logfp:
+.LFB6:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushq	%rbx
+	.cfi_def_cfa_offset 24
+	.cfi_offset 3, -24
+	movq	%rdi, %rbx
+	movq	%rsi, %rbp
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 32
+	movq	88(%rdi), %rdi
+	testq	%rdi, %rdi
+	je	.L334
+	call	fclose
+.L334:
+	movq	%rbp, 88(%rbx)
+	addq	$8, %rsp
+	.cfi_def_cfa_offset 24
+	popq	%rbx
+	.cfi_def_cfa_offset 16
+	popq	%rbp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE6:
+	.size	httpd_set_logfp, .-httpd_set_logfp
+	.p2align 4,,15
+	.globl	httpd_unlisten
+	.type	httpd_unlisten, @function
+httpd_unlisten:
+.LFB8:
+	.cfi_startproc
+	pushq	%rbx
+	.cfi_def_cfa_offset 16
+	.cfi_offset 3, -16
+	movq	%rdi, %rbx
+	movl	72(%rdi), %edi
+	cmpl	$-1, %edi
+	je	.L340
+	call	close
+	movl	$-1, 72(%rbx)
+.L340:
+	movl	76(%rbx), %edi
+	cmpl	$-1, %edi
+	je	.L339
+	call	close
+	movl	$-1, 76(%rbx)
+.L339:
+	popq	%rbx
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE8:
+	.size	httpd_unlisten, .-httpd_unlisten
+	.p2align 4,,15
+	.globl	httpd_terminate
+	.type	httpd_terminate, @function
+httpd_terminate:
+.LFB7:
+	.cfi_startproc
+	pushq	%rbx
+	.cfi_def_cfa_offset 16
+	.cfi_offset 3, -16
+	movq	%rdi, %rbx
+	call	httpd_unlisten
+	movq	88(%rbx), %rdi
+	testq	%rdi, %rdi
+	je	.L350
+	call	fclose
+.L350:
+	movq	%rbx, %rdi
+	popq	%rbx
+	.cfi_def_cfa_offset 8
+	jmp	free_httpd_server
+	.cfi_endproc
+.LFE7:
+	.size	httpd_terminate, .-httpd_terminate
+	.p2align 4,,15
+	.globl	httpd_set_ndelay
+	.type	httpd_set_ndelay, @function
+httpd_set_ndelay:
+.LFB11:
+	.cfi_startproc
+	pushq	%rbx
+	.cfi_def_cfa_offset 16
+	.cfi_offset 3, -16
+	xorl	%edx, %edx
+	xorl	%eax, %eax
+	movl	$3, %esi
+	movl	%edi, %ebx
+	call	fcntl
+	cmpl	$-1, %eax
+	je	.L355
+	movl	%eax, %edx
+	orb	$8, %dh
+	cmpl	%edx, %eax
+	je	.L355
+	movl	%ebx, %edi
+	movl	$4, %esi
+	xorl	%eax, %eax
+	popq	%rbx
+	.cfi_remember_state
+	.cfi_def_cfa_offset 8
+	jmp	fcntl
+	.p2align 4,,10
+	.p2align 3
+.L355:
+	.cfi_restore_state
+	popq	%rbx
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE11:
+	.size	httpd_set_ndelay, .-httpd_set_ndelay
+	.section	.text.unlikely
+	.type	post_post_garbage_hack.isra.3, @function
+post_post_garbage_hack.isra.3:
+.LFB68:
+	.cfi_startproc
+	pushq	%rbx
+	.cfi_def_cfa_offset 16
+	.cfi_offset 3, -16
+	movq	%rdi, %rbx
+	subq	$16, %rsp
+	.cfi_def_cfa_offset 32
+	cmpl	$0, sub_process(%rip)
+	je	.L362
+	movl	(%rdi), %edi
+	call	httpd_set_ndelay
+.L362:
+	movl	(%rbx), %edi
+	leaq	14(%rsp), %rsi
+	movl	$2, %edx
+	call	read
+	addq	$16, %rsp
+	.cfi_def_cfa_offset 16
+	popq	%rbx
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE68:
+	.size	post_post_garbage_hack.isra.3, .-post_post_garbage_hack.isra.3
+	.text
+	.p2align 4,,15
+	.globl	httpd_clear_ndelay
+	.type	httpd_clear_ndelay, @function
+httpd_clear_ndelay:
+.LFB12:
+	.cfi_startproc
+	pushq	%rbx
+	.cfi_def_cfa_offset 16
+	.cfi_offset 3, -16
+	xorl	%edx, %edx
+	xorl	%eax, %eax
+	movl	$3, %esi
+	movl	%edi, %ebx
+	call	fcntl
+	cmpl	$-1, %eax
+	je	.L364
+	movl	%eax, %edx
+	andb	$-9, %dh
+	cmpl	%edx, %eax
+	je	.L364
+	movl	%ebx, %edi
+	movl	$4, %esi
+	xorl	%eax, %eax
+	popq	%rbx
+	.cfi_remember_state
+	.cfi_def_cfa_offset 8
+	jmp	fcntl
+	.p2align 4,,10
+	.p2align 3
+.L364:
+	.cfi_restore_state
+	popq	%rbx
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE12:
+	.size	httpd_clear_ndelay, .-httpd_clear_ndelay
+	.section	.rodata.str1.8,"aMS",@progbits,1
+	.align 8
+.LC11:
+	.string	"out of memory reallocating a string to %zu bytes"
+	.text
+	.p2align 4,,15
+	.globl	httpd_realloc_str
+	.type	httpd_realloc_str, @function
+httpd_realloc_str:
+.LFB14:
+	.cfi_startproc
+	pushq	%r13
+	.cfi_def_cfa_offset 16
+	.cfi_offset 13, -16
+	pushq	%r12
+	.cfi_def_cfa_offset 24
+	.cfi_offset 12, -24
+	movq	%rdi, %r12
+	pushq	%rbp
+	.cfi_def_cfa_offset 32
+	.cfi_offset 6, -32
+	pushq	%rbx
+	.cfi_def_cfa_offset 40
+	.cfi_offset 3, -40
+	movq	%rsi, %rbp
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 48
+	movq	(%rsi), %rbx
+	testq	%rbx, %rbx
+	je	.L375
+	cmpq	%rdx, %rbx
+	jb	.L376
+.L370:
+	addq	$8, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 40
+	popq	%rbx
+	.cfi_def_cfa_offset 32
+	popq	%rbp
+	.cfi_def_cfa_offset 24
+	popq	%r12
+	.cfi_def_cfa_offset 16
+	popq	%r13
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L376:
+	.cfi_restore_state
+	leaq	(%rdx,%rdx,4), %rsi
+	leaq	(%rbx,%rbx), %rax
+	movq	(%rdi), %rdi
+	movq	str_alloc_size(%rip), %r13
+	shrq	$2, %rsi
+	cmpq	%rax, %rsi
+	cmovb	%rax, %rsi
+	movq	%rsi, 0(%rbp)
+	addq	$1, %rsi
+	call	realloc
+	addq	0(%rbp), %r13
+	movq	%rax, (%r12)
+	subq	%rbx, %r13
+	movq	%r13, str_alloc_size(%rip)
+.L372:
+	testq	%rax, %rax
+	jne	.L370
+	movq	0(%rbp), %rdx
+	movl	$3, %edi
+	movl	$.LC11, %esi
+	call	syslog
+	movl	$1, %edi
+	call	exit
+	.p2align 4,,10
+	.p2align 3
+.L375:
+	leaq	100(%rdx), %rbx
+	movl	$200, %eax
+	cmpq	$200, %rbx
+	cmovb	%rax, %rbx
+	leaq	1(%rbx), %rdi
+	movq	%rbx, (%rsi)
+	call	malloc
+	addl	$1, str_alloc_count(%rip)
+	movq	%rax, (%r12)
+	addq	%rbx, str_alloc_size(%rip)
+	jmp	.L372
+	.cfi_endproc
+.LFE14:
+	.size	httpd_realloc_str, .-httpd_realloc_str
+	.p2align 4,,15
+	.type	add_response, @function
+add_response:
+.LFB9:
+	.cfi_startproc
+	pushq	%r12
+	.cfi_def_cfa_offset 16
+	.cfi_offset 12, -16
+	pushq	%rbp
+	.cfi_def_cfa_offset 24
+	.cfi_offset 6, -24
+	movq	%rsi, %r12
+	pushq	%rbx
+	.cfi_def_cfa_offset 32
+	.cfi_offset 3, -32
+	movq	%rdi, %rbx
+	movq	%rsi, %rdi
+	call	strlen
+	movq	472(%rbx), %rdx
+	leaq	464(%rbx), %rsi
+	leaq	368(%rbx), %rdi
+	movq	%rax, %rbp
+	addq	%rax, %rdx
+	call	httpd_realloc_str
+	movq	472(%rbx), %rdi
+	addq	368(%rbx), %rdi
+	movq	%rbp, %rdx
+	movq	%r12, %rsi
+	call	memmove
+	addq	%rbp, 472(%rbx)
+	popq	%rbx
+	.cfi_def_cfa_offset 24
+	popq	%rbp
+	.cfi_def_cfa_offset 16
+	popq	%r12
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE9:
+	.size	add_response, .-add_response
+	.section	.rodata.str1.1
+.LC12:
+	.string	"Partial Content"
+.LC13:
+	.string	"%a, %d %b %Y %H:%M:%S GMT"
+	.section	.rodata.str1.8
+	.align 8
+.LC14:
+	.string	"%.20s %d %s\r\nServer: %s\r\nContent-Type: %s\r\nDate: %s\r\nLast-Modified: %s\r\nAccept-Ranges: bytes\r\nConnection: close\r\n"
+	.section	.rodata.str1.1
+.LC15:
+	.string	"thttpd"
+	.section	.rodata.str1.8
+	.align 8
+.LC16:
+	.string	"Cache-Control: no-cache,no-store\r\n"
+	.section	.rodata.str1.1
+.LC17:
+	.string	"Content-Encoding: %s\r\n"
+	.section	.rodata.str1.8
+	.align 8
+.LC18:
+	.string	"Content-Range: bytes %lld-%lld/%lld\r\nContent-Length: %lld\r\n"
+	.section	.rodata.str1.1
+.LC19:
+	.string	"Content-Length: %lld\r\n"
+.LC20:
+	.string	"P3P: %s\r\n"
+	.section	.rodata.str1.8
+	.align 8
+.LC21:
+	.string	"Cache-Control: max-age=%d\r\nExpires: %s\r\n"
+	.section	.rodata.str1.1
+.LC22:
+	.string	"\r\n"
+	.text
+	.p2align 4,,15
+	.type	send_mime, @function
+send_mime:
+.LFB13:
+	.cfi_startproc
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	movq	%rdi, %rbx
+	subq	$1912, %rsp
+	.cfi_def_cfa_offset 1968
+	movl	%esi, 184(%rdi)
+	movq	1968(%rsp), %rax
+	movq	%rax, 192(%rdi)
+	movl	520(%rdi), %edi
+	testl	%edi, %edi
+	je	.L379
+	cmpl	$200, %esi
+	movl	%esi, %ebp
+	movq	%rdx, %r14
+	movq	%rcx, %r13
+	movq	%r8, %r12
+	je	.L401
+.L381:
+	movl	%ebp, %eax
+	movl	$1374389535, %edx
+	movl	$0, 528(%rbx)
+	imull	%edx
+	movl	%ebp, %eax
+	movl	$0, 24(%rsp)
+	sarl	$31, %eax
+	sarl	$5, %edx
+	subl	%eax, %edx
+	leal	-2(%rdx), %eax
+	movl	%eax, 28(%rsp)
+.L384:
+	xorl	%edi, %edi
+	movq	%r9, (%rsp)
+	call	time
+	cmpq	$0, 1976(%rsp)
+	movq	%rax, 32(%rsp)
+	movq	(%rsp), %r9
+	jne	.L385
+	movq	%rax, 1976(%rsp)
+.L385:
+	leaq	32(%rsp), %rdi
+	movq	%r9, 16(%rsp)
+	leaq	384(%rsp), %r15
+	call	gmtime
+	leaq	48(%rsp), %r10
+	movq	%rax, %rcx
+	movl	$.LC13, %edx
+	movl	$100, %esi
+	movq	%r10, %rdi
+	movq	%r10, 8(%rsp)
+	call	strftime
+	leaq	1976(%rsp), %rdi
+	call	gmtime
+	leaq	160(%rsp), %r11
+	movq	%rax, %rcx
+	movl	$.LC13, %edx
+	movl	$100, %esi
+	movq	%r11, %rdi
+	movq	%r11, (%rsp)
+	call	strftime
+	movq	8(%rbx), %rax
+	movq	16(%rsp), %r9
+	movl	$500, %esi
+	movq	%r15, %rdi
+	movq	40(%rax), %rcx
+	movq	%r9, %rdx
+	xorl	%eax, %eax
+	call	my_snprintf
+	movq	(%rsp), %r11
+	movq	224(%rbx), %rcx
+	movq	%r14, %r9
+	movl	%ebp, %r8d
+	movl	$.LC14, %edx
+	movl	$1000, %esi
+	xorl	%eax, %eax
+	pushq	%r11
+	.cfi_def_cfa_offset 1976
+	movq	16(%rsp), %r10
+	pushq	%r10
+	.cfi_def_cfa_offset 1984
+	pushq	%r15
+	.cfi_def_cfa_offset 1992
+	pushq	$.LC15
+	.cfi_def_cfa_offset 2000
+	leaq	928(%rsp), %rdi
+	call	my_snprintf
+	addq	$32, %rsp
+	.cfi_def_cfa_offset 1968
+	movq	%rbx, %rdi
+	leaq	896(%rsp), %rsi
+	call	add_response
+	cmpl	$1, 28(%rsp)
+	ja	.L402
+	cmpb	$0, 0(%r13)
+	jne	.L403
+.L387:
+	movl	24(%rsp), %ecx
+	testl	%ecx, %ecx
+	jne	.L404
+.L388:
+	cmpq	$0, 1968(%rsp)
+	jns	.L405
+.L389:
+	movq	8(%rbx), %rax
+	movq	48(%rax), %rcx
+	cmpb	$0, (%rcx)
+	jne	.L406
+.L390:
+	movslq	56(%rax), %rax
+	testl	%eax, %eax
+	js	.L391
+	addq	32(%rsp), %rax
+	leaq	40(%rsp), %rdi
+	movq	%rax, 40(%rsp)
+	call	gmtime
+	leaq	272(%rsp), %rdi
+	movq	%rax, %rcx
+	movl	$.LC13, %edx
+	movl	$100, %esi
+	call	strftime
+	movq	8(%rbx), %rax
+	leaq	896(%rsp), %rdi
+	leaq	272(%rsp), %r8
+	movl	$1000, %esi
+	movl	$.LC21, %edx
+	movl	56(%rax), %ecx
+	xorl	%eax, %eax
+	call	my_snprintf
+	leaq	896(%rsp), %rsi
+	movq	%rbx, %rdi
+	call	add_response
+.L391:
+	cmpb	$0, (%r12)
+	jne	.L407
+.L392:
+	movl	$.LC22, %esi
+	movq	%rbx, %rdi
+	call	add_response
+.L379:
+	addq	$1912, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 56
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L402:
+	.cfi_restore_state
+	leaq	896(%rsp), %rdi
+	movl	$.LC16, %edx
+	movl	$1000, %esi
+	xorl	%eax, %eax
+	call	my_snprintf
+	leaq	896(%rsp), %rsi
+	movq	%rbx, %rdi
+	call	add_response
+	cmpb	$0, 0(%r13)
+	je	.L387
+	jmp	.L403
+	.p2align 4,,10
+	.p2align 3
+.L401:
+	movl	528(%rbx), %esi
+	testl	%esi, %esi
+	je	.L381
+	movq	544(%rbx), %rax
+	movq	536(%rbx), %rdx
+	cmpq	%rdx, %rax
+	jl	.L381
+	movq	1968(%rsp), %rcx
+	subq	$1, %rcx
+	cmpq	%rax, %rcx
+	jne	.L393
+	testq	%rdx, %rdx
+	je	.L381
+.L393:
+	movq	488(%rbx), %rax
+	cmpq	$-1, %rax
+	je	.L383
+	cmpq	648(%rbx), %rax
+	jne	.L381
+.L383:
+	movl	$206, 184(%rbx)
+	movl	$0, 28(%rsp)
+	movl	$.LC12, %r14d
+	movl	$1, 24(%rsp)
+	movl	$206, %ebp
+	jmp	.L384
+	.p2align 4,,10
+	.p2align 3
+.L403:
+	leaq	896(%rsp), %rdi
+	movq	%r13, %rcx
+	movl	$.LC17, %edx
+	movl	$1000, %esi
+	xorl	%eax, %eax
+	call	my_snprintf
+	leaq	896(%rsp), %rsi
+	movq	%rbx, %rdi
+	call	add_response
+	movl	24(%rsp), %ecx
+	testl	%ecx, %ecx
+	je	.L388
+.L404:
+	movq	544(%rbx), %r8
+	movq	536(%rbx), %rcx
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 1976
+	movl	$.LC18, %edx
+	movl	$1000, %esi
+	movq	%r8, %rax
+	subq	%rcx, %rax
+	addq	$1, %rax
+	pushq	%rax
+	.cfi_def_cfa_offset 1984
+	movq	1984(%rsp), %r9
+	xorl	%eax, %eax
+	leaq	912(%rsp), %rdi
+	call	my_snprintf
+	leaq	912(%rsp), %rsi
+	movq	%rbx, %rdi
+	call	add_response
+	popq	%rax
+	.cfi_def_cfa_offset 1976
+	movq	8(%rbx), %rax
+	popq	%rdx
+	.cfi_def_cfa_offset 1968
+	movq	48(%rax), %rcx
+	cmpb	$0, (%rcx)
+	je	.L390
+.L406:
+	leaq	896(%rsp), %rdi
+	movl	$.LC20, %edx
+	movl	$1000, %esi
+	xorl	%eax, %eax
+	call	my_snprintf
+	leaq	896(%rsp), %rsi
+	movq	%rbx, %rdi
+	call	add_response
+	movq	8(%rbx), %rax
+	jmp	.L390
+	.p2align 4,,10
+	.p2align 3
+.L405:
+	movq	1968(%rsp), %rcx
+	leaq	896(%rsp), %rdi
+	movl	$.LC19, %edx
+	movl	$1000, %esi
+	xorl	%eax, %eax
+	call	my_snprintf
+	leaq	896(%rsp), %rsi
+	movq	%rbx, %rdi
+	call	add_response
+	jmp	.L389
+	.p2align 4,,10
+	.p2align 3
+.L407:
+	movq	%r12, %rsi
+	movq	%rbx, %rdi
+	call	add_response
+	jmp	.L392
+	.cfi_endproc
+.LFE13:
+	.size	send_mime, .-send_mime
+	.section	.rodata.str1.1
+.LC23:
+	.string	"http://localhost"
+	.section	.rodata.str1.8
+	.align 8
+.LC24:
+	.string	"<HR>\n<ADDRESS><A HREF=\"%s\">%s</A></ADDRESS>\n</BODY>\n</HTML>\n"
+	.text
+	.p2align 4,,15
+	.type	send_response_tail, @function
+send_response_tail:
+.LFB16:
+	.cfi_startproc
+	pushq	%rbx
+	.cfi_def_cfa_offset 16
+	.cfi_offset 3, -16
+	movl	$.LC15, %r8d
+	movq	%rdi, %rbx
+	movl	$.LC23, %ecx
+	movl	$.LC24, %edx
+	movl	$1000, %esi
+	subq	$1008, %rsp
+	.cfi_def_cfa_offset 1024
+	xorl	%eax, %eax
+	movq	%rsp, %rdi
+	call	my_snprintf
+	movq	%rsp, %rsi
+	movq	%rbx, %rdi
+	call	add_response
+	addq	$1008, %rsp
+	.cfi_def_cfa_offset 16
+	popq	%rbx
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE16:
+	.size	send_response_tail, .-send_response_tail
+	.section	.rodata.str1.1
+.LC25:
+	.string	"r"
+.LC26:
+	.string	"text/html; charset=%s"
+.LC27:
+	.string	""
+	.text
+	.p2align 4,,15
+	.type	send_err_file, @function
+send_err_file:
+.LFB19:
+	.cfi_startproc
+	pushq	%r14
+	.cfi_def_cfa_offset 16
+	.cfi_offset 14, -16
+	pushq	%r13
+	.cfi_def_cfa_offset 24
+	.cfi_offset 13, -24
+	movq	%rcx, %r14
+	pushq	%r12
+	.cfi_def_cfa_offset 32
+	.cfi_offset 12, -32
+	pushq	%rbp
+	.cfi_def_cfa_offset 40
+	.cfi_offset 6, -40
+	movl	%esi, %r12d
+	pushq	%rbx
+	.cfi_def_cfa_offset 48
+	.cfi_offset 3, -48
+	movq	%rdi, %rbp
+	movl	$.LC25, %esi
+	movq	%r8, %rdi
+	movq	%rdx, %r13
+	subq	$1008, %rsp
+	.cfi_def_cfa_offset 1056
+	call	fopen
+	movq	%rax, %rbx
+	xorl	%eax, %eax
+	testq	%rbx, %rbx
+	je	.L410
+	pushq	$0
+	.cfi_def_cfa_offset 1064
+	pushq	$-1
+	.cfi_def_cfa_offset 1072
+	movq	%r13, %rdx
+	movl	$.LC26, %r9d
+	movq	%r14, %r8
+	movl	$.LC27, %ecx
+	movl	%r12d, %esi
+	movq	%rbp, %rdi
+	call	send_mime
+	popq	%rax
+	.cfi_def_cfa_offset 1064
+	popq	%rdx
+	.cfi_def_cfa_offset 1056
+	jmp	.L413
+	.p2align 4,,10
+	.p2align 3
+.L418:
+	movq	%rsp, %rsi
+	movq	%rbp, %rdi
+	movb	$0, (%rsp,%rax)
+	call	add_response
+.L413:
+	movq	%rbx, %rcx
+	movl	$999, %edx
+	movl	$1, %esi
+	movq	%rsp, %rdi
+	call	fread
+	testq	%rax, %rax
+	jne	.L418
+	movq	%rbx, %rdi
+	call	fclose
+	movq	%rbp, %rdi
+	call	send_response_tail
+	movl	$1, %eax
+.L410:
+	addq	$1008, %rsp
+	.cfi_def_cfa_offset 48
+	popq	%rbx
+	.cfi_def_cfa_offset 40
+	popq	%rbp
+	.cfi_def_cfa_offset 32
+	popq	%r12
+	.cfi_def_cfa_offset 24
+	popq	%r13
+	.cfi_def_cfa_offset 16
+	popq	%r14
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE19:
+	.size	send_err_file, .-send_err_file
+	.section	.rodata.str1.8
+	.align 8
+.LC28:
+	.string	"<HTML>\n<HEAD><TITLE>%d %s</TITLE></HEAD>\n<BODY BGCOLOR=\"#cc9999\" TEXT=\"#000000\" LINK=\"#2020ff\" VLINK=\"#4040cc\">\n<H2>%d %s</H2>\n"
+	.section	.rodata.str1.1
+.LC29:
+	.string	"**MSIE**"
+.LC30:
+	.string	"<!--\n"
+	.section	.rodata.str1.8
+	.align 8
+.LC31:
+	.string	"Padding so that MSIE deigns to show this error instead of its own canned one.\n"
+	.section	.rodata.str1.1
+.LC32:
+	.string	"-->\n"
+	.text
+	.p2align 4,,15
+	.type	send_response, @function
+send_response:
+.LFB15:
+	.cfi_startproc
+	pushq	%r14
+	.cfi_def_cfa_offset 16
+	.cfi_offset 14, -16
+	pushq	%r13
+	.cfi_def_cfa_offset 24
+	.cfi_offset 13, -24
+	movq	%r9, %r14
+	pushq	%r12
+	.cfi_def_cfa_offset 32
+	.cfi_offset 12, -32
+	pushq	%rbp
+	.cfi_def_cfa_offset 40
+	.cfi_offset 6, -40
+	movq	%r8, %r13
+	pushq	%rbx
+	.cfi_def_cfa_offset 48
+	.cfi_offset 3, -48
+	movq	%rcx, %r8
+	movl	$.LC26, %r9d
+	movl	$.LC27, %ecx
+	movq	%rdi, %rbx
+	movl	%esi, %ebp
+	subq	$3008, %rsp
+	.cfi_def_cfa_offset 3056
+	movq	%rdx, %r12
+	pushq	$0
+	.cfi_def_cfa_offset 3064
+	pushq	$-1
+	.cfi_def_cfa_offset 3072
+	call	send_mime
+	leaq	1024(%rsp), %rdi
+	movl	%ebp, %r9d
+	movq	%r12, %r8
+	movl	%ebp, %ecx
+	movl	$.LC28, %edx
+	movl	$2000, %esi
+	xorl	%eax, %eax
+	movq	%r12, (%rsp)
+	call	my_snprintf
+	leaq	1024(%rsp), %rsi
+	movq	%rbx, %rdi
+	call	add_response
+	leaq	16(%rsp), %rsi
+	movq	%r14, %rdi
+	call	defang.constprop.6
+	leaq	16(%rsp), %rcx
+	leaq	1024(%rsp), %rdi
+	movq	%r13, %rdx
+	movl	$2000, %esi
+	xorl	%eax, %eax
+	call	my_snprintf
+	leaq	1024(%rsp), %rsi
+	movq	%rbx, %rdi
+	call	add_response
+	movq	280(%rbx), %rsi
+	movl	$.LC29, %edi
+	call	match
+	testl	%eax, %eax
+	popq	%rdx
+	.cfi_def_cfa_offset 3064
+	popq	%rcx
+	.cfi_def_cfa_offset 3056
+	jne	.L427
+.L420:
+	movq	%rbx, %rdi
+	call	send_response_tail
+	addq	$3008, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 48
+	popq	%rbx
+	.cfi_def_cfa_offset 40
+	popq	%rbp
+	.cfi_def_cfa_offset 32
+	popq	%r12
+	.cfi_def_cfa_offset 24
+	popq	%r13
+	.cfi_def_cfa_offset 16
+	popq	%r14
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L427:
+	.cfi_restore_state
+	movl	$.LC30, %esi
+	movq	%rbx, %rdi
+	movl	$6, %ebp
+	call	add_response
+	.p2align 4,,10
+	.p2align 3
+.L421:
+	movl	$.LC31, %esi
+	movq	%rbx, %rdi
+	call	add_response
+	subl	$1, %ebp
+	jne	.L421
+	movl	$.LC32, %esi
+	movq	%rbx, %rdi
+	call	add_response
+	jmp	.L420
+	.cfi_endproc
+.LFE15:
+	.size	send_response, .-send_response
+	.section	.rodata.str1.1
+.LC33:
+	.string	".."
+.LC34:
+	.string	"readlink %.80s - %m"
+.LC35:
+	.string	"too many symlinks in %.80s"
+	.text
+	.p2align 4,,15
+	.type	expand_symlinks, @function
+expand_symlinks:
+.LFB30:
+	.cfi_startproc
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	movl	%ecx, %ebp
+	subq	$5048, %rsp
+	.cfi_def_cfa_offset 5104
+	testl	%edx, %edx
+	movq	%rdi, 16(%rsp)
+	movq	%rsi, 8(%rsp)
+	je	.L429
+	leaq	32(%rsp), %rsi
+	movq	%rdi, %rbx
+	movq	%rdi, %r14
+	call	stat
+	cmpl	$-1, %eax
+	jne	.L507
+.L429:
+	movl	$1, %edx
+	movl	$maxchecked.5707, %esi
+	movl	$checked.5704, %edi
+	call	httpd_realloc_str
+	movq	checked.5704(%rip), %rax
+	movq	16(%rsp), %r14
+	movb	$0, (%rax)
+	movq	%r14, %rdi
+	call	strlen
+	movl	$maxrest.5708, %esi
+	movq	%rax, %rdx
+	movl	$rest.5705, %edi
+	movq	%rax, %rbx
+	call	httpd_realloc_str
+	movq	rest.5705(%rip), %rdi
+	movq	%r14, %rsi
+	call	strcpy
+	testq	%rbx, %rbx
+	movq	rest.5705(%rip), %r15
+	je	.L508
+	leaq	-1(%rbx), %rdx
+	leaq	(%r15,%rdx), %rax
+	cmpb	$47, (%rax)
+	je	.L509
+	testl	%ebp, %ebp
+	je	.L469
+.L470:
+	movl	$0, 4(%rsp)
+	xorl	%r12d, %r12d
+	jmp	.L467
+	.p2align 4,,10
+	.p2align 3
+.L511:
+	subq	%r15, %rax
+	testl	%eax, %eax
+	movq	%rax, %r13
+	movslq	%eax, %r14
+	je	.L510
+	cmpl	$2, %eax
+	movl	$2, %ecx
+	movl	$.LC33, %edi
+	cmovge	%eax, %ecx
+	movl	$3, %eax
+	movq	%r15, %rsi
+	movslq	%ecx, %rcx
+	cmpq	$3, %rcx
+	cmovg	%rax, %rcx
+	cmpq	%rcx, %rcx
+	repz cmpsb
+	jne	.L444
+	xorl	%ebp, %ebp
+	testq	%r12, %r12
+	movq	checked.5704(%rip), %rdx
+	je	.L443
+	movq	%rdx, %rdi
+	movl	$47, %esi
+	movq	%rdx, 24(%rsp)
+	call	strrchr
+	testq	%rax, %rax
+	movq	24(%rsp), %rdx
+	je	.L443
+	movq	%rax, %rbp
+	subq	%rdx, %rbp
+	cmpq	%rdx, %rax
+	movl	$1, %eax
+	cmove	%rax, %rbp
+	.p2align 4,,10
+	.p2align 3
+.L443:
+	movb	$0, (%rdx,%rbp)
+	leal	1(%r13), %r8d
+	movq	checked.5704(%rip), %r13
+	leaq	1(%r15,%r14), %r15
+	movq	%rbx, %r14
+	movslq	%r8d, %r8
+	subq	%r8, %r14
+	cmpb	$0, 0(%r13)
+	jne	.L449
+.L479:
+	movq	%r14, %rbx
+	movq	%rbp, %r12
+.L448:
+	testq	%rbx, %rbx
+	je	.L436
+.L467:
+	movl	$47, %esi
+	movq	%r15, %rdi
+	call	strchr
+	testq	%rax, %rax
+	jne	.L511
+	movl	$.LC33, %edi
+	movl	$3, %ecx
+	movq	%r15, %rsi
+	repz cmpsb
+	jne	.L450
+	xorl	%ebp, %ebp
+	testq	%r12, %r12
+	movq	checked.5704(%rip), %r13
+	je	.L451
+	movl	$47, %esi
+	movq	%r13, %rdi
+	call	strrchr
+	testq	%rax, %rax
+	je	.L452
+	cmpq	%r13, %rax
+	je	.L512
+	movq	%rax, %rbp
+	subq	%r13, %rbp
+	movq	%rax, %r13
+.L452:
+	movb	$0, 0(%r13)
+	movq	checked.5704(%rip), %r13
+.L451:
+	addq	%rbx, %r15
+	cmpb	$0, 0(%r13)
+	je	.L436
+	xorl	%r14d, %r14d
+.L449:
+	leaq	32(%rsp), %rsi
+	movq	%r13, %rdi
+	movl	$4999, %edx
+	call	readlink
+	cmpq	$-1, %rax
+	movq	%rax, %r13
+	je	.L513
+	addl	$1, 4(%rsp)
+	movl	4(%rsp), %eax
+	cmpl	$32, %eax
+	jg	.L514
+	cmpb	$47, 31(%rsp,%r13)
+	movb	$0, 32(%rsp,%r13)
+	leaq	-1(%r13), %rax
+	jne	.L461
+	movb	$0, 31(%rsp,%r13)
+	movq	%rax, %r13
+.L461:
+	testq	%r14, %r14
+	jne	.L515
+	movq	%r13, %rdx
+	movl	$maxrest.5708, %esi
+	movl	$rest.5705, %edi
+	call	httpd_realloc_str
+	movq	rest.5705(%rip), %rdi
+	leaq	32(%rsp), %rsi
+	movq	%r13, %rbx
+	call	strcpy
+	movq	rest.5705(%rip), %r15
+.L465:
+	cmpb	$47, (%r15)
+	movq	checked.5704(%rip), %rax
+	je	.L516
+	movb	$0, (%rax,%r12)
+	jmp	.L448
+	.p2align 4,,10
+	.p2align 3
+.L508:
+	testl	%ebp, %ebp
+	jne	.L436
+	cmpb	$47, (%r15)
+	jne	.L436
+	.p2align 4,,10
+	.p2align 3
+.L440:
+	leaq	1(%r15), %rsi
+	movq	%r15, %rdi
+	subq	$1, %rbx
+	call	strcpy
+	movq	rest.5705(%rip), %r15
+.L506:
+	cmpb	$47, (%r15)
+	je	.L440
+.L439:
+	testq	%rbx, %rbx
+	jne	.L470
+	.p2align 4,,10
+	.p2align 3
+.L436:
+	movq	8(%rsp), %rax
+	movq	%r15, (%rax)
+	movq	checked.5704(%rip), %rax
+	cmpb	$0, (%rax)
+	jne	.L428
+.L505:
+	movl	$46, %edx
+	movw	%dx, (%rax)
+	jmp	.L504
+	.p2align 4,,10
+	.p2align 3
+.L507:
+	movq	%rbx, %rdi
+	call	strlen
+	movl	$maxchecked.5707, %esi
+	movq	%rax, %rdx
+	movl	$checked.5704, %edi
+	movq	%rax, %rbx
+	call	httpd_realloc_str
+	movq	checked.5704(%rip), %rdi
+	movq	%r14, %rsi
+	call	strcpy
+	testq	%rbx, %rbx
+	je	.L431
+	movq	checked.5704(%rip), %rdx
+	leaq	-1(%rbx), %rax
+	addq	%rax, %rdx
+	cmpb	$47, (%rdx)
+	je	.L432
+	jmp	.L431
+	.p2align 4,,10
+	.p2align 3
+.L517:
+	movq	checked.5704(%rip), %rdx
+	subq	$1, %rax
+	addq	%rax, %rdx
+	cmpb	$47, (%rdx)
+	jne	.L431
+.L432:
+	testq	%rax, %rax
+	movb	$0, (%rdx)
+	jne	.L517
+.L431:
+	xorl	%edx, %edx
+	movl	$maxrest.5708, %esi
+	movl	$rest.5705, %edi
+	call	httpd_realloc_str
+	movq	rest.5705(%rip), %rax
+	movq	8(%rsp), %rbx
+	movb	$0, (%rax)
+	movq	rest.5705(%rip), %rax
+	movq	%rax, (%rbx)
+	movq	checked.5704(%rip), %rax
+.L428:
+	addq	$5048, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 56
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L510:
+	.cfi_restore_state
+	leaq	1(%r12), %rbp
+	movl	$maxchecked.5707, %esi
+	movl	$checked.5704, %edi
+	movq	%rbp, %rdx
+	call	httpd_realloc_str
+	movq	checked.5704(%rip), %rdi
+	movl	$1, %edx
+	movq	%r15, %rsi
+	addq	%r12, %rdi
+	call	strncpy
+	movq	checked.5704(%rip), %rdx
+	jmp	.L443
+	.p2align 4,,10
+	.p2align 3
+.L513:
+	call	__errno_location
+	movl	(%rax), %eax
+	cmpl	$22, %eax
+	je	.L479
+	cmpl	$20, %eax
+	jbe	.L518
+.L457:
+	movq	checked.5704(%rip), %rdx
+	xorl	%eax, %eax
+	movl	$.LC34, %esi
+	movl	$3, %edi
+	call	syslog
+	xorl	%eax, %eax
+	jmp	.L428
+	.p2align 4,,10
+	.p2align 3
+.L444:
+	leaq	1(%r12), %rax
+	movl	$maxchecked.5707, %esi
+	movl	$checked.5704, %edi
+	leaq	(%rax,%r14), %rbp
+	movq	%rax, 24(%rsp)
+	movq	%rbp, %rdx
+	call	httpd_realloc_str
+	testq	%r12, %r12
+	movq	24(%rsp), %rax
+	jne	.L445
+	movq	checked.5704(%rip), %rdi
+	movq	%r14, %rbp
+.L446:
+	movq	%r14, %rdx
+	movq	%r15, %rsi
+	call	strncpy
+	movq	checked.5704(%rip), %rdx
+	jmp	.L443
+	.p2align 4,,10
+	.p2align 3
+.L518:
+	movl	$1056772, %edx
+	btq	%rax, %rdx
+	jnc	.L457
+	movq	%r14, %r8
+	movq	8(%rsp), %rax
+	subq	%rbx, %r8
+	testq	%r12, %r12
+	leaq	(%r15,%r8), %r9
+	movq	%r9, (%rax)
+	movq	checked.5704(%rip), %rax
+	je	.L505
+	movb	$0, (%rax,%r12)
+.L504:
+	movq	checked.5704(%rip), %rax
+	jmp	.L428
+	.p2align 4,,10
+	.p2align 3
+.L516:
+	movb	$0, (%rax)
+	xorl	%r12d, %r12d
+	jmp	.L448
+	.p2align 4,,10
+	.p2align 3
+.L515:
+	movq	rest.5705(%rip), %rdi
+	leaq	1(%r13,%r14), %rbx
+	movq	%r15, %rsi
+	call	strcpy
+	movq	%rbx, %rdx
+	movl	$maxrest.5708, %esi
+	movl	$rest.5705, %edi
+	call	httpd_realloc_str
+	testl	%r14d, %r14d
+	js	.L463
+	movslq	%r14d, %rsi
+	movl	%r14d, %r8d
+	leaq	1(%r13), %r10
+	leaq	-1(%rsi), %rdx
+	movq	%rdx, %rax
+	subq	%r8, %rax
+	movq	%rax, %r8
+	jmp	.L464
+	.p2align 4,,10
+	.p2align 3
+.L519:
+	subq	$1, %rdx
+.L464:
+	movq	rest.5705(%rip), %rax
+	movzbl	(%rax,%rsi), %edi
+	addq	%r10, %rax
+	cmpq	%rdx, %r8
+	movb	%dil, (%rax,%rsi)
+	movq	%rdx, %rsi
+	jne	.L519
+.L463:
+	movq	rest.5705(%rip), %rdi
+	leaq	32(%rsp), %rsi
+	call	strcpy
+	movq	rest.5705(%rip), %rax
+	movb	$47, (%rax,%r13)
+	movq	rest.5705(%rip), %r15
+	jmp	.L465
+	.p2align 4,,10
+	.p2align 3
+.L450:
+	leaq	(%r12,%rbx), %rbp
+	movl	$maxchecked.5707, %esi
+	movl	$checked.5704, %edi
+	leaq	1(%rbp), %rdx
+	call	httpd_realloc_str
+	testq	%r12, %r12
+	je	.L520
+	movq	checked.5704(%rip), %rax
+	cmpb	$47, -1(%rax,%r12)
+	leaq	(%rax,%r12), %rdi
+	je	.L455
+	leaq	1(%r12), %rax
+	movb	$47, (%rdi)
+	leaq	(%rax,%rbx), %rbp
+	addq	checked.5704(%rip), %rax
+	movq	%rax, %rdi
+	jmp	.L455
+	.p2align 4,,10
+	.p2align 3
+.L445:
+	movq	checked.5704(%rip), %rdx
+	cmpb	$47, -1(%rdx,%r12)
+	leaq	(%rdx,%r12), %rdi
+	je	.L521
+	movb	$47, (%rdi)
+	addq	checked.5704(%rip), %rax
+	movq	%rax, %rdi
+	jmp	.L446
+	.p2align 4,,10
+	.p2align 3
+.L520:
+	movq	checked.5704(%rip), %rdi
+	movq	%rbx, %rbp
+.L455:
+	movq	%r15, %rsi
+	call	strcpy
+	movq	checked.5704(%rip), %r13
+	jmp	.L451
+	.p2align 4,,10
+	.p2align 3
+.L469:
+	cmpb	$47, (%r15)
+	je	.L440
+	jmp	.L470
+	.p2align 4,,10
+	.p2align 3
+.L521:
+	leaq	(%r12,%r14), %rbp
+	jmp	.L446
+	.p2align 4,,10
+	.p2align 3
+.L512:
+	addq	$1, %r13
+	movl	$1, %ebp
+	jmp	.L452
+	.p2align 4,,10
+	.p2align 3
+.L509:
+	testl	%ebp, %ebp
+	movb	$0, (%rax)
+	movq	%rdx, %rbx
+	movq	rest.5705(%rip), %r15
+	jne	.L439
+	jmp	.L506
+	.p2align 4,,10
+	.p2align 3
+.L514:
+	movq	16(%rsp), %rdx
+	xorl	%eax, %eax
+	movl	$.LC35, %esi
+	movl	$3, %edi
+	call	syslog
+	xorl	%eax, %eax
+	jmp	.L428
+	.cfi_endproc
+.LFE30:
+	.size	expand_symlinks, .-expand_symlinks
+	.section	.rodata.str1.1
+.LC36:
+	.string	"%s/?%s"
+.LC37:
+	.string	"%s/"
+.LC38:
+	.string	"%s%s\r\n"
+.LC39:
+	.string	"The actual URL is '%.80s'.\n"
+.LC40:
+	.string	"Found"
+	.text
+	.p2align 4,,15
+	.type	send_dirredirect, @function
+send_dirredirect:
+.LFB24:
+	.cfi_startproc
+	pushq	%r12
+	.cfi_def_cfa_offset 16
+	.cfi_offset 12, -16
+	pushq	%rbp
+	.cfi_def_cfa_offset 24
+	.cfi_offset 6, -24
+	pushq	%rbx
+	.cfi_def_cfa_offset 32
+	.cfi_offset 3, -32
+	movq	264(%rdi), %r12
+	movq	%rdi, %rbx
+	movq	208(%rdi), %rbp
+	cmpb	$0, (%r12)
+	je	.L523
+	movl	$63, %esi
+	movq	%rbp, %rdi
+	call	strchr
+	testq	%rax, %rax
+	je	.L524
+	movb	$0, (%rax)
+	movq	208(%rbx), %rbp
+	movq	264(%rbx), %r12
+.L524:
+	movq	%rbp, %rdi
+	call	strlen
+	movq	%r12, %rdi
+	movq	%rax, %rbp
+	call	strlen
+	leaq	2(%rbp,%rax), %rdx
+	movl	$maxlocation.5653, %esi
+	movl	$location.5651, %edi
+	call	httpd_realloc_str
+	movq	208(%rbx), %rcx
+	movq	264(%rbx), %r8
+	movl	$.LC36, %edx
+	movq	maxlocation.5653(%rip), %rsi
+	movq	location.5651(%rip), %rdi
+	xorl	%eax, %eax
+	call	my_snprintf
+.L525:
+	movq	location.5651(%rip), %rdi
+	call	strlen
+	leaq	11(%rax), %rdx
+	movl	$maxheader.5654, %esi
+	movl	$header.5652, %edi
+	call	httpd_realloc_str
+	movq	location.5651(%rip), %r8
+	movq	maxheader.5654(%rip), %rsi
+	movl	$headstr.5655, %ecx
+	movq	header.5652(%rip), %rdi
+	movl	$.LC38, %edx
+	xorl	%eax, %eax
+	call	my_snprintf
+	movq	%rbx, %rdi
+	movq	location.5651(%rip), %r9
+	movq	header.5652(%rip), %rcx
+	popq	%rbx
+	.cfi_remember_state
+	.cfi_def_cfa_offset 24
+	popq	%rbp
+	.cfi_def_cfa_offset 16
+	popq	%r12
+	.cfi_def_cfa_offset 8
+	movl	$.LC39, %r8d
+	movl	$.LC40, %edx
+	movl	$302, %esi
+	jmp	send_response
+	.p2align 4,,10
+	.p2align 3
+.L523:
+	.cfi_restore_state
+	movq	%rbp, %rdi
+	call	strlen
+	leaq	1(%rax), %rdx
+	movl	$maxlocation.5653, %esi
+	movl	$location.5651, %edi
+	call	httpd_realloc_str
+	movq	208(%rbx), %rcx
+	movq	maxlocation.5653(%rip), %rsi
+	movl	$.LC37, %edx
+	movq	location.5651(%rip), %rdi
+	xorl	%eax, %eax
+	call	my_snprintf
+	jmp	.L525
+	.cfi_endproc
+.LFE24:
+	.size	send_dirredirect, .-send_dirredirect
+	.p2align 4,,15
+	.type	really_check_referer, @function
+really_check_referer:
+.LFB57:
+	.cfi_startproc
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	movq	%rdi, %r15
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	subq	$40, %rsp
+	.cfi_def_cfa_offset 96
+	movq	8(%rdi), %r12
+	movq	272(%rdi), %rdi
+	testq	%rdi, %rdi
+	je	.L531
+	cmpb	$0, (%rdi)
+	je	.L531
+	movl	$.LC0, %esi
+	call	strstr
+	testq	%rax, %rax
+	movq	%rax, %r14
+	je	.L531
+	movzbl	2(%rax), %eax
+	cmpb	$58, %al
+	jbe	.L558
+.L535:
+	leaq	2(%r14), %rbx
+	movabsq	$288371113640067073, %rdx
+	movq	%rbx, 24(%rsp)
+.L537:
+	addq	$1, 24(%rsp)
+	movq	24(%rsp), %rbp
+	movzbl	0(%rbp), %eax
+	cmpb	$58, %al
+	ja	.L537
+	btq	%rax, %rdx
+	jnc	.L537
+	movq	%rbp, %rdx
+	movl	$refhost_size.6138, %esi
+	movl	$refhost.6137, %edi
+	subq	%rbx, %rdx
+	call	httpd_realloc_str
+	cmpq	%rbp, %rbx
+	movq	refhost.6137(%rip), %r13
+	jnb	.L539
+	subq	%r14, %rbp
+	xorl	%ebx, %ebx
+	call	__ctype_b_loc
+	movq	%rax, %rdi
+	movq	%rbp, %rax
+	subq	$2, %rax
+	movq	%rax, 8(%rsp)
+	jmp	.L542
+	.p2align 4,,10
+	.p2align 3
+.L560:
+	movq	%rdi, 16(%rsp)
+	call	__ctype_tolower_loc
+	movq	(%rax), %rax
+	movq	16(%rsp), %rdi
+	movl	(%rax,%rbp,4), %eax
+	movb	%al, 0(%r13,%rbx)
+	addq	$1, %rbx
+	cmpq	%rbx, 8(%rsp)
+	je	.L559
+.L542:
+	movsbq	2(%r14,%rbx), %rbp
+	movq	(%rdi), %rdx
+	testb	$1, 1(%rdx,%rbp,2)
+	jne	.L560
+	movb	%bpl, 0(%r13,%rbx)
+	addq	$1, %rbx
+	cmpq	%rbx, 8(%rsp)
+	jne	.L542
+.L559:
+	movq	24(%rsp), %rax
+	subq	%r14, %rax
+	leaq	-2(%r13,%rax), %r13
+.L539:
+	movb	$0, 0(%r13)
+	movq	120(%r12), %rdi
+	testq	%rdi, %rdi
+	je	.L561
+	.p2align 4,,10
+	.p2align 3
+.L543:
+	movq	refhost.6137(%rip), %rsi
+	call	match
+	testl	%eax, %eax
+	je	.L557
+.L545:
+	addq	$40, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 56
+	movl	$1, %eax
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L531:
+	.cfi_restore_state
+	movl	128(%r12), %edx
+	testl	%edx, %edx
+	je	.L545
+.L557:
+	movq	232(%r15), %rsi
+	movq	112(%r12), %rdi
+	call	match
+	testl	%eax, %eax
+	sete	%al
+	addq	$40, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 56
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	movzbl	%al, %eax
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L558:
+	.cfi_restore_state
+	movabsq	$288371113640067073, %rdx
+	btq	%rax, %rdx
+	jnc	.L535
+	xorl	%edx, %edx
+	movl	$refhost.6137, %edi
+	movl	$refhost_size.6138, %esi
+	call	httpd_realloc_str
+	movq	refhost.6137(%rip), %r13
+	movb	$0, 0(%r13)
+	movq	120(%r12), %rdi
+	testq	%rdi, %rdi
+	jne	.L543
+.L561:
+	movl	100(%r12), %eax
+	testl	%eax, %eax
+	jne	.L544
+	movq	8(%r12), %rdi
+	testq	%rdi, %rdi
+	jne	.L543
+	jmp	.L545
+	.p2align 4,,10
+	.p2align 3
+.L544:
+	movq	512(%r15), %rdi
+	testq	%rdi, %rdi
+	jne	.L543
+	jmp	.L545
+	.cfi_endproc
+.LFE57:
+	.size	really_check_referer, .-really_check_referer
+	.section	.rodata.str1.8
+	.align 8
+.LC41:
+	.string	"out of memory copying environment variable"
+	.section	.text.unlikely
+	.type	build_env, @function
+build_env:
+.LFB45:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushq	%rbx
+	.cfi_def_cfa_offset 24
+	.cfi_offset 3, -24
+	movq	%rsi, %rbp
+	orq	$-1, %rsi
+	xorl	%eax, %eax
+	movq	%rdi, %rbx
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 32
+	movq	%rsi, %rcx
+	repnz scasb
+	movq	%rbp, %rdi
+	movq	%rcx, %rdx
+	movq	%rsi, %rcx
+	repnz scasb
+	notq	%rdx
+	movq	%rcx, %rax
+	notq	%rax
+	leaq	-2(%rdx,%rax), %rdx
+	cmpq	%rdx, maxbuf.6004(%rip)
+	jnb	.L563
+	movl	$maxbuf.6004, %esi
+	movl	$buf.6003, %edi
+	call	httpd_realloc_str
+.L563:
+	movq	maxbuf.6004(%rip), %rsi
+	movq	buf.6003(%rip), %rdi
+	movq	%rbp, %rcx
+	movq	%rbx, %rdx
+	xorl	%eax, %eax
+	call	my_snprintf
+	movq	buf.6003(%rip), %rdi
+	call	strdup
+	testq	%rax, %rax
+	jne	.L562
+	movl	$3, %edi
+	movl	$.LC41, %esi
+	call	syslog
+	movl	$1, %edi
+	call	exit
+.L562:
+	popq	%rdx
+	.cfi_def_cfa_offset 24
+	popq	%rbx
+	.cfi_def_cfa_offset 16
+	popq	%rbp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE45:
+	.size	build_env, .-build_env
+	.section	.rodata.str1.1
+.LC42:
+	.string	"application/octet-stream"
+	.text
+	.p2align 4,,15
+	.type	figure_mime, @function
+figure_mime:
+.LFB40:
+	.cfi_startproc
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	subq	$456, %rsp
+	.cfi_def_cfa_offset 512
+	movq	240(%rdi), %rbx
+	movq	$.LC42, 504(%rdi)
+	movq	%rdi, 24(%rsp)
+	movq	%rbx, %rdi
+	movq	%rbx, 32(%rsp)
+	call	strlen
+	addq	%rbx, %rax
+	movl	$0, 44(%rsp)
+	movq	%rax, 16(%rsp)
+	leaq	-1(%rbx), %rax
+	movq	%rax, 8(%rsp)
+	.p2align 4,,10
+	.p2align 3
+.L579:
+	movq	16(%rsp), %rax
+	leaq	-1(%rax), %r14
+	cmpq	%r14, 32(%rsp)
+	ja	.L567
+	cmpb	$46, -1(%rax)
+	jne	.L569
+	jmp	.L594
+	.p2align 4,,10
+	.p2align 3
+.L596:
+	cmpb	$46, -1(%r14)
+	je	.L595
+	movq	%rax, %r14
+.L569:
+	leaq	-1(%r14), %rax
+	cmpq	8(%rsp), %rax
+	jne	.L596
+.L567:
+	movq	24(%rsp), %rdx
+	movq	248(%rdx), %rax
+	movb	$0, (%rax)
+	movl	44(%rsp), %eax
+	subl	$1, %eax
+	cmpl	$-1, %eax
+	je	.L566
+	leaq	400(%rdx), %rdi
+	leaq	248(%rdx), %r14
+	movslq	%eax, %rdx
+	salq	$2, %rdx
+	movl	%eax, %eax
+	xorl	%r13d, %r13d
+	leaq	44(%rsp,%rdx), %r12
+	salq	$2, %rax
+	movq	%rdi, 8(%rsp)
+	leaq	48(%rsp,%rdx), %rbp
+	subq	%rax, %r12
+	jmp	.L582
+	.p2align 4,,10
+	.p2align 3
+.L581:
+	salq	$5, %rbx
+	addq	%r13, %rdi
+	subq	$4, %rbp
+	movq	enc_tab+16(%rbx), %rsi
+	call	strcpy
+	addq	enc_tab+24(%rbx), %r13
+	cmpq	%rbp, %r12
+	je	.L566
+.L582:
+	movslq	0(%rbp), %rbx
+	leaq	1(%r13), %r15
+	movq	8(%rsp), %rsi
+	movq	%r14, %rdi
+	movq	%rbx, %rdx
+	salq	$5, %rdx
+	movq	enc_tab+24(%rdx), %rax
+	addq	%r15, %rax
+	movq	%rax, %rdx
+	call	httpd_realloc_str
+	movq	24(%rsp), %rax
+	movq	248(%rax), %rdi
+	cmpb	$0, (%rdi)
+	je	.L581
+	movl	$44, %edx
+	movw	%dx, (%rdi,%r13)
+	movq	%r15, %r13
+	movq	248(%rax), %rdi
+	jmp	.L581
+	.p2align 4,,10
+	.p2align 3
+.L595:
+	movq	16(%rsp), %rbx
+	movq	%rax, 16(%rsp)
+	subq	%r14, %rbx
+.L568:
+	movl	$enc_tab, %ebp
+	xorl	%r15d, %r15d
+.L572:
+	cmpq	%rbx, 8(%rbp)
+	je	.L597
+.L570:
+	addl	$1, %r15d
+	addq	$32, %rbp
+	cmpl	$4, %r15d
+	jne	.L572
+.L571:
+	xorl	%r13d, %r13d
+	movl	$189, %r15d
+	jmp	.L578
+	.p2align 4,,10
+	.p2align 3
+.L573:
+	je	.L575
+.L593:
+	leal	1(%r12), %r13d
+.L574:
+	cmpl	%r13d, %r15d
+	jl	.L579
+.L578:
+	leal	(%r15,%r13), %ecx
+	movq	%rbx, %rdx
+	movq	%r14, %rdi
+	sarl	%ecx
+	movslq	%ecx, %rax
+	movq	%rax, %r12
+	salq	$5, %rax
+	movq	typ_tab(%rax), %rsi
+	leaq	typ_tab(%rax), %rbp
+	call	strncasecmp
+	testl	%eax, %eax
+	jns	.L573
+.L592:
+	leal	-1(%r12), %r15d
+	jmp	.L574
+	.p2align 4,,10
+	.p2align 3
+.L575:
+	cmpq	%rbx, 8(%rbp)
+	ja	.L592
+	jb	.L593
+	movq	16(%rbp), %rax
+	movq	24(%rsp), %rdi
+	movq	%rax, 504(%rdi)
+	jmp	.L567
+	.p2align 4,,10
+	.p2align 3
+.L597:
+	movq	0(%rbp), %rsi
+	movq	%rbx, %rdx
+	movq	%r14, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	jne	.L570
+	movl	44(%rsp), %edi
+	cmpl	$99, %edi
+	jg	.L571
+	movslq	%edi, %rax
+	addl	$1, %edi
+	movl	%r15d, 48(%rsp,%rax,4)
+	movl	%edi, 44(%rsp)
+	jmp	.L571
+	.p2align 4,,10
+	.p2align 3
+.L566:
+	addq	$456, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 56
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+.L594:
+	.cfi_restore_state
+	movq	16(%rsp), %rax
+	xorl	%ebx, %ebx
+	movq	%r14, 16(%rsp)
+	movq	%rax, %r14
+	jmp	.L568
+	.cfi_endproc
+.LFE40:
+	.size	figure_mime, .-figure_mime
+	.section	.rodata.str1.1
+.LC43:
+	.string	"errors"
+.LC44:
+	.string	"%s/err%d.html"
+.LC45:
+	.string	"%s/%s/err%d.html"
+	.text
+	.p2align 4,,15
+	.globl	httpd_send_err
+	.type	httpd_send_err, @function
+httpd_send_err:
+.LFB18:
+	.cfi_startproc
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	movq	%r9, %r15
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	movq	%rcx, %r13
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	movl	%esi, %ebp
+	movq	%rdi, %rbx
+	movq	%rdx, %r12
+	subq	$1032, %rsp
+	.cfi_def_cfa_offset 1088
+	movq	8(%rdi), %rax
+	movq	%r8, 8(%rsp)
+	movl	100(%rax), %eax
+	testl	%eax, %eax
+	je	.L607
+	movq	344(%rdi), %rcx
+	leaq	16(%rsp), %r14
+	cmpb	$0, (%rcx)
+	jne	.L608
+.L602:
+	movl	%ebp, %r8d
+	movl	$.LC43, %ecx
+	movl	$.LC44, %edx
+	movl	$1000, %esi
+	movq	%r14, %rdi
+	xorl	%eax, %eax
+	call	my_snprintf
+	movq	%r14, %r8
+	movq	%r13, %rcx
+	movq	%r12, %rdx
+	movl	%ebp, %esi
+	movq	%rbx, %rdi
+	call	send_err_file
+	testl	%eax, %eax
+	je	.L609
+.L598:
+	addq	$1032, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 56
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L608:
+	.cfi_restore_state
+	movl	%esi, %r9d
+	movl	$.LC43, %r8d
+	movl	$.LC45, %edx
+	movl	$1000, %esi
+	movq	%r14, %rdi
+	xorl	%eax, %eax
+	call	my_snprintf
+	movq	%r14, %r8
+	movq	%r13, %rcx
+	movq	%r12, %rdx
+	movl	%ebp, %esi
+	movq	%rbx, %rdi
+	call	send_err_file
+	testl	%eax, %eax
+	jne	.L598
+	jmp	.L602
+	.p2align 4,,10
+	.p2align 3
+.L607:
+	leaq	16(%rsp), %r14
+	jmp	.L602
+	.p2align 4,,10
+	.p2align 3
+.L609:
+	movq	8(%rsp), %r8
+	movq	%r15, %r9
+	movq	%r13, %rcx
+	movq	%r12, %rdx
+	movl	%ebp, %esi
+	movq	%rbx, %rdi
+	call	send_response
+	jmp	.L598
+	.cfi_endproc
+.LFE18:
+	.size	httpd_send_err, .-httpd_send_err
+	.section	.rodata.str1.1
+.LC46:
+	.string	"%s%s\"\r\n"
+	.section	.rodata.str1.8
+	.align 8
+.LC47:
+	.string	"Authorization required for the URL '%.80s'.\n"
+	.section	.rodata.str1.1
+.LC48:
+	.string	"Unauthorized"
+	.text
+	.p2align 4,,15
+	.type	send_authenticate, @function
+send_authenticate:
+.LFB20:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushq	%rbx
+	.cfi_def_cfa_offset 24
+	.cfi_offset 3, -24
+	movq	%rdi, %rbx
+	movq	%rsi, %rdi
+	movq	%rsi, %rbp
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 32
+	call	strlen
+	leaq	35(%rax), %rdx
+	movl	$maxheader.5594, %esi
+	movl	$header.5593, %edi
+	call	httpd_realloc_str
+	movq	maxheader.5594(%rip), %rsi
+	movq	header.5593(%rip), %rdi
+	movq	%rbp, %r8
+	movl	$headstr.5595, %ecx
+	movl	$.LC46, %edx
+	xorl	%eax, %eax
+	call	my_snprintf
+	movq	208(%rbx), %r9
+	movq	header.5593(%rip), %rcx
+	movl	$.LC47, %r8d
+	movl	$.LC48, %edx
+	movl	$401, %esi
+	movq	%rbx, %rdi
+	call	httpd_send_err
+	cmpl	$3, 180(%rbx)
+	jne	.L610
+	movl	$1, 556(%rbx)
+.L610:
+	addq	$8, %rsp
+	.cfi_def_cfa_offset 24
+	popq	%rbx
+	.cfi_def_cfa_offset 16
+	popq	%rbp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE20:
+	.size	send_authenticate, .-send_authenticate
+	.section	.rodata.str1.1
+.LC49:
+	.string	"UNKNOWN"
+	.text
+	.p2align 4,,15
+	.globl	httpd_method_str
+	.type	httpd_method_str, @function
+httpd_method_str:
+.LFB25:
+	.cfi_startproc
+	subl	$1, %edi
+	movl	$.LC49, %eax
+	cmpl	$2, %edi
+	ja	.L613
+	movq	CSWTCH.362(,%rdi,8), %rax
+.L613:
+	rep ret
+	.cfi_endproc
+.LFE25:
+	.size	httpd_method_str, .-httpd_method_str
+	.section	.rodata.str1.1
+.LC50:
+	.string	"accept - %m"
+.LC51:
+	.string	"unknown sockaddr family"
+	.text
+	.p2align 4,,15
+	.globl	httpd_get_conn
+	.type	httpd_get_conn, @function
+httpd_get_conn:
+.LFB31:
+	.cfi_startproc
+	pushq	%r12
+	.cfi_def_cfa_offset 16
+	.cfi_offset 12, -16
+	pushq	%rbp
+	.cfi_def_cfa_offset 24
+	.cfi_offset 6, -24
+	movq	%rdi, %r12
+	pushq	%rbx
+	.cfi_def_cfa_offset 32
+	.cfi_offset 3, -32
+	movl	%esi, %ebp
+	movq	%rdx, %rbx
+	subq	$144, %rsp
+	.cfi_def_cfa_offset 176
+	movl	(%rdx), %eax
+	testl	%eax, %eax
+	je	.L623
+.L617:
+	leaq	12(%rsp), %rdx
+	leaq	16(%rsp), %rsi
+	movl	%ebp, %edi
+	movl	$128, 12(%rsp)
+	call	accept
+	testl	%eax, %eax
+	movl	%eax, %ecx
+	movl	%eax, 704(%rbx)
+	js	.L624
+	movzwl	16(%rsp), %edi
+	call	sockaddr_check.isra.0
+	testl	%eax, %eax
+	movl	%eax, %ebp
+	je	.L625
+	movl	$1, %edx
+	movl	$2, %esi
+	movl	%ecx, %edi
+	xorl	%eax, %eax
+	movl	$1, %ebp
+	call	fcntl
+	leaq	16(%rbx), %r8
+	leaq	24(%rbx), %rdi
+	xorl	%eax, %eax
+	movq	%r12, 8(%rbx)
+	movq	$0, 16(%rbx)
+	movq	%r8, %rcx
+	andq	$-8, %rdi
+	movq	$0, 136(%rbx)
+	subq	%rdi, %rcx
+	subl	$-128, %ecx
+	shrl	$3, %ecx
+	rep stosq
+	movzwl	16(%rsp), %edi
+	call	sockaddr_len.isra.1
+	leaq	16(%rsp), %rsi
+	movq	%rax, %rdx
+	movq	%r8, %rdi
+	call	memcpy
+	movq	216(%rbx), %rax
+	movq	$0, 160(%rbx)
+	movq	$0, 168(%rbx)
+	movq	$0, 176(%rbx)
+	movl	$0, 184(%rbx)
+	movq	$0, 192(%rbx)
+	movq	$0, 200(%rbx)
+	movq	$.LC27, 208(%rbx)
+	movb	$0, (%rax)
+	movq	232(%rbx), %rax
+	movq	$.LC49, 224(%rbx)
+	movb	$0, (%rax)
+	movq	240(%rbx), %rax
+	movb	$0, (%rax)
+	movq	248(%rbx), %rax
+	movb	$0, (%rax)
+	movq	256(%rbx), %rax
+	movb	$0, (%rax)
+	movq	264(%rbx), %rax
+	movb	$0, (%rax)
+	movq	288(%rbx), %rax
+	movq	$.LC27, 272(%rbx)
+	movq	$.LC27, 280(%rbx)
+	movb	$0, (%rax)
+	movq	296(%rbx), %rax
+	movb	$0, (%rax)
+	movq	328(%rbx), %rax
+	movq	$.LC27, 304(%rbx)
+	movq	$.LC27, 312(%rbx)
+	movq	$.LC27, 320(%rbx)
+	movb	$0, (%rax)
+	movq	$.LC27, 336(%rbx)
+	movq	344(%rbx), %rax
+	movb	$0, (%rax)
+	movq	360(%rbx), %rax
+	movq	$.LC27, 352(%rbx)
+	movb	$0, (%rax)
+	movq	368(%rbx), %rax
+	movb	$0, (%rax)
+	movq	$-1, %rax
+	movq	$0, 472(%rbx)
+	movq	%rax, 480(%rbx)
+	movq	%rax, 488(%rbx)
+	movq	%rax, 496(%rbx)
+	movq	$.LC27, 504(%rbx)
+	movq	$0, 512(%rbx)
+	movq	$1, 520(%rbx)
+	movq	$0, 528(%rbx)
+	movq	$0, 536(%rbx)
+	movq	%rax, 544(%rbx)
+	movq	$0, 552(%rbx)
+	movq	$0, 712(%rbx)
+.L616:
+	addq	$144, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 32
+	movl	%ebp, %eax
+	popq	%rbx
+	.cfi_def_cfa_offset 24
+	popq	%rbp
+	.cfi_def_cfa_offset 16
+	popq	%r12
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L625:
+	.cfi_restore_state
+	movl	$.LC51, %esi
+	movl	$3, %edi
+	xorl	%eax, %eax
+	call	syslog
+	movl	704(%rbx), %edi
+	call	close
+	movl	$-1, 704(%rbx)
+	addq	$144, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 32
+	movl	%ebp, %eax
+	popq	%rbx
+	.cfi_def_cfa_offset 24
+	popq	%rbp
+	.cfi_def_cfa_offset 16
+	popq	%r12
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L624:
+	.cfi_restore_state
+	call	__errno_location
+	cmpl	$11, (%rax)
+	movl	$2, %ebp
+	je	.L616
+	xorl	%eax, %eax
+	movl	$.LC50, %esi
+	movl	$3, %edi
+	call	syslog
+	xorl	%ebp, %ebp
+	addq	$144, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 32
+	movl	%ebp, %eax
+	popq	%rbx
+	.cfi_def_cfa_offset 24
+	popq	%rbp
+	.cfi_def_cfa_offset 16
+	popq	%r12
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L623:
+	.cfi_restore_state
+	leaq	152(%rdx), %rsi
+	leaq	144(%rdx), %rdi
+	movq	$0, 152(%rdx)
+	movl	$500, %edx
+	call	httpd_realloc_str
+	leaq	376(%rbx), %rsi
+	leaq	216(%rbx), %rdi
+	movl	$1, %edx
+	movq	$0, 464(%rbx)
+	movq	$0, 456(%rbx)
+	movq	$0, 448(%rbx)
+	movq	$0, 440(%rbx)
+	movq	$0, 432(%rbx)
+	movq	$0, 424(%rbx)
+	movq	$0, 416(%rbx)
+	movq	$0, 408(%rbx)
+	movq	$0, 400(%rbx)
+	movq	$0, 392(%rbx)
+	movq	$0, 384(%rbx)
+	movq	$0, 376(%rbx)
+	call	httpd_realloc_str
+	leaq	384(%rbx), %rsi
+	leaq	232(%rbx), %rdi
+	movl	$1, %edx
+	call	httpd_realloc_str
+	leaq	392(%rbx), %rsi
+	leaq	240(%rbx), %rdi
+	xorl	%edx, %edx
+	call	httpd_realloc_str
+	leaq	400(%rbx), %rsi
+	leaq	248(%rbx), %rdi
+	xorl	%edx, %edx
+	call	httpd_realloc_str
+	leaq	408(%rbx), %rsi
+	leaq	256(%rbx), %rdi
+	xorl	%edx, %edx
+	call	httpd_realloc_str
+	leaq	416(%rbx), %rsi
+	leaq	264(%rbx), %rdi
+	xorl	%edx, %edx
+	call	httpd_realloc_str
+	leaq	424(%rbx), %rsi
+	leaq	288(%rbx), %rdi
+	xorl	%edx, %edx
+	call	httpd_realloc_str
+	leaq	432(%rbx), %rsi
+	leaq	296(%rbx), %rdi
+	xorl	%edx, %edx
+	call	httpd_realloc_str
+	leaq	440(%rbx), %rsi
+	leaq	328(%rbx), %rdi
+	xorl	%edx, %edx
+	call	httpd_realloc_str
+	leaq	448(%rbx), %rsi
+	leaq	344(%rbx), %rdi
+	xorl	%edx, %edx
+	call	httpd_realloc_str
+	leaq	456(%rbx), %rsi
+	leaq	360(%rbx), %rdi
+	xorl	%edx, %edx
+	call	httpd_realloc_str
+	leaq	464(%rbx), %rsi
+	leaq	368(%rbx), %rdi
+	xorl	%edx, %edx
+	call	httpd_realloc_str
+	movl	$1, (%rbx)
+	jmp	.L617
+	.cfi_endproc
+.LFE31:
+	.size	httpd_get_conn, .-httpd_get_conn
+	.p2align 4,,15
+	.globl	httpd_got_request
+	.type	httpd_got_request, @function
+httpd_got_request:
+.LFB32:
+	.cfi_startproc
+	movq	168(%rdi), %rax
+	movq	160(%rdi), %rsi
+	cmpq	%rax, %rsi
+	jbe	.L627
+	movq	144(%rdi), %r8
+.L659:
+	cmpl	$11, 176(%rdi)
+	movzbl	(%r8,%rax), %edx
+	ja	.L628
+	movl	176(%rdi), %ecx
+	jmp	*.L630(,%rcx,8)
+	.section	.rodata
+	.align 8
+	.align 4
+.L630:
+	.quad	.L629
+	.quad	.L631
+	.quad	.L632
+	.quad	.L633
+	.quad	.L634
+	.quad	.L635
+	.quad	.L636
+	.quad	.L637
+	.quad	.L638
+	.quad	.L639
+	.quad	.L640
+	.quad	.L660
+	.text
+	.p2align 4,,10
+	.p2align 3
+.L640:
+	cmpb	$10, %dl
+	je	.L665
+.L754:
+	cmpb	$13, %dl
+	je	.L665
+.L656:
+	movl	$6, 176(%rdi)
+.L628:
+	addq	$1, %rax
+	cmpq	%rsi, %rax
+	movq	%rax, 168(%rdi)
+	jne	.L659
+.L627:
+	xorl	%eax, %eax
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L660:
+	movl	$2, %eax
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L639:
+	cmpb	$10, %dl
+	je	.L665
+	cmpb	$13, %dl
+	jne	.L656
+	movl	$10, 176(%rdi)
+	jmp	.L628
+	.p2align 4,,10
+	.p2align 3
+.L638:
+	cmpb	$10, %dl
+	jne	.L754
+	movl	$9, 176(%rdi)
+	jmp	.L628
+	.p2align 4,,10
+	.p2align 3
+.L637:
+	cmpb	$10, %dl
+	je	.L665
+	cmpb	$13, %dl
+	jne	.L656
+.L654:
+	addq	$1, %rax
+	movl	$8, 176(%rdi)
+	cmpq	%rsi, %rax
+	movq	%rax, 168(%rdi)
+	jne	.L659
+	jmp	.L627
+	.p2align 4,,10
+	.p2align 3
+.L636:
+	cmpb	$10, %dl
+	je	.L651
+	cmpb	$13, %dl
+	je	.L654
+	jmp	.L628
+	.p2align 4,,10
+	.p2align 3
+.L635:
+	cmpb	$10, %dl
+	je	.L651
+	jle	.L755
+	cmpb	$13, %dl
+	je	.L654
+	cmpb	$32, %dl
+	je	.L628
+.L642:
+	movl	$11, 176(%rdi)
+	movl	$2, %eax
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L633:
+	cmpb	$10, %dl
+	je	.L642
+	jle	.L756
+	cmpb	$13, %dl
+	je	.L642
+	cmpb	$32, %dl
+	je	.L628
+.L649:
+	movl	$4, 176(%rdi)
+	jmp	.L628
+	.p2align 4,,10
+	.p2align 3
+.L632:
+	cmpb	$10, %dl
+	je	.L665
+	jle	.L757
+	cmpb	$13, %dl
+	je	.L665
+	cmpb	$32, %dl
+	jne	.L628
+.L648:
+	movl	$3, 176(%rdi)
+	jmp	.L628
+	.p2align 4,,10
+	.p2align 3
+.L631:
+	cmpb	$10, %dl
+	je	.L642
+	jle	.L758
+	cmpb	$13, %dl
+	je	.L642
+	cmpb	$32, %dl
+	je	.L628
+.L645:
+	movl	$2, 176(%rdi)
+	jmp	.L628
+	.p2align 4,,10
+	.p2align 3
+.L629:
+	cmpb	$10, %dl
+	je	.L642
+	jle	.L759
+	cmpb	$13, %dl
+	je	.L642
+	cmpb	$32, %dl
+	jne	.L628
+.L644:
+	movl	$1, 176(%rdi)
+	jmp	.L628
+	.p2align 4,,10
+	.p2align 3
+.L634:
+	cmpb	$10, %dl
+	je	.L651
+	jle	.L760
+	cmpb	$13, %dl
+	je	.L654
+	cmpb	$32, %dl
+	jne	.L628
+.L653:
+	movl	$5, 176(%rdi)
+	jmp	.L628
+	.p2align 4,,10
+	.p2align 3
+.L665:
+	movl	$1, %eax
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L651:
+	addq	$1, %rax
+	movl	$7, 176(%rdi)
+	cmpq	%rsi, %rax
+	movq	%rax, 168(%rdi)
+	jne	.L659
+	jmp	.L627
+	.p2align 4,,10
+	.p2align 3
+.L758:
+	cmpb	$9, %dl
+	je	.L628
+	jmp	.L645
+	.p2align 4,,10
+	.p2align 3
+.L757:
+	cmpb	$9, %dl
+	je	.L648
+	jmp	.L628
+	.p2align 4,,10
+	.p2align 3
+.L759:
+	cmpb	$9, %dl
+	je	.L644
+	jmp	.L628
+	.p2align 4,,10
+	.p2align 3
+.L756:
+	cmpb	$9, %dl
+	je	.L628
+	jmp	.L649
+	.p2align 4,,10
+	.p2align 3
+.L755:
+	cmpb	$9, %dl
+	je	.L628
+	jmp	.L642
+	.p2align 4,,10
+	.p2align 3
+.L760:
+	cmpb	$9, %dl
+	je	.L653
+	jmp	.L628
+	.cfi_endproc
+.LFE32:
+	.size	httpd_got_request, .-httpd_got_request
+	.p2align 4,,15
+	.globl	httpd_destroy_conn
+	.type	httpd_destroy_conn, @function
+httpd_destroy_conn:
+.LFB37:
+	.cfi_startproc
+	movl	(%rdi), %eax
+	testl	%eax, %eax
+	jne	.L767
+	rep ret
+	.p2align 4,,10
+	.p2align 3
+.L767:
+	pushq	%rbx
+	.cfi_def_cfa_offset 16
+	.cfi_offset 3, -16
+	movq	%rdi, %rbx
+	movq	144(%rdi), %rdi
+	call	free
+	movq	216(%rbx), %rdi
+	call	free
+	movq	232(%rbx), %rdi
+	call	free
+	movq	240(%rbx), %rdi
+	call	free
+	movq	248(%rbx), %rdi
+	call	free
+	movq	256(%rbx), %rdi
+	call	free
+	movq	264(%rbx), %rdi
+	call	free
+	movq	288(%rbx), %rdi
+	call	free
+	movq	296(%rbx), %rdi
+	call	free
+	movq	328(%rbx), %rdi
+	call	free
+	movq	344(%rbx), %rdi
+	call	free
+	movq	360(%rbx), %rdi
+	call	free
+	movq	368(%rbx), %rdi
+	call	free
+	movl	$0, (%rbx)
+	popq	%rbx
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE37:
+	.size	httpd_destroy_conn, .-httpd_destroy_conn
+	.section	.rodata.str1.1
+.LC52:
+	.string	"::ffff:"
+	.text
+	.p2align 4,,15
+	.globl	httpd_ntoa
+	.type	httpd_ntoa, @function
+httpd_ntoa:
+.LFB58:
+	.cfi_startproc
+	pushq	%rbx
+	.cfi_def_cfa_offset 16
+	.cfi_offset 3, -16
+	movq	%rdi, %rbx
+	movzwl	(%rdi), %edi
+	call	sockaddr_len.isra.1
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 24
+	xorl	%r9d, %r9d
+	xorl	%r8d, %r8d
+	pushq	$1
+	.cfi_def_cfa_offset 32
+	movl	%eax, %esi
+	movq	%rbx, %rdi
+	movl	$200, %ecx
+	movl	$str.6153, %edx
+	call	getnameinfo
+	testl	%eax, %eax
+	popq	%rsi
+	.cfi_def_cfa_offset 24
+	popq	%rdi
+	.cfi_def_cfa_offset 16
+	jne	.L772
+	movl	8(%rbx), %edx
+	testl	%edx, %edx
+	jne	.L770
+	movl	12(%rbx), %eax
+	testl	%eax, %eax
+	jne	.L770
+	call	__bswap_32.constprop.7
+	cmpl	%eax, 16(%rbx)
+	jne	.L770
+	movl	$str.6153, %esi
+	movl	$.LC52, %edi
+	movl	$7, %ecx
+	repz cmpsb
+	je	.L773
+.L770:
+	movl	$str.6153, %eax
+	popq	%rbx
+	.cfi_remember_state
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L772:
+	.cfi_restore_state
+	movl	$63, %ecx
+	movl	$str.6153, %eax
+	movw	%cx, str.6153(%rip)
+	popq	%rbx
+	.cfi_remember_state
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L773:
+	.cfi_restore_state
+	movl	$str.6153+7, %edi
+	call	strlen
+	leaq	1(%rax), %rdx
+	movl	$str.6153+7, %esi
+	movl	$str.6153, %edi
+	call	memmove
+	jmp	.L770
+	.cfi_endproc
+.LFE58:
+	.size	httpd_ntoa, .-httpd_ntoa
+	.section	.rodata.str1.8
+	.align 8
+.LC53:
+	.string	"unknown sockaddr family on listen socket"
+	.section	.rodata.str1.1
+.LC54:
+	.string	"socket %.80s - %m"
+.LC55:
+	.string	"setsockopt SO_REUSEADDR - %m"
+.LC56:
+	.string	"bind %.80s - %m"
+.LC57:
+	.string	"fcntl F_GETFL - %m"
+.LC58:
+	.string	"fcntl O_NDELAY - %m"
+.LC59:
+	.string	"listen - %m"
+	.text
+	.p2align 4,,15
+	.type	initialize_listen_socket, @function
+initialize_listen_socket:
+.LFB5:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushq	%rbx
+	.cfi_def_cfa_offset 24
+	.cfi_offset 3, -24
+	movq	%rdi, %rbp
+	subq	$40, %rsp
+	.cfi_def_cfa_offset 64
+	movzwl	(%rdi), %edx
+	movl	%edx, %edi
+	call	sockaddr_check.isra.0
+	testl	%eax, %eax
+	je	.L784
+	movzwl	%dx, %edi
+	movl	$1, %esi
+	xorl	%edx, %edx
+	call	socket
+	testl	%eax, %eax
+	movl	%eax, %ebx
+	js	.L785
+	movl	%eax, %edi
+	movl	$1, %edx
+	movl	$2, %esi
+	xorl	%eax, %eax
+	call	fcntl
+	leaq	28(%rsp), %rcx
+	movl	$4, %r8d
+	movl	$2, %edx
+	movl	$1, %esi
+	movl	%ebx, %edi
+	movl	$1, 28(%rsp)
+	call	setsockopt
+	testl	%eax, %eax
+	js	.L786
+.L778:
+	movzwl	0(%rbp), %edi
+	call	sockaddr_len.isra.1
+	movq	%rbp, %rsi
+	movl	%eax, %edx
+	movl	%ebx, %edi
+	call	bind
+	testl	%eax, %eax
+	js	.L787
+	xorl	%edx, %edx
+	xorl	%eax, %eax
+	movl	$3, %esi
+	movl	%ebx, %edi
+	call	fcntl
+	cmpl	$-1, %eax
+	movl	%eax, %edx
+	je	.L788
+	orb	$8, %dh
+	xorl	%eax, %eax
+	movl	$4, %esi
+	movl	%ebx, %edi
+	call	fcntl
+	testl	%eax, %eax
+	js	.L789
+	movl	$1024, %esi
+	movl	%ebx, %edi
+	call	listen
+	testl	%eax, %eax
+	js	.L790
+.L774:
+	addq	$40, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 24
+	movl	%ebx, %eax
+	popq	%rbx
+	.cfi_def_cfa_offset 16
+	popq	%rbp
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L786:
+	.cfi_restore_state
+	movl	$.LC55, %esi
+	movl	$2, %edi
+	xorl	%eax, %eax
+	call	syslog
+	jmp	.L778
+	.p2align 4,,10
+	.p2align 3
+.L784:
+	movl	$.LC53, %esi
+	movl	$2, %edi
+	movl	$-1, %ebx
+	call	syslog
+	jmp	.L774
+	.p2align 4,,10
+	.p2align 3
+.L785:
+	movq	%rbp, %rdi
+	movl	$-1, %ebx
+	call	httpd_ntoa
+	movl	$.LC54, %esi
+	movq	%rax, %rdx
+	movl	$2, %edi
+	xorl	%eax, %eax
+	call	syslog
+	jmp	.L774
+	.p2align 4,,10
+	.p2align 3
+.L787:
+	movq	%rbp, %rdi
+	call	httpd_ntoa
+	movl	$.LC56, %esi
+	movq	%rax, %rdx
+	movl	$2, %edi
+	xorl	%eax, %eax
+	call	syslog
+	movl	%ebx, %edi
+	movl	$-1, %ebx
+	call	close
+	jmp	.L774
+	.p2align 4,,10
+	.p2align 3
+.L789:
+	movl	$.LC58, %esi
+.L783:
+	movl	$2, %edi
+	xorl	%eax, %eax
+	call	syslog
+	movl	%ebx, %edi
+	movl	$-1, %ebx
+	call	close
+	jmp	.L774
+.L788:
+	movl	%eax, 12(%rsp)
+	movl	$.LC57, %esi
+	movl	$2, %edi
+	xorl	%eax, %eax
+	call	syslog
+	movl	%ebx, %edi
+	call	close
+	movl	12(%rsp), %edx
+	movl	%edx, %ebx
+	jmp	.L774
+.L790:
+	movl	$.LC59, %esi
+	jmp	.L783
+	.cfi_endproc
+.LFE5:
+	.size	initialize_listen_socket, .-initialize_listen_socket
+	.section	.rodata.str1.8
+	.align 8
+.LC60:
+	.string	"out of memory allocating an httpd_server"
+	.align 8
+.LC61:
+	.string	"out of memory copying hostname"
+	.align 8
+.LC62:
+	.string	"out of memory copying cgi_pattern"
+	.section	.rodata.str1.1
+.LC63:
+	.string	"|/"
+.LC64:
+	.string	"out of memory copying cwd"
+	.section	.rodata.str1.8
+	.align 8
+.LC65:
+	.string	"out of memory copying url_pattern"
+	.align 8
+.LC66:
+	.string	"out of memory copying local_pattern"
+	.section	.rodata.str1.1
+.LC67:
+	.string	"thttpd/2.27.0 Oct 3, 2014"
+.LC68:
+	.string	"%.80s starting on port %d"
+	.section	.rodata.str1.8
+	.align 8
+.LC69:
+	.string	"%.80s starting on %.80s, port %d"
+	.text
+	.p2align 4,,15
+	.globl	httpd_initialize
+	.type	httpd_initialize, @function
+httpd_initialize:
+.LFB4:
+	.cfi_startproc
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	movq	%rdi, %r15
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	movl	$136, %edi
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	movq	%rsi, %r12
+	movq	%rdx, %rbp
+	movl	%ecx, %r14d
+	movq	%r8, %r13
+	subq	$24, %rsp
+	.cfi_def_cfa_offset 80
+	movl	%r9d, 12(%rsp)
+	call	malloc
+	testq	%rax, %rax
+	movq	%rax, %rbx
+	je	.L817
+	testq	%r15, %r15
+	je	.L794
+	movq	%r15, %rdi
+	call	strdup
+	testq	%rax, %rax
+	movq	%rax, (%rbx)
+	je	.L818
+	movq	%rax, 8(%rbx)
+.L796:
+	testq	%r13, %r13
+	movw	%r14w, 16(%rbx)
+	je	.L819
+	xorl	%eax, %eax
+	cmpb	$47, 0(%r13)
+	sete	%al
+	addq	%rax, %r13
+	movq	%r13, %rdi
+	call	strdup
+	testq	%rax, %rax
+	movq	%rax, %rdi
+	movq	%rax, 24(%rbx)
+	jne	.L801
+	jmp	.L820
+	.p2align 4,,10
+	.p2align 3
+.L802:
+	leaq	1(%rax), %rdi
+	leaq	2(%rax), %rsi
+	call	strcpy
+	movq	24(%rbx), %rdi
+.L801:
+	movl	$.LC63, %esi
+	call	strstr
+	testq	%rax, %rax
+	jne	.L802
+.L799:
+	movl	12(%rsp), %eax
+	movq	80(%rsp), %rdi
+	movl	$0, 36(%rbx)
+	movl	%eax, 32(%rbx)
+	call	strdup
+	movq	88(%rsp), %rdi
+	movq	%rax, 40(%rbx)
+	call	strdup
+	movq	%rax, 48(%rbx)
+	movl	96(%rsp), %eax
+	movq	104(%rsp), %rdi
+	movl	%eax, 56(%rbx)
+	call	strdup
+	testq	%rax, %rax
+	movq	%rax, 64(%rbx)
+	je	.L821
+	cmpq	$0, 152(%rsp)
+	je	.L822
+	movq	152(%rsp), %rdi
+	call	strdup
+	testq	%rax, %rax
+	movq	%rax, 112(%rbx)
+	je	.L823
+	cmpq	$0, 160(%rsp)
+	je	.L824
+.L806:
+	movq	160(%rsp), %rdi
+	call	strdup
+	testq	%rax, %rax
+	movq	%rax, 120(%rbx)
+	je	.L825
+.L807:
+	movl	112(%rsp), %eax
+	movq	120(%rsp), %rsi
+	movq	%rbx, %rdi
+	movq	$0, 88(%rbx)
+	movl	%eax, 80(%rbx)
+	call	httpd_set_logfp
+	movl	128(%rsp), %eax
+	testq	%rbp, %rbp
+	movl	%eax, 96(%rbx)
+	movl	136(%rsp), %eax
+	movl	%eax, 100(%rbx)
+	movl	144(%rsp), %eax
+	movl	%eax, 104(%rbx)
+	movl	168(%rsp), %eax
+	movl	%eax, 128(%rbx)
+	je	.L826
+	movq	%rbp, %rdi
+	call	initialize_listen_socket
+	movl	%eax, 76(%rbx)
+.L809:
+	testq	%r12, %r12
+	je	.L827
+	movq	%r12, %rdi
+	call	initialize_listen_socket
+	movl	%eax, 72(%rbx)
+.L811:
+	cmpq	$-1, 72(%rbx)
+	je	.L828
+	call	init_mime
+	cmpq	$0, (%rbx)
+	je	.L829
+	cmpl	$-1, 72(%rbx)
+	movzwl	16(%rbx), %r13d
+	cmovne	%r12, %rbp
+	movq	%rbp, %rdi
+	call	httpd_ntoa
+	movl	%r13d, %r8d
+	movq	%rax, %rcx
+	movl	$.LC67, %edx
+	movl	$.LC69, %esi
+	movl	$5, %edi
+	xorl	%eax, %eax
+	call	syslog
+.L791:
+	addq	$24, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 56
+	movq	%rbx, %rax
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L822:
+	.cfi_restore_state
+	cmpq	$0, 160(%rsp)
+	movq	$0, 112(%rbx)
+	jne	.L806
+.L824:
+	movq	$0, 120(%rbx)
+	jmp	.L807
+	.p2align 4,,10
+	.p2align 3
+.L827:
+	movl	$-1, 72(%rbx)
+	jmp	.L811
+	.p2align 4,,10
+	.p2align 3
+.L826:
+	movl	$-1, 76(%rbx)
+	jmp	.L809
+	.p2align 4,,10
+	.p2align 3
+.L794:
+	movq	$0, (%rax)
+	movq	$0, 8(%rax)
+	movl	$256, %esi
+	movl	$ghnbuf.5450, %edi
+	call	gethostname
+	testl	%eax, %eax
+	js	.L830
+	cmpq	$0, 8(%rbx)
+	jne	.L796
+	cmpb	$0, ghnbuf.5450(%rip)
+	je	.L796
+	movq	$ghnbuf.5450, 8(%rbx)
+	jmp	.L796
+	.p2align 4,,10
+	.p2align 3
+.L819:
+	movq	$0, 24(%rbx)
+	jmp	.L799
+	.p2align 4,,10
+	.p2align 3
+.L830:
+	movb	$0, ghnbuf.5450(%rip)
+	jmp	.L796
+	.p2align 4,,10
+	.p2align 3
+.L829:
+	movzwl	16(%rbx), %ecx
+	movl	$.LC67, %edx
+	movl	$.LC68, %esi
+	movl	$5, %edi
+	xorl	%eax, %eax
+	call	syslog
+	jmp	.L791
+.L828:
+	movq	%rbx, %rdi
+	xorl	%ebx, %ebx
+	call	free_httpd_server
+	jmp	.L791
+.L817:
+	movl	$.LC60, %esi
+	movl	$2, %edi
+	xorl	%eax, %eax
+	call	syslog
+	jmp	.L791
+.L821:
+	movl	$.LC64, %esi
+	movl	$2, %edi
+	xorl	%ebx, %ebx
+	call	syslog
+	jmp	.L791
+.L818:
+	movl	$.LC61, %esi
+	movl	$2, %edi
+	xorl	%ebx, %ebx
+	call	syslog
+	jmp	.L791
+.L820:
+	movl	$.LC62, %esi
+	movl	$2, %edi
+	xorl	%eax, %eax
+	call	syslog
+	xorl	%ebx, %ebx
+	jmp	.L791
+.L823:
+	movl	$.LC65, %esi
+	movl	$2, %edi
+	xorl	%ebx, %ebx
+	call	syslog
+	jmp	.L791
+.L825:
+	movl	$.LC66, %esi
+	movl	$2, %edi
+	xorl	%ebx, %ebx
+	call	syslog
+	jmp	.L791
+	.cfi_endproc
+.LFE4:
+	.size	httpd_initialize, .-httpd_initialize
+	.section	.rodata.str1.1
+.LC70:
+	.string	"getsockname - %m"
+	.text
+	.p2align 4,,15
+	.type	vhost_map, @function
+vhost_map:
+.LFB29:
+	.cfi_startproc
+	pushq	%r13
+	.cfi_def_cfa_offset 16
+	.cfi_offset 13, -16
+	pushq	%r12
+	.cfi_def_cfa_offset 24
+	.cfi_offset 12, -24
+	movq	%rdi, %r12
+	pushq	%rbp
+	.cfi_def_cfa_offset 32
+	.cfi_offset 6, -32
+	pushq	%rbx
+	.cfi_def_cfa_offset 40
+	.cfi_offset 3, -40
+	subq	$152, %rsp
+	.cfi_def_cfa_offset 192
+	movq	328(%rdi), %rbp
+	cmpb	$0, 0(%rbp)
+	jne	.L849
+	movq	336(%rdi), %rbp
+	cmpb	$0, 0(%rbp)
+	je	.L834
+.L849:
+	movq	%rbp, 512(%r12)
+	movsbq	0(%rbp), %rbx
+	testb	%bl, %bl
+	je	.L837
+	call	__ctype_b_loc
+	movq	%rax, %r13
+	.p2align 4,,10
+	.p2align 3
+.L839:
+	movq	0(%r13), %rax
+	testb	$1, 1(%rax,%rbx,2)
+	je	.L838
+	call	__ctype_tolower_loc
+	movq	(%rax), %rax
+	movl	(%rax,%rbx,4), %eax
+	movb	%al, 0(%rbp)
+.L838:
+	addq	$1, %rbp
+	movsbq	0(%rbp), %rbx
+	testb	%bl, %bl
+	jne	.L839
+.L837:
+	movl	532(%r12), %ecx
+	movl	$1, %ebx
+	testl	%ecx, %ecx
+	jne	.L831
+	movq	512(%r12), %rdi
+	call	strlen
+	leaq	448(%r12), %rsi
+	leaq	344(%r12), %rdi
+	movq	%rax, %rdx
+	call	httpd_realloc_str
+	movq	512(%r12), %rsi
+	movq	344(%r12), %rdi
+	call	strcpy
+	movq	240(%r12), %rdi
+	call	strlen
+	movslq	%eax, %rbp
+	movl	$maxtempfilename.5689, %esi
+	movl	$tempfilename.5688, %edi
+	movq	%rbp, %rdx
+	call	httpd_realloc_str
+	movq	240(%r12), %rsi
+	movq	tempfilename.5688(%rip), %rdi
+	call	strcpy
+	movq	344(%r12), %rdi
+	call	strlen
+	leaq	392(%r12), %rsi
+	leaq	1(%rbp,%rax), %rdx
+	leaq	240(%r12), %rdi
+	call	httpd_realloc_str
+	movq	344(%r12), %rsi
+	movq	240(%r12), %rdi
+	call	strcpy
+	movq	240(%r12), %rbp
+	movq	%rbp, %rdi
+	call	strlen
+	movl	$47, %edx
+	movw	%dx, 0(%rbp,%rax)
+	movq	240(%r12), %rdi
+	movq	tempfilename.5688(%rip), %rsi
+	call	strcat
+.L831:
+	addq	$152, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 40
+	movl	%ebx, %eax
+	popq	%rbx
+	.cfi_def_cfa_offset 32
+	popq	%rbp
+	.cfi_def_cfa_offset 24
+	popq	%r12
+	.cfi_def_cfa_offset 16
+	popq	%r13
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L834:
+	.cfi_restore_state
+	movl	704(%rdi), %edi
+	leaq	12(%rsp), %rdx
+	leaq	16(%rsp), %rsi
+	movl	$128, 12(%rsp)
+	call	getsockname
+	testl	%eax, %eax
+	js	.L850
+	leaq	16(%rsp), %rdi
+	call	httpd_ntoa
+	movq	%rax, %rbp
+	jmp	.L849
+.L850:
+	movl	$.LC70, %esi
+	movl	$3, %edi
+	xorl	%eax, %eax
+	call	syslog
+	xorl	%ebx, %ebx
+	jmp	.L831
+	.cfi_endproc
+.LFE29:
+	.size	vhost_map, .-vhost_map
+	.section	.rodata.str1.1
+.LC71:
+	.string	"HTTP/0.9"
+.LC72:
+	.string	" \t\n\r"
+.LC73:
+	.string	"HTTP/1.0"
+.LC74:
+	.string	"http://"
+	.section	.rodata.str1.8
+	.align 8
+.LC75:
+	.string	"The requested method '%.80s' is not implemented by this server.\n"
+	.section	.rodata.str1.1
+.LC76:
+	.string	"Not Implemented"
+.LC77:
+	.string	"Referer:"
+.LC78:
+	.string	" \t"
+.LC79:
+	.string	"User-Agent:"
+.LC80:
+	.string	"Host:"
+.LC81:
+	.string	"Accept:"
+	.section	.rodata.str1.8
+	.align 8
+.LC82:
+	.string	"%.80s way too much Accept: data"
+	.section	.rodata.str1.1
+.LC83:
+	.string	"Accept-Encoding:"
+	.section	.rodata.str1.8
+	.align 8
+.LC84:
+	.string	"%.80s way too much Accept-Encoding: data"
+	.section	.rodata.str1.1
+.LC85:
+	.string	"Accept-Language:"
+.LC86:
+	.string	"If-Modified-Since:"
+.LC87:
+	.string	"unparsable time: %.80s"
+.LC88:
+	.string	"Cookie:"
+.LC89:
+	.string	"Range:"
+.LC90:
+	.string	"Range-If:"
+.LC91:
+	.string	"If-Range:"
+.LC92:
+	.string	"Content-Type:"
+.LC93:
+	.string	"Content-Length:"
+.LC94:
+	.string	"Authorization:"
+.LC95:
+	.string	"Connection:"
+.LC96:
+	.string	"keep-alive"
+.LC97:
+	.string	"X-Forwarded-For:"
+	.section	.rodata.str1.8
+	.align 8
+.LC98:
+	.string	"There was an unusual problem serving the requested URL '%.80s'.\n"
+	.section	.rodata.str1.1
+.LC99:
+	.string	"Internal Error"
+	.section	.rodata.str1.8
+	.align 8
+.LC100:
+	.string	"%.80s URL \"%.80s\" goes outside the web tree"
+	.align 8
+.LC101:
+	.string	"The requested URL '%.80s' resolves to a file outside the permitted web server directory tree.\n"
+	.section	.rodata.str1.1
+.LC102:
+	.string	"Forbidden"
+	.text
+	.p2align 4,,15
+	.globl	httpd_parse_request
+	.type	httpd_parse_request, @function
+httpd_parse_request:
+.LFB33:
+	.cfi_startproc
+	pushq	%r14
+	.cfi_def_cfa_offset 16
+	.cfi_offset 14, -16
+	pushq	%r13
+	.cfi_def_cfa_offset 24
+	.cfi_offset 13, -24
+	pushq	%r12
+	.cfi_def_cfa_offset 32
+	.cfi_offset 12, -32
+	pushq	%rbp
+	.cfi_def_cfa_offset 40
+	.cfi_offset 6, -40
+	movq	%rdi, %rbp
+	pushq	%rbx
+	.cfi_def_cfa_offset 48
+	.cfi_offset 3, -48
+	subq	$16, %rsp
+	.cfi_def_cfa_offset 64
+	movq	$0, 168(%rdi)
+	call	bufgets
+	movl	$.LC72, %esi
+	movq	%rax, %rdi
+	movq	%rax, %r13
+	call	strpbrk
+	testq	%rax, %rax
+	je	.L954
+	leaq	1(%rax), %rbx
+	movl	$.LC72, %esi
+	movb	$0, (%rax)
+	movq	%rbx, %rdi
+	call	strspn
+	addq	%rax, %rbx
+	movl	$.LC72, %esi
+	movq	%rbx, %rdi
+	call	strpbrk
+	testq	%rax, %rax
+	je	.L955
+	leaq	1(%rax), %r12
+	movb	$0, (%rax)
+	movl	$.LC72, %esi
+	movq	%r12, %rdi
+	call	strspn
+	addq	%rax, %r12
+	cmpb	$0, (%r12)
+	je	.L855
+	movl	$.LC72, %esi
+	movq	%r12, %rdi
+	call	strpbrk
+	testq	%rax, %rax
+	je	.L856
+	movb	$0, (%rax)
+.L856:
+	movl	$.LC73, %esi
+	movq	%r12, %rdi
+	call	strcasecmp
+	testl	%eax, %eax
+	je	.L855
+	movl	$1, 524(%rbp)
+	.p2align 4,,10
+	.p2align 3
+.L855:
+	movq	%r12, 224(%rbp)
+	movl	$7, %edx
+	movl	$.LC74, %esi
+	movq	%rbx, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	je	.L956
+	cmpb	$47, (%rbx)
+	jne	.L954
+.L862:
+	movl	$1, %edi
+	call	httpd_method_str
+	movq	%r13, %rdi
+	movq	%rax, %rsi
+	call	strcasecmp
+	testl	%eax, %eax
+	jne	.L863
+	movl	$1, 180(%rbp)
+.L864:
+	movq	%rbx, %rdi
+	movq	%rbx, 208(%rbp)
+	call	strlen
+	leaq	376(%rbp), %rsi
+	leaq	216(%rbp), %rdi
+	movq	%rax, %rdx
+	call	httpd_realloc_str
+	movq	208(%rbp), %rsi
+	movq	216(%rbp), %rdi
+	call	strdecode
+	movq	216(%rbp), %rdi
+	call	strlen
+	leaq	384(%rbp), %rsi
+	leaq	232(%rbp), %rdi
+	movq	%rax, %rdx
+	call	httpd_realloc_str
+	movq	216(%rbp), %rax
+	movq	232(%rbp), %rdi
+	leaq	1(%rax), %rsi
+	call	strcpy
+	movq	232(%rbp), %rax
+	cmpb	$0, (%rax)
+	je	.L957
+.L867:
+	movq	208(%rbp), %rdi
+	movl	$63, %esi
+	call	strchr
+	testq	%rax, %rax
+	je	.L951
+	leaq	1(%rax), %rbx
+	movq	%rbx, %rdi
+	call	strlen
+	leaq	416(%rbp), %rsi
+	leaq	264(%rbp), %rdi
+	movq	%rax, %rdx
+	call	httpd_realloc_str
+	movq	264(%rbp), %rdi
+	movq	%rbx, %rsi
+	call	strcpy
+	movq	232(%rbp), %rbx
+	movl	$63, %esi
+	movq	%rbx, %rdi
+	call	strchr
+	testq	%rax, %rax
+	je	.L869
+	movb	$0, (%rax)
+.L951:
+	movq	232(%rbp), %rbx
+.L869:
+	movq	%rbx, %rdi
+	call	de_dotdot
+	movq	232(%rbp), %rdx
+	movzbl	(%rdx), %eax
+	cmpb	$47, %al
+	je	.L954
+	cmpb	$46, %al
+	je	.L958
+.L871:
+	movl	520(%rbp), %r9d
+	movq	$-1, %r12
+	testl	%r9d, %r9d
+	jne	.L873
+.L876:
+	movl	524(%rbp), %r8d
+	testl	%r8d, %r8d
+	je	.L875
+	movq	328(%rbp), %rax
+	cmpb	$0, (%rax)
+	jne	.L905
+	movq	336(%rbp), %rax
+	cmpb	$0, (%rax)
+	je	.L954
+.L905:
+	movl	552(%rbp), %ecx
+	testl	%ecx, %ecx
+	je	.L875
+	movl	$1, 556(%rbp)
+.L875:
+	movq	232(%rbp), %rdi
+	leaq	392(%rbp), %r13
+	leaq	240(%rbp), %r12
+	call	strlen
+	movq	%r13, %rsi
+	movq	%rax, %rdx
+	movq	%r12, %rdi
+	call	httpd_realloc_str
+	movq	232(%rbp), %rsi
+	movq	240(%rbp), %rdi
+	call	strcpy
+	movq	8(%rbp), %rax
+	movl	100(%rax), %edx
+	testl	%edx, %edx
+	je	.L906
+	movq	%rbp, %rdi
+	call	vhost_map
+	testl	%eax, %eax
+	je	.L953
+	movq	8(%rbp), %rax
+.L906:
+	movl	532(%rbp), %ecx
+	movl	96(%rax), %edx
+	leaq	8(%rsp), %rsi
+	movq	240(%rbp), %rdi
+	call	expand_symlinks
+	testq	%rax, %rax
+	movq	%rax, %rbx
+	je	.L953
+	movq	%rax, %rdi
+	call	strlen
+	movq	%r13, %rsi
+	movq	%rax, %rdx
+	movq	%r12, %rdi
+	call	httpd_realloc_str
+	movq	240(%rbp), %rdi
+	movq	%rbx, %rsi
+	call	strcpy
+	movq	8(%rsp), %rdi
+	call	strlen
+	leaq	408(%rbp), %rsi
+	leaq	256(%rbp), %rdi
+	movq	%rax, %rdx
+	call	httpd_realloc_str
+	movq	256(%rbp), %rdi
+	movq	8(%rsp), %rsi
+	call	strcpy
+	movq	256(%rbp), %rbx
+	cmpb	$0, (%rbx)
+	je	.L909
+	movq	232(%rbp), %r14
+	movq	%r14, %rdi
+	call	strlen
+	movq	%rbx, %rdi
+	movq	%rax, %r12
+	call	strlen
+	subl	%eax, %r12d
+	movq	%rbx, %rsi
+	movslq	%r12d, %r13
+	leaq	(%r14,%r13), %rdi
+	call	strcmp
+	testl	%eax, %eax
+	jne	.L909
+	testl	%r12d, %r12d
+	jne	.L910
+	movb	$0, (%r14)
+	.p2align 4,,10
+	.p2align 3
+.L909:
+	movq	240(%rbp), %rbx
+	xorl	%r12d, %r12d
+	cmpb	$47, (%rbx)
+	je	.L959
+.L851:
+	addq	$16, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 48
+	movl	%r12d, %eax
+	popq	%rbx
+	.cfi_def_cfa_offset 40
+	popq	%rbp
+	.cfi_def_cfa_offset 32
+	popq	%r12
+	.cfi_def_cfa_offset 24
+	popq	%r13
+	.cfi_def_cfa_offset 16
+	popq	%r14
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L891:
+	.cfi_restore_state
+	movl	$18, %edx
+	movl	$.LC86, %esi
+	movq	%rbx, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	je	.L960
+	movl	$7, %edx
+	movl	$.LC88, %esi
+	movq	%rbx, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	je	.L961
+	movl	$6, %edx
+	movl	$.LC89, %esi
+	movq	%rbx, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	jne	.L895
+	movl	$44, %esi
+	movq	%rbx, %rdi
+	call	strchr
+	testq	%rax, %rax
+	movq	%rax, %r14
+	jne	.L873
+	movl	$61, %esi
+	movq	%rbx, %rdi
+	call	strchr
+	testq	%rax, %rax
+	je	.L873
+	leaq	1(%rax), %r13
+	movl	$45, %esi
+	movq	%r13, %rdi
+	call	strchr
+	testq	%rax, %rax
+	movq	%rax, %rbx
+	je	.L873
+	cmpq	%rax, %r13
+	je	.L873
+	movb	$0, (%rax)
+	movq	%r13, %rdi
+	movl	$1, 528(%rbp)
+	call	atoll
+	testq	%rax, %rax
+	cmovs	%r14, %rax
+	movq	%rax, 536(%rbp)
+	call	__ctype_b_loc
+	movsbq	1(%rbx), %rdx
+	movq	(%rax), %rax
+	testb	$8, 1(%rax,%rdx,2)
+	je	.L873
+	leaq	1(%rbx), %rdi
+	call	atoll
+	testq	%rax, %rax
+	cmovs	%r12, %rax
+	movq	%rax, 544(%rbp)
+	.p2align 4,,10
+	.p2align 3
+.L873:
+	movq	%rbp, %rdi
+	call	bufgets
+	testq	%rax, %rax
+	movq	%rax, %rbx
+	je	.L876
+.L904:
+	cmpb	$0, (%rbx)
+	je	.L876
+	movl	$8, %edx
+	movl	$.LC77, %esi
+	movq	%rbx, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	jne	.L877
+	addq	$8, %rbx
+	movl	$.LC78, %esi
+	movq	%rbx, %rdi
+	call	strspn
+	addq	%rax, %rbx
+	movq	%rbp, %rdi
+	movq	%rbx, 272(%rbp)
+	call	bufgets
+	testq	%rax, %rax
+	movq	%rax, %rbx
+	jne	.L904
+	jmp	.L876
+	.p2align 4,,10
+	.p2align 3
+.L956:
+	movl	524(%rbp), %r11d
+	testl	%r11d, %r11d
+	je	.L954
+	leaq	7(%rbx), %r14
+	movl	$47, %esi
+	movq	%r14, %rdi
+	call	strchr
+	testq	%rax, %rax
+	movq	%rax, %r12
+	je	.L954
+	movb	$0, (%rax)
+	movl	$47, %esi
+	movq	%r14, %rdi
+	call	strchr
+	testq	%rax, %rax
+	jne	.L954
+	cmpb	$46, 7(%rbx)
+	je	.L954
+	movq	%r14, %rdi
+	movq	%r12, %rbx
+	call	strlen
+	leaq	440(%rbp), %rsi
+	leaq	328(%rbp), %rdi
+	movq	%rax, %rdx
+	call	httpd_realloc_str
+	movq	328(%rbp), %rdi
+	movq	%r14, %rsi
+	call	strcpy
+	movb	$47, (%r12)
+	jmp	.L862
+	.p2align 4,,10
+	.p2align 3
+.L877:
+	movl	$11, %edx
+	movl	$.LC79, %esi
+	movq	%rbx, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	jne	.L879
+	addq	$11, %rbx
+	movl	$.LC78, %esi
+	movq	%rbx, %rdi
+	call	strspn
+	addq	%rax, %rbx
+	movq	%rbx, 280(%rbp)
+	jmp	.L873
+	.p2align 4,,10
+	.p2align 3
+.L879:
+	movl	$5, %edx
+	movl	$.LC80, %esi
+	movq	%rbx, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	jne	.L880
+	addq	$5, %rbx
+	movl	$.LC78, %esi
+	movq	%rbx, %rdi
+	call	strspn
+	addq	%rax, %rbx
+	movl	$58, %esi
+	movq	%rbx, 336(%rbp)
+	movq	%rbx, %rdi
+	call	strchr
+	testq	%rax, %rax
+	je	.L881
+	movb	$0, (%rax)
+	movq	336(%rbp), %rbx
+.L881:
+	movl	$47, %esi
+	movq	%rbx, %rdi
+	call	strchr
+	testq	%rax, %rax
+	jne	.L954
+	cmpb	$46, (%rbx)
+	jne	.L873
+.L954:
+	movq	httpd_err400form(%rip), %r8
+	movq	httpd_err400title(%rip), %rdx
+	movl	$.LC27, %r9d
+	movq	%rbp, %rdi
+	movq	%r9, %rcx
+	movl	$400, %esi
+	movl	$-1, %r12d
+	call	httpd_send_err
+	addq	$16, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 48
+	movl	%r12d, %eax
+	popq	%rbx
+	.cfi_def_cfa_offset 40
+	popq	%rbp
+	.cfi_def_cfa_offset 32
+	popq	%r12
+	.cfi_def_cfa_offset 24
+	popq	%r13
+	.cfi_def_cfa_offset 16
+	popq	%r14
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L880:
+	.cfi_restore_state
+	movl	$7, %edx
+	movl	$.LC81, %esi
+	movq	%rbx, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	jne	.L883
+	addq	$7, %rbx
+	movl	$.LC78, %esi
+	movq	%rbx, %rdi
+	call	strspn
+	movq	288(%rbp), %rdi
+	addq	%rax, %rbx
+	cmpb	$0, (%rdi)
+	je	.L884
+	call	strlen
+	cmpq	$5000, %rax
+	movq	%rax, %r13
+	ja	.L962
+	movq	%rbx, %rdi
+	call	strlen
+	leaq	424(%rbp), %rsi
+	leaq	2(%r13,%rax), %rdx
+	leaq	288(%rbp), %rdi
+	call	httpd_realloc_str
+	movq	288(%rbp), %r13
+	movq	%r13, %rdi
+	call	strlen
+	movl	$8236, %edi
+	addq	%rax, %r13
+	movw	%di, 0(%r13)
+	movb	$0, 2(%r13)
+.L886:
+	movq	288(%rbp), %rdi
+	movq	%rbx, %rsi
+	call	strcat
+	jmp	.L873
+	.p2align 4,,10
+	.p2align 3
+.L863:
+	movl	$2, %edi
+	call	httpd_method_str
+	movq	%r13, %rdi
+	movq	%rax, %rsi
+	call	strcasecmp
+	testl	%eax, %eax
+	jne	.L865
+	movl	$2, 180(%rbp)
+	jmp	.L864
+	.p2align 4,,10
+	.p2align 3
+.L883:
+	movl	$16, %edx
+	movl	$.LC83, %esi
+	movq	%rbx, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	jne	.L887
+	addq	$16, %rbx
+	movl	$.LC78, %esi
+	movq	%rbx, %rdi
+	call	strspn
+	movq	296(%rbp), %rdi
+	addq	%rax, %rbx
+	cmpb	$0, (%rdi)
+	je	.L888
+	call	strlen
+	cmpq	$5000, %rax
+	movq	%rax, %r13
+	ja	.L963
+	movq	%rbx, %rdi
+	call	strlen
+	leaq	432(%rbp), %rsi
+	leaq	2(%r13,%rax), %rdx
+	leaq	296(%rbp), %rdi
+	call	httpd_realloc_str
+	movq	296(%rbp), %r13
+	movq	%r13, %rdi
+	call	strlen
+	movl	$8236, %esi
+	addq	%rax, %r13
+	movw	%si, 0(%r13)
+	movb	$0, 2(%r13)
+.L890:
+	movq	296(%rbp), %rdi
+	movq	%rbx, %rsi
+	call	strcpy
+	jmp	.L873
+	.p2align 4,,10
+	.p2align 3
+.L959:
+	movq	8(%rbp), %rax
+	movq	64(%rax), %r12
+	movq	%r12, %rdi
+	call	strlen
+	movq	%r12, %rsi
+	movq	%rax, %rdx
+	movq	%rbx, %rdi
+	movq	%rax, %r13
+	call	strncmp
+	testl	%eax, %eax
+	movl	%eax, %r12d
+	jne	.L911
+	leaq	(%rbx,%r13), %rsi
+	movq	%rbx, %rdi
+	call	strcpy
+	addq	$16, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 48
+	movl	%r12d, %eax
+	popq	%rbx
+	.cfi_def_cfa_offset 40
+	popq	%rbp
+	.cfi_def_cfa_offset 32
+	popq	%r12
+	.cfi_def_cfa_offset 24
+	popq	%r13
+	.cfi_def_cfa_offset 16
+	popq	%r14
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L958:
+	.cfi_restore_state
+	cmpb	$46, 1(%rdx)
+	jne	.L871
+	movzbl	2(%rdx), %eax
+	testb	%al, %al
+	je	.L954
+	cmpb	$47, %al
+	jne	.L871
+	jmp	.L954
+	.p2align 4,,10
+	.p2align 3
+.L957:
+	movl	$46, %r10d
+	movw	%r10w, (%rax)
+	jmp	.L867
+	.p2align 4,,10
+	.p2align 3
+.L955:
+	movl	$0, 520(%rbp)
+	movl	$.LC71, %r12d
+	jmp	.L855
+	.p2align 4,,10
+	.p2align 3
+.L865:
+	movl	$3, %edi
+	call	httpd_method_str
+	movq	%r13, %rdi
+	movq	%rax, %rsi
+	call	strcasecmp
+	testl	%eax, %eax
+	jne	.L866
+	movl	$3, 180(%rbp)
+	jmp	.L864
+	.p2align 4,,10
+	.p2align 3
+.L887:
+	movl	$16, %edx
+	movl	$.LC85, %esi
+	movq	%rbx, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	jne	.L891
+	addq	$16, %rbx
+	movl	$.LC78, %esi
+	movq	%rbx, %rdi
+	call	strspn
+	addq	%rax, %rbx
+	movq	%rbx, 304(%rbp)
+	jmp	.L873
+	.p2align 4,,10
+	.p2align 3
+.L910:
+	movb	$0, -1(%r14,%r13)
+	jmp	.L909
+	.p2align 4,,10
+	.p2align 3
+.L962:
+	leaq	16(%rbp), %rdi
+	call	httpd_ntoa
+	movl	$.LC82, %esi
+	movq	%rax, %rdx
+	movl	$3, %edi
+	xorl	%eax, %eax
+	call	syslog
+	jmp	.L873
+	.p2align 4,,10
+	.p2align 3
+.L884:
+	movq	%rbx, %rdi
+	call	strlen
+	leaq	424(%rbp), %rsi
+	leaq	288(%rbp), %rdi
+	movq	%rax, %rdx
+	call	httpd_realloc_str
+	jmp	.L886
+.L888:
+	movq	%rbx, %rdi
+	call	strlen
+	leaq	432(%rbp), %rsi
+	leaq	296(%rbp), %rdi
+	movq	%rax, %rdx
+	call	httpd_realloc_str
+	jmp	.L890
+.L961:
+	addq	$7, %rbx
+	movl	$.LC78, %esi
+	movq	%rbx, %rdi
+	call	strspn
+	addq	%rax, %rbx
+	movq	%rbx, 312(%rbp)
+	jmp	.L873
+.L963:
+	leaq	16(%rbp), %rdi
+	call	httpd_ntoa
+	movl	$.LC84, %esi
+	movq	%rax, %rdx
+	movl	$3, %edi
+	xorl	%eax, %eax
+	call	syslog
+	jmp	.L873
+.L960:
+	addq	$18, %rbx
+	movq	%rbx, %rdi
+	call	tdate_parse
+	cmpq	$-1, %rax
+	movq	%rax, 480(%rbp)
+	jne	.L873
+.L952:
+	movq	%rbx, %rdx
+	movl	$.LC87, %esi
+	movl	$7, %edi
+	xorl	%eax, %eax
+	call	syslog
+	jmp	.L873
+.L895:
+	movl	$9, %edx
+	movl	$.LC90, %esi
+	movq	%rbx, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	je	.L898
+	movl	$9, %edx
+	movl	$.LC91, %esi
+	movq	%rbx, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	je	.L898
+	movl	$13, %edx
+	movl	$.LC92, %esi
+	movq	%rbx, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	jne	.L900
+	addq	$13, %rbx
+	movl	$.LC78, %esi
+	movq	%rbx, %rdi
+	call	strspn
+	addq	%rax, %rbx
+	movq	%rbx, 320(%rbp)
+	jmp	.L873
+.L953:
+	movq	208(%rbp), %r9
+	movl	$.LC98, %r8d
+	movl	$.LC27, %ecx
+	movl	$.LC99, %edx
+	movl	$500, %esi
+	movq	%rbp, %rdi
+	movl	$-1, %r12d
+	call	httpd_send_err
+	jmp	.L851
+.L898:
+	addq	$9, %rbx
+	movq	%rbx, %rdi
+	call	tdate_parse
+	cmpq	$-1, %rax
+	movq	%rax, 488(%rbp)
+	jne	.L873
+	jmp	.L952
+.L911:
+	movq	208(%rbp), %rbx
+	leaq	16(%rbp), %rdi
+	movl	$-1, %r12d
+	call	httpd_ntoa
+	movq	%rbx, %rcx
+	movq	%rax, %rdx
+	movl	$.LC100, %esi
+	movl	$5, %edi
+	xorl	%eax, %eax
+	call	syslog
+	movq	208(%rbp), %r9
+	movl	$.LC101, %r8d
+	movl	$.LC27, %ecx
+	movl	$.LC102, %edx
+	movl	$403, %esi
+	movq	%rbp, %rdi
+	call	httpd_send_err
+	jmp	.L851
+.L900:
+	movl	$15, %edx
+	movl	$.LC93, %esi
+	movq	%rbx, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	jne	.L901
+	leaq	15(%rbx), %rdi
+	call	atol
+	movq	%rax, 496(%rbp)
+	jmp	.L873
+.L866:
+	movq	%r13, %r9
+	movl	$.LC75, %r8d
+	movl	$.LC27, %ecx
+	movl	$.LC76, %edx
+	movl	$501, %esi
+	movq	%rbp, %rdi
+	call	httpd_send_err
+	movl	$-1, %r12d
+	jmp	.L851
+.L901:
+	movl	$14, %edx
+	movl	$.LC94, %esi
+	movq	%rbx, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	jne	.L902
+	addq	$14, %rbx
+	movl	$.LC78, %esi
+	movq	%rbx, %rdi
+	call	strspn
+	addq	%rax, %rbx
+	movq	%rbx, 352(%rbp)
+	jmp	.L873
+.L902:
+	movl	$11, %edx
+	movl	$.LC95, %esi
+	movq	%rbx, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	jne	.L903
+	addq	$11, %rbx
+	movl	$.LC78, %esi
+	movq	%rbx, %rdi
+	call	strspn
+	leaq	(%rbx,%rax), %rdi
+	movl	$.LC96, %esi
+	call	strcasecmp
+	testl	%eax, %eax
+	jne	.L873
+	movl	$1, 552(%rbp)
+	jmp	.L873
+.L903:
+	movl	$16, %edx
+	movl	$.LC97, %esi
+	movq	%rbx, %rdi
+	call	strncasecmp
+	testl	%eax, %eax
+	jne	.L873
+	addq	$16, %rbx
+	movl	$.LC78, %esi
+	movq	%rbx, %rdi
+	call	strspn
+	leaq	20(%rbp), %rsi
+	leaq	(%rbx,%rax), %rdi
+	call	inet_aton
+	jmp	.L873
+	.cfi_endproc
+.LFE33:
+	.size	httpd_parse_request, .-httpd_parse_request
+	.section	.rodata.str1.1
+.LC103:
+	.string	"-"
+.LC104:
+	.string	"/%.100s%.200s"
+.LC105:
+	.string	"%.200s"
+.LC106:
+	.string	"%lld"
+.LC107:
+	.string	"%d/%b/%Y:%H:%M:%S"
+.LC108:
+	.string	"%s %c%04d"
+	.section	.rodata.str1.8
+	.align 8
+.LC109:
+	.string	"%.80s - %.80s [%s] \"%.80s %.300s %.80s\" %d %s \"%.200s\" \"%.200s\"\n"
+	.align 8
+.LC110:
+	.string	"%.80s - %.80s \"%.80s %.200s %.80s\" %d %s \"%.200s\" \"%.200s\""
+	.text
+	.p2align 4,,15
+	.type	make_log_entry, @function
+make_log_entry:
+.LFB55:
+	.cfi_startproc
+	movq	8(%rdi), %rax
+	movl	80(%rax), %r8d
+	testl	%r8d, %r8d
+	jne	.L978
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	movl	$.LC103, %edx
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	movq	%rsi, %r15
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	movq	%rdi, %rbx
+	subq	$648, %rsp
+	.cfi_def_cfa_offset 704
+	movq	360(%rdi), %rbp
+	movl	100(%rax), %ecx
+	movq	208(%rdi), %r8
+	cmpb	$0, 0(%rbp)
+	cmove	%rdx, %rbp
+	testl	%ecx, %ecx
+	je	.L967
+	movl	532(%rdi), %edx
+	testl	%edx, %edx
+	je	.L981
+.L967:
+	leaq	320(%rsp), %r12
+	movq	%r8, %rcx
+	xorl	%eax, %eax
+	movl	$.LC105, %edx
+	movl	$305, %esi
+	movq	%r12, %rdi
+	call	my_snprintf
+	movq	200(%rbx), %rcx
+	testq	%rcx, %rcx
+	js	.L970
+.L983:
+	leaq	48(%rsp), %r13
+	movl	$.LC106, %edx
+	movl	$40, %esi
+	xorl	%eax, %eax
+	movq	%r13, %rdi
+	call	my_snprintf
+.L971:
+	movq	8(%rbx), %rax
+	leaq	16(%rbx), %r14
+	cmpq	$0, 88(%rax)
+	je	.L972
+	testq	%r15, %r15
+	je	.L973
+	movq	(%r15), %rax
+	movq	%rax, 40(%rsp)
+.L974:
+	leaq	40(%rsp), %rdi
+	call	localtime
+	leaq	96(%rsp), %rdi
+	movq	%rax, %r15
+	movq	%rax, %rcx
+	movl	$.LC107, %edx
+	movl	$100, %esi
+	call	strftime
+	movq	40(%r15), %rcx
+	movabsq	$-8608480567731124087, %rdx
+	movl	$43, %r8d
+	movq	%rcx, %rax
+	imulq	%rdx
+	addq	%rcx, %rdx
+	sarq	$63, %rcx
+	sarq	$5, %rdx
+	subq	%rcx, %rdx
+	testl	%edx, %edx
+	movl	%edx, %ecx
+	jns	.L975
+	negl	%ecx
+	movl	$45, %r8d
+.L975:
+	movl	%ecx, %eax
+	movl	$-2004318071, %edx
+	leaq	208(%rsp), %rdi
+	mull	%edx
+	movl	$100, %esi
+	xorl	%eax, %eax
+	shrl	$5, %edx
+	imull	$40, %edx, %edx
+	leal	(%rdx,%rcx), %r9d
+	leaq	96(%rsp), %rcx
+	movl	$.LC108, %edx
+	call	my_snprintf
+	movq	280(%rbx), %r8
+	movq	272(%rbx), %rsi
+	movl	184(%rbx), %ecx
+	movl	180(%rbx), %edi
+	movq	224(%rbx), %r15
+	movq	%r8, 24(%rsp)
+	movq	%rsi, 16(%rsp)
+	movl	%ecx, 8(%rsp)
+	call	httpd_method_str
+	movq	%r14, %rdi
+	movq	%rax, (%rsp)
+	call	httpd_ntoa
+	movq	24(%rsp), %r8
+	movq	8(%rbx), %rdi
+	movq	%rax, %rdx
+	xorl	%eax, %eax
+	movq	88(%rdi), %rdi
+	pushq	%r8
+	.cfi_def_cfa_offset 712
+	movq	24(%rsp), %rsi
+	pushq	%rsi
+	.cfi_def_cfa_offset 720
+	pushq	%r13
+	.cfi_def_cfa_offset 728
+	movl	$.LC109, %esi
+	movl	32(%rsp), %ecx
+	pushq	%rcx
+	.cfi_def_cfa_offset 736
+	pushq	%r15
+	.cfi_def_cfa_offset 744
+	movq	%rbp, %rcx
+	pushq	%r12
+	.cfi_def_cfa_offset 752
+	movq	48(%rsp), %r9
+	leaq	256(%rsp), %r8
+	call	fprintf
+	movq	8(%rbx), %rax
+	addq	$48, %rsp
+	.cfi_def_cfa_offset 704
+	movq	88(%rax), %rdi
+	call	fflush
+.L964:
+	addq	$648, %rsp
+	.cfi_def_cfa_offset 56
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L978:
+	.cfi_restore 3
+	.cfi_restore 6
+	.cfi_restore 12
+	.cfi_restore 13
+	.cfi_restore 14
+	.cfi_restore 15
+	rep ret
+	.p2align 4,,10
+	.p2align 3
+.L981:
+	.cfi_def_cfa_offset 704
+	.cfi_offset 3, -56
+	.cfi_offset 6, -48
+	.cfi_offset 12, -40
+	.cfi_offset 13, -32
+	.cfi_offset 14, -24
+	.cfi_offset 15, -16
+	movq	512(%rdi), %rcx
+	testq	%rcx, %rcx
+	je	.L982
+.L968:
+	leaq	320(%rsp), %r12
+	xorl	%eax, %eax
+	movl	$.LC104, %edx
+	movl	$305, %esi
+	movq	%r12, %rdi
+	call	my_snprintf
+	movq	200(%rbx), %rcx
+	testq	%rcx, %rcx
+	jns	.L983
+.L970:
+	movl	$45, %eax
+	leaq	48(%rsp), %r13
+	movw	%ax, 48(%rsp)
+	jmp	.L971
+	.p2align 4,,10
+	.p2align 3
+.L972:
+	movq	280(%rbx), %rsi
+	movq	272(%rbx), %rcx
+	movl	184(%rbx), %edx
+	movl	180(%rbx), %edi
+	movq	224(%rbx), %r15
+	movq	%rsi, 16(%rsp)
+	movq	%rcx, 8(%rsp)
+	movl	%edx, (%rsp)
+	call	httpd_method_str
+	movq	%r14, %rdi
+	movq	%rax, %rbx
+	call	httpd_ntoa
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 712
+	movq	%r12, %r9
+	movq	%rbx, %r8
+	movq	24(%rsp), %rsi
+	movl	$6, %edi
+	pushq	%rsi
+	.cfi_def_cfa_offset 720
+	movq	24(%rsp), %rcx
+	movl	$.LC110, %esi
+	pushq	%rcx
+	.cfi_def_cfa_offset 728
+	pushq	%r13
+	.cfi_def_cfa_offset 736
+	movq	%rbp, %rcx
+	movl	32(%rsp), %edx
+	pushq	%rdx
+	.cfi_def_cfa_offset 744
+	pushq	%r15
+	.cfi_def_cfa_offset 752
+	movq	%rax, %rdx
+	xorl	%eax, %eax
+	call	syslog
+	addq	$48, %rsp
+	.cfi_def_cfa_offset 704
+	jmp	.L964
+	.p2align 4,,10
+	.p2align 3
+.L973:
+	xorl	%edi, %edi
+	call	time
+	movq	%rax, 40(%rsp)
+	jmp	.L974
+	.p2align 4,,10
+	.p2align 3
+.L982:
+	movq	8(%rax), %rcx
+	jmp	.L968
+	.cfi_endproc
+.LFE55:
+	.size	make_log_entry, .-make_log_entry
+	.p2align 4,,15
+	.globl	httpd_close_conn
+	.type	httpd_close_conn, @function
+httpd_close_conn:
+.LFB36:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushq	%rbx
+	.cfi_def_cfa_offset 24
+	.cfi_offset 3, -24
+	movq	%rdi, %rbx
+	movq	%rsi, %rbp
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 32
+	call	make_log_entry
+	movq	712(%rbx), %rdi
+	testq	%rdi, %rdi
+	je	.L985
+	leaq	560(%rbx), %rsi
+	movq	%rbp, %rdx
+	call	mmc_unmap
+	movq	$0, 712(%rbx)
+.L985:
+	movl	704(%rbx), %edi
+	testl	%edi, %edi
+	js	.L984
+	call	close
+	movl	$-1, 704(%rbx)
+.L984:
+	addq	$8, %rsp
+	.cfi_def_cfa_offset 24
+	popq	%rbx
+	.cfi_def_cfa_offset 16
+	popq	%rbp
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE36:
+	.size	httpd_close_conn, .-httpd_close_conn
+	.section	.rodata.str1.1
+.LC111:
+	.string	".htpasswd"
+.LC112:
+	.string	"%s/%s"
+.LC113:
+	.string	"Basic "
+	.section	.rodata.str1.8
+	.align 8
+.LC114:
+	.string	"%.80s auth file %.80s could not be opened - %m"
+	.align 8
+.LC115:
+	.string	"The requested URL '%.80s' is protected by an authentication file, but the authentication file cannot be opened.\n"
+	.text
+	.p2align 4,,15
+	.type	auth_check2, @function
+auth_check2:
+.LFB23:
+	.cfi_startproc
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	movq	%rdi, %r14
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	movq	%rsi, %rdi
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	movq	%rsi, %r13
+	subq	$1192, %rsp
+	.cfi_def_cfa_offset 1248
+	call	strlen
+	leaq	11(%rax), %rdx
+	movl	$maxauthpath.5628, %esi
+	movl	$authpath.5627, %edi
+	call	httpd_realloc_str
+	movq	maxauthpath.5628(%rip), %rsi
+	movq	authpath.5627(%rip), %rdi
+	movl	$.LC112, %edx
+	movl	$.LC111, %r8d
+	movq	%r13, %rcx
+	xorl	%eax, %eax
+	call	my_snprintf
+	movq	authpath.5627(%rip), %rdi
+	leaq	16(%rsp), %rsi
+	call	stat
+	xorl	%edx, %edx
+	testl	%eax, %eax
+	js	.L991
+	movq	352(%r14), %rax
+	cmpb	$0, (%rax)
+	je	.L1035
+	movl	$.LC113, %edi
+	movl	$6, %ecx
+	movq	%rax, %rsi
+	repz cmpsb
+	jne	.L1035
+	leaq	160(%rsp), %r12
+	leaq	6(%rax), %rdi
+	movq	%r12, %rsi
+	call	b64_decode.constprop.5
+	movl	$58, %esi
+	cltq
+	movq	%r12, %rdi
+	movb	$0, 160(%rsp,%rax)
+	call	strchr
+	testq	%rax, %rax
+	je	.L1035
+	leaq	1(%rax), %rbx
+	movb	$0, (%rax)
+	movl	$58, %esi
+	movq	%rbx, %rdi
+	movq	%rbx, 8(%rsp)
+	call	strchr
+	testq	%rax, %rax
+	je	.L995
+	movb	$0, (%rax)
+.L995:
+	cmpq	$0, maxprevauthpath.5638(%rip)
+	movq	authpath.5627(%rip), %rbx
+	je	.L996
+	movq	prevauthpath.5637(%rip), %rsi
+	movq	%rbx, %rdi
+	call	strcmp
+	testl	%eax, %eax
+	jne	.L996
+	movq	prevmtime.5639(%rip), %rax
+	cmpq	%rax, 104(%rsp)
+	je	.L1037
+.L996:
+	movl	$.LC25, %esi
+	movq	%rbx, %rdi
+	call	fopen
+	testq	%rax, %rax
+	movq	%rax, %rbp
+	je	.L1033
+	leaq	672(%rsp), %rbx
+	.p2align 4,,10
+	.p2align 3
+.L1004:
+	movq	%rbp, %rdx
+	movl	$500, %esi
+	movq	%rbx, %rdi
+	call	fgets
+	testq	%rax, %rax
+	je	.L1038
+	movq	%rbx, %rax
+.L1001:
+	movl	(%rax), %ecx
+	addq	$4, %rax
+	leal	-16843009(%rcx), %edx
+	notl	%ecx
+	andl	%ecx, %edx
+	andl	$-2139062144, %edx
+	je	.L1001
+	movl	%edx, %ecx
+	shrl	$16, %ecx
+	testl	$32896, %edx
+	cmove	%ecx, %edx
+	leaq	2(%rax), %rcx
+	movl	%edx, %esi
+	cmove	%rcx, %rax
+	addb	%dl, %sil
+	sbbq	$3, %rax
+	subq	%rbx, %rax
+	subl	$1, %eax
+	cltq
+	cmpb	$10, 672(%rsp,%rax)
+	jne	.L1003
+	movb	$0, 672(%rsp,%rax)
+.L1003:
+	movl	$58, %esi
+	movq	%rbx, %rdi
+	call	strchr
+	testq	%rax, %rax
+	movq	%rax, %r15
+	je	.L1004
+	movb	$0, (%rax)
+	movq	%r12, %rsi
+	movq	%rbx, %rdi
+	call	strcmp
+	testl	%eax, %eax
+	jne	.L1004
+	movq	%rbp, %rdi
+	addq	$1, %r15
+	call	fclose
+	movq	8(%rsp), %rdi
+	movq	%r15, %rsi
+	call	crypt
+	testq	%rax, %rax
+	je	.L1036
+	movq	%r15, %rsi
+	movq	%rax, %rdi
+	call	strcmp
+	testl	%eax, %eax
+	jne	.L1035
+	movq	%rbx, %rdx
+.L1006:
+	movl	(%rdx), %ecx
+	addq	$4, %rdx
+	leal	-16843009(%rcx), %eax
+	notl	%ecx
+	andl	%ecx, %eax
+	andl	$-2139062144, %eax
+	je	.L1006
+	movl	%eax, %ecx
+	leaq	456(%r14), %rsi
+	shrl	$16, %ecx
+	testl	$32896, %eax
+	cmove	%ecx, %eax
+	leaq	2(%rdx), %rcx
+	movl	%eax, %edi
+	cmove	%rcx, %rdx
+	addb	%al, %dil
+	leaq	360(%r14), %rdi
+	sbbq	$3, %rdx
+	subq	%rbx, %rdx
+	call	httpd_realloc_str
+	movq	360(%r14), %rdi
+	movq	%rbx, %rsi
+	call	strcpy
+	movq	authpath.5627(%rip), %rdi
+	call	strlen
+	movl	$maxprevauthpath.5638, %esi
+	movq	%rax, %rdx
+	movl	$prevauthpath.5637, %edi
+	call	httpd_realloc_str
+	movq	authpath.5627(%rip), %rsi
+	movq	prevauthpath.5637(%rip), %rdi
+	call	strcpy
+	movq	104(%rsp), %rax
+	movq	%r12, %rdx
+	movq	%rax, prevmtime.5639(%rip)
+.L1008:
+	movl	(%rdx), %ecx
+	addq	$4, %rdx
+	leal	-16843009(%rcx), %eax
+	notl	%ecx
+	andl	%ecx, %eax
+	andl	$-2139062144, %eax
+	je	.L1008
+	movl	%eax, %ecx
+	movl	$maxprevuser.5641, %esi
+	movl	$prevuser.5640, %edi
+	shrl	$16, %ecx
+	testl	$32896, %eax
+	cmove	%ecx, %eax
+	leaq	2(%rdx), %rcx
+	movl	%eax, %ebx
+	cmove	%rcx, %rdx
+	addb	%al, %bl
+	sbbq	$3, %rdx
+	subq	%r12, %rdx
+	call	httpd_realloc_str
+	movq	prevuser.5640(%rip), %rdi
+	movq	%r12, %rsi
+	call	strcpy
+	movq	%r15, %rdi
+	call	strlen
+	movl	$maxprevcryp.5643, %esi
+	movq	%rax, %rdx
+	movl	$prevcryp.5642, %edi
+	call	httpd_realloc_str
+	movq	prevcryp.5642(%rip), %rdi
+	movq	%r15, %rsi
+	call	strcpy
+	movl	$1, %edx
+.L991:
+	addq	$1192, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 56
+	movl	%edx, %eax
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L1038:
+	.cfi_restore_state
+	movq	%rbp, %rdi
+	call	fclose
+.L1035:
+	movq	%r13, %rsi
+	movq	%r14, %rdi
+	call	send_authenticate
+.L1036:
+	movl	$-1, %edx
+	jmp	.L991
+	.p2align 4,,10
+	.p2align 3
+.L1037:
+	movq	prevuser.5640(%rip), %rsi
+	movq	%r12, %rdi
+	call	strcmp
+	testl	%eax, %eax
+	jne	.L996
+	movq	prevcryp.5642(%rip), %rsi
+	movq	8(%rsp), %rdi
+	call	crypt
+	testq	%rax, %rax
+	je	.L1036
+	movq	prevcryp.5642(%rip), %rsi
+	movq	%rax, %rdi
+	call	strcmp
+	testl	%eax, %eax
+	jne	.L1035
+	movq	%r12, %rdx
+.L998:
+	movl	(%rdx), %ecx
+	addq	$4, %rdx
+	leal	-16843009(%rcx), %eax
+	notl	%ecx
+	andl	%ecx, %eax
+	andl	$-2139062144, %eax
+	je	.L998
+	movl	%eax, %ecx
+	leaq	456(%r14), %rsi
+	leaq	360(%r14), %rdi
+	shrl	$16, %ecx
+	testl	$32896, %eax
+	cmove	%ecx, %eax
+	leaq	2(%rdx), %rcx
+	movl	%eax, %ebx
+	cmove	%rcx, %rdx
+	addb	%al, %bl
+	sbbq	$3, %rdx
+	subq	%r12, %rdx
+	call	httpd_realloc_str
+	movq	360(%r14), %rdi
+	movq	%r12, %rsi
+	call	strcpy
+	movl	$1, %edx
+	jmp	.L991
+.L1033:
+	movq	authpath.5627(%rip), %rbx
+	leaq	16(%r14), %rdi
+	call	httpd_ntoa
+	movq	%rbx, %rcx
+	movq	%rax, %rdx
+	movl	$.LC114, %esi
+	movl	$3, %edi
+	xorl	%eax, %eax
+	call	syslog
+	movq	208(%r14), %r9
+	movl	$.LC102, %edx
+	movl	$.LC115, %r8d
+	movl	$.LC27, %ecx
+	movl	$403, %esi
+	movq	%r14, %rdi
+	call	httpd_send_err
+	movl	$-1, %edx
+	jmp	.L991
+	.cfi_endproc
+.LFE23:
+	.size	auth_check2, .-auth_check2
+	.section	.rodata.str1.1
+.LC116:
+	.string	"."
+	.text
+	.p2align 4,,15
+	.type	auth_check, @function
+auth_check:
+.LFB22:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushq	%rbx
+	.cfi_def_cfa_offset 24
+	.cfi_offset 3, -24
+	movq	%rsi, %rbp
+	movq	%rdi, %rbx
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 32
+	movq	8(%rdi), %rax
+	movl	104(%rax), %edx
+	testl	%edx, %edx
+	je	.L1040
+	movl	100(%rax), %eax
+	movl	$.LC116, %esi
+	testl	%eax, %eax
+	je	.L1041
+	movq	344(%rdi), %rsi
+	movl	$.LC116, %eax
+	cmpb	$0, (%rsi)
+	cmove	%rax, %rsi
+.L1041:
+	movq	%rbx, %rdi
+	call	auth_check2
+	cmpl	$-1, %eax
+	je	.L1039
+	cmpl	$1, %eax
+	jne	.L1040
+.L1039:
+	addq	$8, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 24
+	popq	%rbx
+	.cfi_def_cfa_offset 16
+	popq	%rbp
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L1040:
+	.cfi_restore_state
+	addq	$8, %rsp
+	.cfi_def_cfa_offset 24
+	movq	%rbp, %rsi
+	movq	%rbx, %rdi
+	popq	%rbx
+	.cfi_def_cfa_offset 16
+	popq	%rbp
+	.cfi_def_cfa_offset 8
+	jmp	auth_check2
+	.cfi_endproc
+.LFE22:
+	.size	auth_check, .-auth_check
+	.section	.rodata.str1.8
+	.align 8
+.LC117:
+	.string	"%.80s non-local referer \"%.80s%.80s\" \"%.80s\""
+	.align 8
+.LC118:
+	.string	"You must supply a local referer to get URL '%.80s' from this server.\n"
+	.text
+	.p2align 4,,15
+	.type	check_referer, @function
+check_referer:
+.LFB56:
+	.cfi_startproc
+	pushq	%r14
+	.cfi_def_cfa_offset 16
+	.cfi_offset 14, -16
+	pushq	%r13
+	.cfi_def_cfa_offset 24
+	.cfi_offset 13, -24
+	pushq	%r12
+	.cfi_def_cfa_offset 32
+	.cfi_offset 12, -32
+	pushq	%rbp
+	.cfi_def_cfa_offset 40
+	.cfi_offset 6, -40
+	movl	$1, %ebp
+	pushq	%rbx
+	.cfi_def_cfa_offset 48
+	.cfi_offset 3, -48
+	movq	8(%rdi), %rax
+	cmpq	$0, 112(%rax)
+	je	.L1052
+	movq	%rdi, %rbx
+	call	really_check_referer
+	testl	%eax, %eax
+	movl	%eax, %ebp
+	jne	.L1052
+	movq	8(%rbx), %rax
+	movl	100(%rax), %edx
+	testl	%edx, %edx
+	jne	.L1058
+.L1054:
+	movq	8(%rax), %r12
+	movl	$.LC27, %eax
+	testq	%r12, %r12
+	cmove	%rax, %r12
+.L1055:
+	movq	272(%rbx), %r14
+	movq	208(%rbx), %r13
+	leaq	16(%rbx), %rdi
+	call	httpd_ntoa
+	movq	%r14, %r9
+	movq	%rax, %rdx
+	movq	%r13, %r8
+	movq	%r12, %rcx
+	movl	$.LC117, %esi
+	movl	$6, %edi
+	xorl	%eax, %eax
+	call	syslog
+	movq	208(%rbx), %r9
+	movl	$.LC118, %r8d
+	movl	$.LC27, %ecx
+	movl	$.LC102, %edx
+	movl	$403, %esi
+	movq	%rbx, %rdi
+	call	httpd_send_err
+.L1052:
+	popq	%rbx
+	.cfi_remember_state
+	.cfi_def_cfa_offset 40
+	movl	%ebp, %eax
+	popq	%rbp
+	.cfi_def_cfa_offset 32
+	popq	%r12
+	.cfi_def_cfa_offset 24
+	popq	%r13
+	.cfi_def_cfa_offset 16
+	popq	%r14
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L1058:
+	.cfi_restore_state
+	movq	512(%rbx), %r12
+	testq	%r12, %r12
+	jne	.L1055
+	jmp	.L1054
+	.cfi_endproc
+.LFE56:
+	.size	check_referer, .-check_referer
+	.section	.rodata.str1.8
+	.align 8
+.LC119:
+	.string	"/usr/local/bin:/usr/ucb:/bin:/usr/bin"
+	.section	.rodata.str1.1
+.LC120:
+	.string	"PATH=%s"
+.LC121:
+	.string	"SERVER_SOFTWARE=%s"
+.LC122:
+	.string	"SERVER_NAME=%s"
+.LC123:
+	.string	"GATEWAY_INTERFACE=CGI/1.1"
+.LC124:
+	.string	"SERVER_PROTOCOL=%s"
+.LC125:
+	.string	"%d"
+.LC126:
+	.string	"SERVER_PORT=%s"
+.LC127:
+	.string	"REQUEST_METHOD=%s"
+.LC128:
+	.string	"PATH_INFO=/%s"
+.LC129:
+	.string	"%s%s"
+.LC130:
+	.string	"PATH_TRANSLATED=%s"
+.LC131:
+	.string	"SCRIPT_NAME=/%s"
+.LC132:
+	.string	"QUERY_STRING=%s"
+.LC133:
+	.string	"REMOTE_ADDR=%s"
+.LC134:
+	.string	"HTTP_REFERER=%s"
+.LC135:
+	.string	"HTTP_USER_AGENT=%s"
+.LC136:
+	.string	"HTTP_ACCEPT=%s"
+.LC137:
+	.string	"HTTP_ACCEPT_ENCODING=%s"
+.LC138:
+	.string	"HTTP_ACCEPT_LANGUAGE=%s"
+.LC139:
+	.string	"HTTP_COOKIE=%s"
+.LC140:
+	.string	"CONTENT_TYPE=%s"
+.LC141:
+	.string	"HTTP_HOST=%s"
+.LC142:
+	.string	"%lu"
+.LC143:
+	.string	"CONTENT_LENGTH=%s"
+.LC144:
+	.string	"REMOTE_USER=%s"
+.LC145:
+	.string	"Basic"
+.LC146:
+	.string	"AUTH_TYPE=%s"
+.LC147:
+	.string	"TZ"
+.LC148:
+	.string	"TZ=%s"
+.LC149:
+	.string	"CGI_PATTERN=%s"
+	.section	.text.unlikely
+	.type	make_envp, @function
+make_envp:
+.LFB46:
+	.cfi_startproc
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	movl	$.LC119, %esi
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	movq	%rdi, %rbp
+	movl	$.LC120, %edi
+	subq	$280, %rsp
+	.cfi_def_cfa_offset 336
+	call	build_env
+	movl	$.LC67, %esi
+	movl	$.LC121, %edi
+	movq	%rax, envp.6008(%rip)
+	call	build_env
+	movq	%rax, envp.6008+8(%rip)
+	movq	8(%rbp), %rax
+	cmpl	$0, 100(%rax)
+	je	.L1060
+	movq	512(%rbp), %rsi
+	testq	%rsi, %rsi
+	jne	.L1061
+.L1060:
+	movq	8(%rax), %rsi
+	movl	$2, %r12d
+	testq	%rsi, %rsi
+	je	.L1062
+.L1061:
+	movl	$.LC122, %edi
+	movl	$3, %r12d
+	call	build_env
+	movq	%rax, envp.6008+16(%rip)
+.L1062:
+	movq	224(%rbp), %rsi
+	movslq	%r12d, %rax
+	movl	$.LC124, %edi
+	movq	$.LC123, envp.6008(,%rax,8)
+	leal	4(%r12), %ebx
+	call	build_env
+	leal	1(%r12), %edx
+	leaq	16(%rsp), %rdi
+	movl	$256, %esi
+	movslq	%edx, %rdx
+	movq	%rax, envp.6008(,%rdx,8)
+	movq	8(%rbp), %rax
+	movl	$.LC125, %edx
+	movzwl	16(%rax), %ecx
+	xorl	%eax, %eax
+	call	my_snprintf
+	leaq	16(%rsp), %rsi
+	movl	$.LC126, %edi
+	call	build_env
+	movl	180(%rbp), %edi
+	leal	2(%r12), %edx
+	movslq	%edx, %rdx
+	movq	%rax, envp.6008(,%rdx,8)
+	call	httpd_method_str
+	movl	$.LC127, %edi
+	movq	%rax, %rsi
+	call	build_env
+	leal	3(%r12), %edx
+	movq	256(%rbp), %rsi
+	movslq	%edx, %rdx
+	movq	%rax, envp.6008(,%rdx,8)
+	cmpb	$0, (%rsi)
+	je	.L1063
+	movl	$.LC128, %edi
+	movslq	%ebx, %rbx
+	leal	5(%r12), %r13d
+	call	build_env
+	movq	%rax, envp.6008(,%rbx,8)
+	movq	8(%rbp), %rax
+	orq	$-1, %rsi
+	movq	%rsi, %rcx
+	movq	256(%rbp), %r8
+	movl	%r13d, %ebx
+	movq	64(%rax), %r15
+	xorl	%eax, %eax
+	movq	%r15, %rdi
+	repnz scasb
+	movq	%r8, %rdi
+	movq	%r8, 8(%rsp)
+	notq	%rcx
+	movq	%rcx, %rdx
+	movq	%rsi, %rcx
+	repnz scasb
+	movq	%rcx, %rax
+	notq	%rax
+	leaq	-1(%rdx,%rax), %rsi
+	movq	%rsi, %rdi
+	movq	%rsi, (%rsp)
+	call	malloc
+	testq	%rax, %rax
+	movq	%rax, %r14
+	je	.L1063
+	movq	8(%rsp), %r8
+	movq	(%rsp), %rsi
+	movq	%rax, %rdi
+	movq	%r15, %rcx
+	movl	$.LC129, %edx
+	xorl	%eax, %eax
+	movslq	%r13d, %r13
+	leal	6(%r12), %ebx
+	call	my_snprintf
+	movq	%r14, %rsi
+	movl	$.LC130, %edi
+	call	build_env
+	movq	%rax, envp.6008(,%r13,8)
+.L1063:
+	movq	232(%rbp), %r13
+	movl	$.LC116, %esi
+	leal	1(%rbx), %r12d
+	movq	%r13, %rdi
+	call	strcmp
+	testl	%eax, %eax
+	movl	$.LC27, %eax
+	movl	$.LC131, %edi
+	cmove	%rax, %r13
+	movq	%r13, %rsi
+	call	build_env
+	movq	264(%rbp), %rsi
+	movslq	%ebx, %rdx
+	movq	%rax, envp.6008(,%rdx,8)
+	cmpb	$0, (%rsi)
+	je	.L1065
+	movslq	%r12d, %r12
+	addl	$2, %ebx
+	movl	$.LC132, %edi
+	call	build_env
+	movq	%rax, envp.6008(,%r12,8)
+	movl	%ebx, %r12d
+.L1065:
+	leaq	16(%rbp), %rdi
+	leal	1(%r12), %ebx
+	call	httpd_ntoa
+	movl	$.LC133, %edi
+	movq	%rax, %rsi
+	call	build_env
+	movq	272(%rbp), %rsi
+	movslq	%r12d, %rdx
+	movq	%rax, envp.6008(,%rdx,8)
+	cmpb	$0, (%rsi)
+	je	.L1066
+	movslq	%ebx, %rbx
+	addl	$2, %r12d
+	movl	$.LC134, %edi
+	call	build_env
+	movq	%rax, envp.6008(,%rbx,8)
+	movl	%r12d, %ebx
+.L1066:
+	movq	280(%rbp), %rsi
+	cmpb	$0, (%rsi)
+	je	.L1067
+	leal	1(%rbx), %r12d
+	movl	$.LC135, %edi
+	movslq	%ebx, %rbx
+	call	build_env
+	movq	%rax, envp.6008(,%rbx,8)
+	movl	%r12d, %ebx
+.L1067:
+	movq	288(%rbp), %rsi
+	cmpb	$0, (%rsi)
+	je	.L1068
+	leal	1(%rbx), %r12d
+	movl	$.LC136, %edi
+	movslq	%ebx, %rbx
+	call	build_env
+	movq	%rax, envp.6008(,%rbx,8)
+	movl	%r12d, %ebx
+.L1068:
+	movq	296(%rbp), %rsi
+	cmpb	$0, (%rsi)
+	je	.L1069
+	leal	1(%rbx), %r12d
+	movl	$.LC137, %edi
+	movslq	%ebx, %rbx
+	call	build_env
+	movq	%rax, envp.6008(,%rbx,8)
+	movl	%r12d, %ebx
+.L1069:
+	movq	304(%rbp), %rsi
+	cmpb	$0, (%rsi)
+	je	.L1070
+	leal	1(%rbx), %r12d
+	movl	$.LC138, %edi
+	movslq	%ebx, %rbx
+	call	build_env
+	movq	%rax, envp.6008(,%rbx,8)
+	movl	%r12d, %ebx
+.L1070:
+	movq	312(%rbp), %rsi
+	cmpb	$0, (%rsi)
+	je	.L1071
+	leal	1(%rbx), %r12d
+	movl	$.LC139, %edi
+	movslq	%ebx, %rbx
+	call	build_env
+	movq	%rax, envp.6008(,%rbx,8)
+	movl	%r12d, %ebx
+.L1071:
+	movq	320(%rbp), %rsi
+	cmpb	$0, (%rsi)
+	je	.L1072
+	leal	1(%rbx), %r12d
+	movl	$.LC140, %edi
+	movslq	%ebx, %rbx
+	call	build_env
+	movq	%rax, envp.6008(,%rbx,8)
+	movl	%r12d, %ebx
+.L1072:
+	movq	336(%rbp), %rsi
+	cmpb	$0, (%rsi)
+	je	.L1073
+	leal	1(%rbx), %r12d
+	movl	$.LC141, %edi
+	movslq	%ebx, %rbx
+	call	build_env
+	movq	%rax, envp.6008(,%rbx,8)
+	movl	%r12d, %ebx
+.L1073:
+	movq	496(%rbp), %rcx
+	cmpq	$-1, %rcx
+	je	.L1074
+	leaq	16(%rsp), %rdi
+	movl	$.LC142, %edx
+	movl	$256, %esi
+	xorl	%eax, %eax
+	leal	1(%rbx), %r12d
+	movslq	%ebx, %rbx
+	call	my_snprintf
+	leaq	16(%rsp), %rsi
+	movl	$.LC143, %edi
+	call	build_env
+	movq	%rax, envp.6008(,%rbx,8)
+	movl	%r12d, %ebx
+.L1074:
+	movq	360(%rbp), %rsi
+	cmpb	$0, (%rsi)
+	je	.L1075
+	leal	1(%rbx), %r12d
+	movl	$.LC144, %edi
+	movslq	%ebx, %rbx
+	call	build_env
+	movq	%rax, envp.6008(,%rbx,8)
+	movl	%r12d, %ebx
+.L1075:
+	movq	352(%rbp), %rax
+	cmpb	$0, (%rax)
+	je	.L1076
+	leal	1(%rbx), %r12d
+	movl	$.LC145, %esi
+	movslq	%ebx, %rbx
+	movl	$.LC146, %edi
+	call	build_env
+	movq	%rax, envp.6008(,%rbx,8)
+	movl	%r12d, %ebx
+.L1076:
+	movl	$.LC147, %edi
+	call	getenv
+	testq	%rax, %rax
+	je	.L1077
+	leal	1(%rbx), %r12d
+	movl	$.LC147, %edi
+	movslq	%ebx, %rbx
+	call	getenv
+	movl	$.LC148, %edi
+	movq	%rax, %rsi
+	call	build_env
+	movq	%rax, envp.6008(,%rbx,8)
+	movl	%r12d, %ebx
+.L1077:
+	movq	8(%rbp), %rax
+	movl	$.LC149, %edi
+	movq	24(%rax), %rsi
+	call	build_env
+	movslq	%ebx, %rdx
+	incl	%ebx
+	movslq	%ebx, %rbx
+	movq	%rax, envp.6008(,%rdx,8)
+	movl	$envp.6008, %eax
+	movq	$0, envp.6008(,%rbx,8)
+	addq	$280, %rsp
+	.cfi_def_cfa_offset 56
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE46:
+	.size	make_envp, .-make_envp
+	.text
+	.p2align 4,,15
+	.globl	httpd_read_fully
+	.type	httpd_read_fully, @function
+httpd_read_fully:
+.LFB62:
+	.cfi_startproc
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	movl	%edi, %r14d
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	movq	%rsi, %r13
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	movq	%rdx, %r12
+	xorl	%ebp, %ebp
+	xorl	%ebx, %ebx
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 64
+.L1090:
+	cmpq	%r12, %rbx
+	jnb	.L1096
+.L1095:
+	movq	%r12, %rdx
+	leaq	0(%r13,%rbx), %rsi
+	movl	%r14d, %edi
+	subq	%rbx, %rdx
+	call	read
+	testl	%eax, %eax
+	movl	%eax, %r15d
+	js	.L1102
+	je	.L1096
+	addl	%eax, %ebp
+	movslq	%ebp, %rbx
+	cmpq	%r12, %rbx
+	jb	.L1095
+.L1096:
+	movl	%ebp, %r15d
+.L1089:
+	addq	$8, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 56
+	movl	%r15d, %eax
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L1102:
+	.cfi_restore_state
+	call	__errno_location
+	movl	(%rax), %eax
+	cmpl	$4, %eax
+	je	.L1097
+	cmpl	$11, %eax
+	jne	.L1089
+.L1097:
+	movl	$1, %edi
+	call	sleep
+	jmp	.L1090
+	.cfi_endproc
+.LFE62:
+	.size	httpd_read_fully, .-httpd_read_fully
+	.p2align 4,,15
+	.globl	httpd_write_fully
+	.type	httpd_write_fully, @function
+httpd_write_fully:
+.LFB63:
+	.cfi_startproc
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	movl	%edi, %r14d
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	movq	%rsi, %r13
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	movq	%rdx, %r12
+	xorl	%ebp, %ebp
+	xorl	%ebx, %ebx
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 64
+.L1104:
+	cmpq	%r12, %rbx
+	jnb	.L1110
+.L1109:
+	movq	%r12, %rdx
+	leaq	0(%r13,%rbx), %rsi
+	movl	%r14d, %edi
+	subq	%rbx, %rdx
+	call	write
+	testl	%eax, %eax
+	movl	%eax, %r15d
+	js	.L1116
+	je	.L1110
+	addl	%eax, %ebp
+	movslq	%ebp, %rbx
+	cmpq	%r12, %rbx
+	jb	.L1109
+.L1110:
+	movl	%ebp, %r15d
+.L1103:
+	addq	$8, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 56
+	movl	%r15d, %eax
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L1116:
+	.cfi_restore_state
+	call	__errno_location
+	movl	(%rax), %eax
+	cmpl	$4, %eax
+	je	.L1111
+	cmpl	$11, %eax
+	jne	.L1103
+.L1111:
+	movl	$1, %edi
+	call	sleep
+	jmp	.L1104
+	.cfi_endproc
+.LFE63:
+	.size	httpd_write_fully, .-httpd_write_fully
+	.p2align 4,,15
+	.globl	httpd_write_response
+	.type	httpd_write_response, @function
+httpd_write_response:
+.LFB10:
+	.cfi_startproc
+	movl	sub_process(%rip), %eax
+	pushq	%rbx
+	.cfi_def_cfa_offset 16
+	.cfi_offset 3, -16
+	movq	%rdi, %rbx
+	testl	%eax, %eax
+	jne	.L1124
+.L1118:
+	movq	472(%rbx), %rdx
+	testq	%rdx, %rdx
+	jne	.L1125
+	popq	%rbx
+	.cfi_remember_state
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L1125:
+	.cfi_restore_state
+	movq	368(%rbx), %rsi
+	movl	704(%rbx), %edi
+	call	httpd_write_fully
+	movq	$0, 472(%rbx)
+	popq	%rbx
+	.cfi_remember_state
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L1124:
+	.cfi_restore_state
+	movl	704(%rdi), %edi
+	call	httpd_clear_ndelay
+	jmp	.L1118
+	.cfi_endproc
+.LFE10:
+	.size	httpd_write_response, .-httpd_write_response
+	.section	.rodata.str1.1
+.LC150:
+	.string	" -&gt; "
+.LC151:
+	.string	"*"
+.LC152:
+	.string	"/"
+.LC153:
+	.string	"@"
+.LC154:
+	.string	"="
+.LC155:
+	.string	"opendir %.80s - %m"
+	.section	.rodata.str1.8
+	.align 8
+.LC156:
+	.string	"The requested URL '%.80s' was not found on this server.\n"
+	.section	.rodata.str1.1
+.LC157:
+	.string	"Not Found"
+.LC158:
+	.string	"OK"
+.LC159:
+	.string	"fork - %m"
+.LC160:
+	.string	"w"
+.LC161:
+	.string	"fdopen - %m"
+	.section	.rodata.str1.8
+	.align 8
+.LC162:
+	.string	"<HTML>\n<HEAD><TITLE>Index of %.80s</TITLE></HEAD>\n<BODY BGCOLOR=\"#99cc99\" TEXT=\"#000000\" LINK=\"#2020ff\" VLINK=\"#4040cc\">\n<H2>Index of %.80s</H2>\n<PRE>\nmode  links  bytes  last-changed  name\n<HR>"
+	.align 8
+.LC163:
+	.string	"out of memory reallocating directory names"
+	.section	.rodata.str1.1
+.LC164:
+	.string	"%s"
+	.section	.rodata.str1.8
+	.align 8
+.LC165:
+	.string	"%s %3ld  %10lld  %s  <A HREF=\"/%.500s%s\">%.80s</A>%s%s%s\n"
+	.section	.rodata.str1.1
+.LC166:
+	.string	"</PRE></BODY>\n</HTML>\n"
+	.section	.rodata.str1.8
+	.align 8
+.LC167:
+	.string	"spawned indexing process %d for directory '%.200s'"
+	.align 8
+.LC168:
+	.string	"tmr_create(cgi_kill ls) failed"
+	.text
+	.p2align 4,,15
+	.type	ls, @function
+ls:
+.LFB44:
+	.cfi_startproc
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	movq	%rdi, %rbx
+	subq	$4456, %rsp
+	.cfi_def_cfa_offset 4512
+	movq	240(%rdi), %rdi
+	call	opendir
+	testq	%rax, %rax
+	movq	%rax, (%rsp)
+	je	.L1199
+	movl	180(%rbx), %eax
+	cmpl	$2, %eax
+	je	.L1200
+	cmpl	$1, %eax
+	jne	.L1130
+	movq	8(%rbx), %rdx
+	movl	32(%rdx), %ecx
+	movl	36(%rdx), %eax
+	testl	%ecx, %ecx
+	je	.L1131
+	cmpl	%eax, %ecx
+	jle	.L1201
+.L1131:
+	addl	$1, %eax
+	movl	%eax, 36(%rdx)
+	call	fork
+	testl	%eax, %eax
+	movl	%eax, %ebp
+	js	.L1202
+	jne	.L1133
+	movq	8(%rbx), %rdi
+	movl	$1, sub_process(%rip)
+	call	httpd_unlisten
+	pushq	648(%rbx)
+	.cfi_def_cfa_offset 4520
+	movl	$.LC27, %r8d
+	pushq	$-1
+	.cfi_def_cfa_offset 4528
+	movq	%r8, %rcx
+	movl	$.LC158, %edx
+	movl	$.LC26, %r9d
+	movl	$200, %esi
+	movq	%rbx, %rdi
+	call	send_mime
+	movq	%rbx, %rdi
+	call	httpd_write_response
+	movl	$10, %edi
+	call	nice
+	movl	704(%rbx), %edi
+	movl	$.LC160, %esi
+	call	fdopen
+	testq	%rax, %rax
+	movq	%rax, 24(%rsp)
+	popq	%rdx
+	.cfi_def_cfa_offset 4520
+	popq	%rcx
+	.cfi_def_cfa_offset 4512
+	je	.L1203
+	movq	208(%rbx), %rdx
+	movq	8(%rsp), %rdi
+	movl	$.LC162, %esi
+	xorl	%eax, %eax
+	xorl	%r13d, %r13d
+	movq	%rdx, %rcx
+	call	fprintf
+	.p2align 4,,10
+	.p2align 3
+.L1135:
+	movq	(%rsp), %rdi
+	call	readdir
+	testq	%rax, %rax
+	movq	%rax, %r15
+	je	.L1204
+	movl	maxnames.5950(%rip), %esi
+	cmpl	%r13d, %esi
+	jg	.L1136
+	testl	%esi, %esi
+	jne	.L1137
+	movl	$409700, %edi
+	movl	$100, maxnames.5950(%rip)
+	call	malloc
+	movl	$800, %edi
+	movq	%rax, %rbp
+	movq	%rax, names.5952(%rip)
+	call	malloc
+	movq	%rax, nameptrs.5953(%rip)
+.L1138:
+	testq	%rbp, %rbp
+	je	.L1139
+	movq	nameptrs.5953(%rip), %r14
+	testq	%r14, %r14
+	je	.L1139
+	movl	maxnames.5950(%rip), %ecx
+	testl	%ecx, %ecx
+	jle	.L1141
+	subl	$1, %ecx
+	movq	%rbp, %rax
+	movq	%r14, %rdx
+	movq	%rcx, %rsi
+	salq	$12, %rsi
+	leaq	4097(%rcx,%rsi), %rcx
+	addq	%rbp, %rcx
+	.p2align 4,,10
+	.p2align 3
+.L1142:
+	movq	%rax, (%rdx)
+	addq	$4097, %rax
+	addq	$8, %rdx
+	cmpq	%rax, %rcx
+	jne	.L1142
+.L1141:
+	leaq	19(%r15), %r12
+	leaq	(%r14,%r13,8), %r15
+	addq	$1, %r13
+	movq	%r12, %rdi
+	call	strlen
+	movq	(%r15), %rdi
+	movslq	%eax, %rbp
+	movq	%r12, %rsi
+	movq	%rbp, %rdx
+	call	strncpy
+	movq	(%r15), %rax
+	movb	$0, (%rax,%rbp)
+	jmp	.L1135
+	.p2align 4,,10
+	.p2align 3
+.L1133:
+	movq	(%rsp), %rdi
+	call	closedir
+	movq	240(%rbx), %rcx
+	xorl	%eax, %eax
+	movl	%ebp, %edx
+	movl	$.LC167, %esi
+	movl	$6, %edi
+	call	syslog
+	xorl	%r8d, %r8d
+	xorl	%edi, %edi
+	movl	%ebp, %edx
+	movl	$30000, %ecx
+	movl	$cgi_kill, %esi
+	call	tmr_create
+	testq	%rax, %rax
+	je	.L1205
+	movl	$200, 184(%rbx)
+	movq	$25000, 200(%rbx)
+	xorl	%eax, %eax
+	movl	$0, 556(%rbx)
+.L1126:
+	addq	$4456, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 56
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L1136:
+	.cfi_restore_state
+	movq	nameptrs.5953(%rip), %r14
+	jmp	.L1141
+	.p2align 4,,10
+	.p2align 3
+.L1137:
+	leal	(%rsi,%rsi), %r12d
+	movq	names.5952(%rip), %rdi
+	sall	$13, %esi
+	addl	%r12d, %esi
+	movl	%r12d, maxnames.5950(%rip)
+	movslq	%esi, %rsi
+	call	realloc
+	movq	nameptrs.5953(%rip), %rdi
+	movslq	%r12d, %rsi
+	movq	%rax, %rbp
+	salq	$3, %rsi
+	movq	%rax, names.5952(%rip)
+	call	realloc
+	movq	%rax, nameptrs.5953(%rip)
+	jmp	.L1138
+	.p2align 4,,10
+	.p2align 3
+.L1204:
+	movq	(%rsp), %rdi
+	call	closedir
+	movq	nameptrs.5953(%rip), %rdi
+	movslq	%r13d, %rsi
+	movl	$name_compare, %ecx
+	movl	$8, %edx
+	call	qsort
+	testl	%r13d, %r13d
+	je	.L1144
+	leal	-1(%r13), %eax
+	leaq	336(%rsp), %r12
+	xorl	%ebp, %ebp
+	leaq	8(,%rax,8), %r13
+	.p2align 4,,10
+	.p2align 3
+.L1175:
+	movq	240(%rbx), %rdi
+	call	strlen
+	movq	%rax, %r14
+	movq	nameptrs.5953(%rip), %rax
+	movq	(%rax,%rbp), %rdi
+	call	strlen
+	leaq	1(%r14,%rax), %rdx
+	movl	$maxname.5955, %esi
+	movl	$name.5954, %edi
+	call	httpd_realloc_str
+	movq	232(%rbx), %rdi
+	call	strlen
+	movq	%rax, %r14
+	movq	nameptrs.5953(%rip), %rax
+	movq	(%rax,%rbp), %rdi
+	call	strlen
+	leaq	1(%r14,%rax), %rdx
+	movl	$maxrname.5957, %esi
+	movl	$rname.5956, %edi
+	call	httpd_realloc_str
+	movq	240(%rbx), %rax
+	cmpb	$0, (%rax)
+	je	.L1206
+	movl	$2, %ecx
+	movq	%rax, %rsi
+	movl	$.LC116, %edi
+	repz cmpsb
+	movq	nameptrs.5953(%rip), %r14
+	movq	name.5954(%rip), %rdi
+	seta	%cl
+	setb	%dl
+	addq	%rbp, %r14
+	cmpb	%dl, %cl
+	movq	(%r14), %rsi
+	jne	.L1147
+.L1146:
+	call	strcpy
+	movq	(%r14), %rsi
+	movq	rname.5956(%rip), %rdi
+	call	strcpy
+.L1148:
+	movq	rname.5956(%rip), %rdi
+	call	strlen
+	leaq	1(%rax,%rax,2), %rdx
+	movl	$maxencrname.5959, %esi
+	movl	$encrname.5958, %edi
+	call	httpd_realloc_str
+	movq	rname.5956(%rip), %rdx
+	movl	maxencrname.5959(%rip), %esi
+	movq	encrname.5958(%rip), %rdi
+	call	strencode
+	movq	name.5954(%rip), %rdi
+	leaq	48(%rsp), %rsi
+	call	stat
+	testl	%eax, %eax
+	js	.L1151
+	movq	name.5954(%rip), %rdi
+	leaq	192(%rsp), %rsi
+	call	lstat
+	testl	%eax, %eax
+	js	.L1151
+	movl	216(%rsp), %eax
+	movb	$0, 336(%rsp)
+	movl	%eax, %edx
+	andl	$61440, %edx
+	cmpl	$24576, %edx
+	je	.L1154
+	ja	.L1155
+	cmpl	$8192, %edx
+	je	.L1156
+	cmpl	$16384, %edx
+	je	.L1157
+	cmpl	$4096, %edx
+	je	.L1207
+.L1153:
+	movb	$63, 16(%rsp)
+	movl	$.LC27, %r14d
+	.p2align 4,,10
+	.p2align 3
+.L1162:
+	movl	%eax, %edx
+	movb	$0, 20(%rsp)
+	andl	$4, %edx
+	cmpl	$1, %edx
+	sbbl	%edx, %edx
+	andl	$-69, %edx
+	addl	$114, %edx
+	movb	%dl, 17(%rsp)
+	movl	%eax, %edx
+	andl	$2, %edx
+	cmpl	$1, %edx
+	sbbl	%edx, %edx
+	andl	$1, %eax
+	andl	$-74, %edx
+	addl	$119, %edx
+	cmpl	$1, %eax
+	sbbl	%eax, %eax
+	xorl	%edi, %edi
+	movb	%dl, 18(%rsp)
+	andl	$-75, %eax
+	addl	$120, %eax
+	movb	%al, 19(%rsp)
+	call	time
+	leaq	280(%rsp), %rdi
+	movq	%rax, %r15
+	call	ctime
+	movq	%rax, %r9
+	movzbl	4(%rax), %eax
+	movq	%r15, %rdx
+	movb	$32, 3(%r9)
+	movb	%al, (%r9)
+	movzbl	5(%r9), %eax
+	movb	%al, 1(%r9)
+	movzbl	6(%r9), %eax
+	movb	$32, 6(%r9)
+	movb	%al, 2(%r9)
+	movzbl	8(%r9), %eax
+	movb	%al, 4(%r9)
+	movzbl	9(%r9), %eax
+	movb	%al, 5(%r9)
+	subq	280(%rsp), %rdx
+	cmpq	$15724800, %rdx
+	jle	.L1167
+	movzbl	20(%r9), %eax
+	movb	$32, 7(%r9)
+	movb	%al, 8(%r9)
+	movzbl	21(%r9), %eax
+	movb	%al, 9(%r9)
+	movzbl	22(%r9), %eax
+	movb	%al, 10(%r9)
+	movzbl	23(%r9), %eax
+	movb	%al, 11(%r9)
+.L1168:
+	movb	$0, 12(%r9)
+	movl	72(%rsp), %edx
+	movq	nameptrs.5953(%rip), %rcx
+	movl	%edx, %eax
+	andl	$61440, %eax
+	addq	%rbp, %rcx
+	cmpl	$40960, %eax
+	je	.L1180
+	cmpl	$49152, %eax
+	je	.L1171
+	cmpl	$16384, %eax
+	je	.L1172
+	andl	$1, %edx
+	movl	$.LC27, %eax
+	movl	$.LC151, %edx
+	cmovne	%rdx, %rax
+.L1198:
+	movq	(%rcx), %rcx
+	movl	$.LC27, %edx
+.L1174:
+	pushq	%rax
+	.cfi_def_cfa_offset 4520
+	pushq	%r12
+	.cfi_def_cfa_offset 4528
+	movl	$.LC165, %esi
+	pushq	%r14
+	.cfi_def_cfa_offset 4536
+	pushq	%rcx
+	.cfi_def_cfa_offset 4544
+	xorl	%eax, %eax
+	pushq	%rdx
+	.cfi_def_cfa_offset 4552
+	pushq	encrname.5958(%rip)
+	.cfi_def_cfa_offset 4560
+	movq	288(%rsp), %r8
+	movq	256(%rsp), %rcx
+	movq	56(%rsp), %rdi
+	leaq	64(%rsp), %rdx
+	call	fprintf
+	addq	$48, %rsp
+	.cfi_def_cfa_offset 4512
+.L1151:
+	addq	$8, %rbp
+	cmpq	%rbp, %r13
+	jne	.L1175
+.L1144:
+	movq	8(%rsp), %rbx
+	movl	$22, %edx
+	movl	$1, %esi
+	movl	$.LC166, %edi
+	movq	%rbx, %rcx
+	call	fwrite
+	movq	%rbx, %rdi
+	call	fclose
+	xorl	%edi, %edi
+	call	exit
+	.p2align 4,,10
+	.p2align 3
+.L1206:
+	movq	nameptrs.5953(%rip), %r14
+	movq	name.5954(%rip), %rdi
+	addq	%rbp, %r14
+	movq	(%r14), %rsi
+	jmp	.L1146
+	.p2align 4,,10
+	.p2align 3
+.L1147:
+	movq	%rsi, %r8
+	movq	maxname.5955(%rip), %rsi
+	movq	%rax, %rcx
+	movl	$.LC112, %edx
+	xorl	%eax, %eax
+	call	my_snprintf
+	movq	232(%rbx), %rax
+	movl	$2, %ecx
+	movl	$.LC116, %edi
+	movq	%rax, %rsi
+	repz cmpsb
+	jne	.L1149
+	movq	nameptrs.5953(%rip), %rax
+	movq	maxrname.5957(%rip), %rsi
+	movl	$.LC164, %edx
+	movq	rname.5956(%rip), %rdi
+	movq	(%rax,%rbp), %rcx
+	xorl	%eax, %eax
+	call	my_snprintf
+	jmp	.L1148
+	.p2align 4,,10
+	.p2align 3
+.L1155:
+	cmpl	$40960, %edx
+	je	.L1159
+	cmpl	$49152, %edx
+	je	.L1160
+	cmpl	$32768, %edx
+	jne	.L1153
+	movb	$45, 16(%rsp)
+	movl	$.LC27, %r14d
+	jmp	.L1162
+	.p2align 4,,10
+	.p2align 3
+.L1149:
+	movq	nameptrs.5953(%rip), %rdx
+	movq	maxrname.5957(%rip), %rsi
+	movq	%rax, %rcx
+	movq	rname.5956(%rip), %rdi
+	xorl	%eax, %eax
+	movq	(%rdx,%rbp), %r8
+	movl	$.LC129, %edx
+	call	my_snprintf
+	jmp	.L1148
+.L1207:
+	movb	$112, 16(%rsp)
+	movl	$.LC27, %r14d
+	jmp	.L1162
+	.p2align 4,,10
+	.p2align 3
+.L1167:
+	movzbl	11(%r9), %eax
+	movb	$58, 9(%r9)
+	movb	%al, 7(%r9)
+	movzbl	12(%r9), %eax
+	movb	%al, 8(%r9)
+	movzbl	14(%r9), %eax
+	movb	%al, 10(%r9)
+	movzbl	15(%r9), %eax
+	movb	%al, 11(%r9)
+	jmp	.L1168
+	.p2align 4,,10
+	.p2align 3
+.L1180:
+	movl	$.LC153, %eax
+	jmp	.L1198
+.L1172:
+	movl	$.LC152, %eax
+	movq	(%rcx), %rcx
+	movq	%rax, %rdx
+	jmp	.L1174
+	.p2align 4,,10
+	.p2align 3
+.L1171:
+	movl	$.LC154, %eax
+	jmp	.L1198
+.L1200:
+	movq	(%rsp), %rdi
+	call	closedir
+	pushq	648(%rbx)
+	.cfi_def_cfa_offset 4520
+	movl	$.LC27, %r8d
+	pushq	$-1
+	.cfi_def_cfa_offset 4528
+	movl	$200, %esi
+	movq	%rbx, %rdi
+	movl	$.LC26, %r9d
+	movq	%r8, %rcx
+	movl	$.LC158, %edx
+	call	send_mime
+	popq	%rsi
+	.cfi_def_cfa_offset 4520
+	xorl	%eax, %eax
+	popq	%rdi
+	.cfi_def_cfa_offset 4512
+	jmp	.L1126
+.L1154:
+	movb	$98, 16(%rsp)
+	movl	$.LC27, %r14d
+	jmp	.L1162
+.L1157:
+	movb	$100, 16(%rsp)
+	movl	$.LC27, %r14d
+	jmp	.L1162
+.L1156:
+	movb	$99, 16(%rsp)
+	movl	$.LC27, %r14d
+	jmp	.L1162
+.L1160:
+	movb	$115, 16(%rsp)
+	movl	$.LC27, %r14d
+	jmp	.L1162
+.L1159:
+	movq	name.5954(%rip), %rdi
+	movl	$4096, %edx
+	movq	%r12, %rsi
+	movb	$108, 16(%rsp)
+	call	readlink
+	cmpl	$-1, %eax
+	je	.L1208
+	cltq
+	movl	$.LC150, %r14d
+	movb	$0, 336(%rsp,%rax)
+	movl	216(%rsp), %eax
+	jmp	.L1162
+.L1208:
+	movl	216(%rsp), %eax
+	movl	$.LC27, %r14d
+	jmp	.L1162
+.L1130:
+	movq	(%rsp), %rdi
+	call	closedir
+	movl	180(%rbx), %edi
+	call	httpd_method_str
+	movl	$.LC75, %r8d
+	movq	%rax, %r9
+	movl	$.LC27, %ecx
+	movl	$.LC76, %edx
+	movl	$501, %esi
+	movq	%rbx, %rdi
+	call	httpd_send_err
+	movl	$-1, %eax
+	jmp	.L1126
+.L1202:
+	movl	$.LC159, %esi
+	movl	$3, %edi
+	xorl	%eax, %eax
+	call	syslog
+	movq	(%rsp), %rdi
+	call	closedir
+	movq	208(%rbx), %r9
+	movl	$.LC98, %r8d
+	movl	$.LC27, %ecx
+	movl	$.LC99, %edx
+	movl	$500, %esi
+	movq	%rbx, %rdi
+	call	httpd_send_err
+	movl	$-1, %eax
+	jmp	.L1126
+.L1199:
+	movq	240(%rbx), %rdx
+	movl	$.LC155, %esi
+	movl	$3, %edi
+	call	syslog
+	movq	208(%rbx), %r9
+	movl	$.LC156, %r8d
+	movl	$.LC27, %ecx
+	movl	$.LC157, %edx
+	movl	$404, %esi
+	movq	%rbx, %rdi
+	call	httpd_send_err
+	movl	$-1, %eax
+	jmp	.L1126
+.L1201:
+	movq	(%rsp), %rdi
+	call	closedir
+	movq	208(%rbx), %r9
+	movq	httpd_err503form(%rip), %r8
+	movl	$.LC27, %ecx
+	movq	httpd_err503title(%rip), %rdx
+	movl	$503, %esi
+	movq	%rbx, %rdi
+	call	httpd_send_err
+	movl	$-1, %eax
+	jmp	.L1126
+.L1139:
+	movl	$3, %edi
+	movl	$.LC163, %esi
+	xorl	%eax, %eax
+	call	syslog
+	movl	$1, %edi
+	call	exit
+.L1205:
+	movl	$2, %edi
+	movl	$.LC168, %esi
+	call	syslog
+	movl	$1, %edi
+	call	exit
+.L1203:
+	movl	$.LC161, %esi
+	movl	$3, %edi
+	call	syslog
+	movq	208(%rbx), %r9
+	movl	$.LC98, %r8d
+	movl	$.LC27, %ecx
+	movl	$.LC99, %edx
+	movl	$500, %esi
+	movq	%rbx, %rdi
+	call	httpd_send_err
+	movq	%rbx, %rdi
+	call	httpd_write_response
+	movq	(%rsp), %rdi
+	call	closedir
+	movl	$1, %edi
+	call	exit
+	.cfi_endproc
+.LFE44:
+	.size	ls, .-ls
+	.section	.text.unlikely
+	.type	cgi_interpose_input, @function
+cgi_interpose_input:
+.LFB48:
+	.cfi_startproc
+	pushq	%r13
+	.cfi_def_cfa_offset 16
+	.cfi_offset 13, -16
+	pushq	%r12
+	.cfi_def_cfa_offset 24
+	.cfi_offset 12, -24
+	movl	%esi, %r12d
+	pushq	%rbp
+	.cfi_def_cfa_offset 32
+	.cfi_offset 6, -32
+	pushq	%rbx
+	.cfi_def_cfa_offset 40
+	.cfi_offset 3, -40
+	movq	%rdi, %rbp
+	subq	$1032, %rsp
+	.cfi_def_cfa_offset 1072
+	movq	168(%rdi), %rsi
+	movq	160(%rdi), %rbx
+	subq	%rsi, %rbx
+	je	.L1212
+	addq	144(%rdi), %rsi
+	movq	%rbx, %rdx
+	movl	%r12d, %edi
+	call	httpd_write_fully
+	cltq
+	cmpq	%rbx, %rax
+	jne	.L1209
+	jmp	.L1212
+.L1216:
+	subq	%rbx, %rdx
+	movl	704(%rbp), %edi
+	movl	$1024, %eax
+	cmpq	$1024, %rdx
+	movq	%rsp, %rsi
+	cmova	%rax, %rdx
+	call	read
+	testq	%rax, %rax
+	movq	%rax, %r13
+	jns	.L1213
+	call	__errno_location
+	movl	(%rax), %eax
+	cmpl	$4, %eax
+	jne	.L1229
+.L1218:
+	movl	$1, %edi
+	call	sleep
+.L1212:
+	movq	496(%rbp), %rdx
+	cmpq	%rbx, %rdx
+	ja	.L1216
+	jmp	.L1230
+.L1229:
+	cmpl	$11, %eax
+	jne	.L1209
+	jmp	.L1218
+.L1213:
+	je	.L1209
+	movq	%rax, %rdx
+	movq	%rsp, %rsi
+	movl	%r12d, %edi
+	call	httpd_write_fully
+	cltq
+	cmpq	%r13, %rax
+	jne	.L1209
+	addq	%rax, %rbx
+	jmp	.L1212
+.L1230:
+	leaq	704(%rbp), %rdi
+	call	post_post_garbage_hack.isra.3
+.L1209:
+	addq	$1032, %rsp
+	.cfi_def_cfa_offset 40
+	popq	%rbx
+	.cfi_def_cfa_offset 32
+	popq	%rbp
+	.cfi_def_cfa_offset 24
+	popq	%r12
+	.cfi_def_cfa_offset 16
+	popq	%r13
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE48:
+	.size	cgi_interpose_input, .-cgi_interpose_input
+	.section	.rodata.str1.1
+.LC169:
+	.string	"Something"
+.LC170:
+	.string	"Not Modified"
+.LC171:
+	.string	"\r\n\r\n"
+.LC172:
+	.string	"\n\n"
+.LC173:
+	.string	"HTTP/"
+.LC174:
+	.string	"Status:"
+.LC175:
+	.string	"Location:"
+.LC176:
+	.string	"HTTP/1.0 %d %s\r\n"
+	.section	.text.unlikely
+	.type	cgi_interpose_output.isra.4, @function
+cgi_interpose_output.isra.4:
+.LFB69:
+	.cfi_startproc
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	movq	%rdi, %r14
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	xorl	%ebx, %ebx
+	subq	$1064, %rsp
+	.cfi_def_cfa_offset 1120
+	movl	(%rdi), %edi
+	movl	%esi, 12(%rsp)
+	leaq	32(%rsp), %rbp
+	call	httpd_clear_ndelay
+	leaq	16(%rsp), %rsi
+	leaq	24(%rsp), %rdi
+	movl	$500, %edx
+	movq	$0, 16(%rsp)
+	call	httpd_realloc_str
+.L1232:
+	movl	12(%rsp), %edi
+	movl	$1024, %edx
+	movq	%rbp, %rsi
+	call	read
+	testl	%eax, %eax
+	jns	.L1233
+	call	__errno_location
+	movl	(%rax), %eax
+	cmpl	$4, %eax
+	je	.L1269
+	cmpl	$11, %eax
+	jne	.L1234
+.L1269:
+	movl	$1, %edi
+	movq	%rbx, %r12
+	call	sleep
+.L1236:
+	movq	%r12, %rbx
+	jmp	.L1232
+.L1233:
+	jne	.L1237
+.L1234:
+	movq	24(%rsp), %r13
+	movq	%rbx, %r12
+	addq	%rbx, %r13
+	jmp	.L1238
+.L1237:
+	movslq	%eax, %r13
+	leaq	16(%rsp), %rsi
+	leaq	24(%rsp), %rdi
+	leaq	0(%r13,%rbx), %r12
+	movq	%r12, %rdx
+	call	httpd_realloc_str
+	addq	24(%rsp), %rbx
+	movq	%r13, %rdx
+	movq	%rbp, %rsi
+	movq	%rbx, %rdi
+	call	memmove
+	movq	24(%rsp), %rax
+	movl	$.LC171, %esi
+	movb	$0, (%rax,%r12)
+	movq	24(%rsp), %rbx
+	movq	%rbx, %rdi
+	call	strstr
+	testq	%rax, %rax
+	movq	%rax, %r13
+	jne	.L1238
+	movl	$.LC172, %esi
+	movq	%rbx, %rdi
+	call	strstr
+	testq	%rax, %rax
+	movq	%rax, %r13
+	je	.L1236
+.L1238:
+	movq	24(%rsp), %rbx
+	cmpb	$0, (%rbx)
+	je	.L1231
+	movl	$5, %edx
+	movl	$.LC173, %esi
+	movq	%rbx, %rdi
+	call	strncmp
+	testl	%eax, %eax
+	movl	$200, %r15d
+	jne	.L1240
+	movl	$.LC78, %esi
+	movq	%rbx, %rdi
+	call	strcspn
+	leaq	(%rbx,%rax), %rdi
+	call	atoi
+	movl	%eax, %r15d
+.L1240:
+	movl	$.LC174, %esi
+	movq	%rbx, %rdi
+	call	strstr
+	cmpq	%r13, %rax
+	jnb	.L1241
+	testq	%rax, %rax
+	je	.L1241
+	cmpq	%rax, %rbx
+	je	.L1242
+	cmpb	$10, -1(%rax)
+	jne	.L1241
+.L1242:
+	leaq	7(%rax), %rbx
+	movl	$.LC78, %esi
+	movq	%rbx, %rdi
+	call	strspn
+	leaq	(%rbx,%rax), %rdi
+	call	atoi
+	movl	%eax, %r15d
+	jmp	.L1243
+.L1241:
+	movl	$.LC175, %esi
+	movq	%rbx, %rdi
+	call	strstr
+	testq	%rax, %rax
+	je	.L1243
+	cmpq	%rax, %r13
+	jbe	.L1243
+	cmpq	%rax, %rbx
+	je	.L1267
+	cmpb	$10, -1(%rax)
+	je	.L1267
+.L1243:
+	cmpl	$403, %r15d
+	movl	$.LC102, %r8d
+	je	.L1244
+	jg	.L1247
+	cmpl	$304, %r15d
+	movl	$.LC170, %r8d
+	je	.L1244
+	jg	.L1249
+	cmpl	$200, %r15d
+	movl	$.LC158, %r8d
+	je	.L1244
+	cmpl	$302, %r15d
+	movl	$.LC40, %r8d
+	je	.L1244
+	jmp	.L1245
+.L1249:
+	cmpl	$400, %r15d
+	movq	httpd_err400title(%rip), %r8
+	je	.L1244
+	cmpl	$401, %r15d
+	movl	$.LC48, %r8d
+	je	.L1244
+	jmp	.L1245
+.L1247:
+	cmpl	$500, %r15d
+	movl	$.LC99, %r8d
+	je	.L1244
+	jg	.L1254
+	cmpl	$404, %r15d
+	movl	$.LC157, %r8d
+	je	.L1244
+	cmpl	$408, %r15d
+	movq	httpd_err408title(%rip), %r8
+	je	.L1244
+	jmp	.L1245
+.L1254:
+	cmpl	$501, %r15d
+	movl	$.LC76, %r8d
+	je	.L1244
+	cmpl	$503, %r15d
+	movq	httpd_err503title(%rip), %r8
+	je	.L1244
+.L1245:
+	movl	$.LC169, %r8d
+	jmp	.L1244
+.L1267:
+	movl	$302, %r15d
+	movl	$.LC40, %r8d
+.L1244:
+	movl	%r15d, %ecx
+	movl	$.LC176, %edx
+	movl	$1024, %esi
+	movq	%rbp, %rdi
+	xorl	%eax, %eax
+	call	my_snprintf
+	xorl	%eax, %eax
+	movq	%rbp, %rdi
+	orq	$-1, %rcx
+	repnz scasb
+	movl	(%r14), %edi
+	movq	%rbp, %rsi
+	notq	%rcx
+	leaq	-1(%rcx), %rdx
+	call	httpd_write_fully
+	movq	24(%rsp), %rsi
+	movl	(%r14), %edi
+	movq	%r12, %rdx
+	call	httpd_write_fully
+.L1259:
+	movl	12(%rsp), %edi
+	movl	$1024, %edx
+	movq	%rbp, %rsi
+	call	read
+	testl	%eax, %eax
+	movq	%rax, %rbx
+	jns	.L1260
+	call	__errno_location
+	movl	(%rax), %eax
+	cmpl	$4, %eax
+	je	.L1261
+	cmpl	$11, %eax
+	je	.L1261
+.L1264:
+	movl	(%r14), %edi
+	movl	$1, %esi
+	call	shutdown
+	jmp	.L1231
+.L1261:
+	movl	$1, %edi
+	call	sleep
+	jmp	.L1259
+.L1260:
+	movl	(%r14), %edi
+	je	.L1264
+	movslq	%eax, %rdx
+	movq	%rbp, %rsi
+	call	httpd_write_fully
+	cmpl	%eax, %ebx
+	je	.L1259
+	jmp	.L1264
+.L1231:
+	addq	$1064, %rsp
+	.cfi_def_cfa_offset 56
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE69:
+	.size	cgi_interpose_output.isra.4, .-cgi_interpose_output.isra.4
+	.section	.rodata.str1.1
+.LC177:
+	.string	"pipe - %m"
+.LC178:
+	.string	"nph-"
+.LC179:
+	.string	"execve %.80s - %m"
+	.section	.text.unlikely
+	.type	cgi_child, @function
+cgi_child:
+.LFB51:
+	.cfi_startproc
+	pushq	%r14
+	.cfi_def_cfa_offset 16
+	.cfi_offset 14, -16
+	pushq	%r13
+	.cfi_def_cfa_offset 24
+	.cfi_offset 13, -24
+	xorl	%edx, %edx
+	pushq	%r12
+	.cfi_def_cfa_offset 32
+	.cfi_offset 12, -32
+	pushq	%rbp
+	.cfi_def_cfa_offset 40
+	.cfi_offset 6, -40
+	movl	$2, %esi
+	pushq	%rbx
+	.cfi_def_cfa_offset 48
+	.cfi_offset 3, -48
+	movq	%rdi, %rbx
+	xorl	%eax, %eax
+	subq	$16, %rsp
+	.cfi_def_cfa_offset 64
+	movl	704(%rdi), %edi
+	call	fcntl
+	call	closelog
+	movl	704(%rbx), %edi
+	cmpl	$2, %edi
+	ja	.L1299
+	movl	$3, %esi
+	call	dup2
+	testl	%eax, %eax
+	js	.L1299
+	movl	%eax, 704(%rbx)
+.L1299:
+	movq	%rbx, %rdi
+	call	make_envp
+	movq	264(%rbx), %rsi
+	movq	240(%rbx), %rdi
+	movq	%rax, %r14
+	call	make_argp.isra.2
+	cmpl	$3, 180(%rbx)
+	movq	%rax, %r13
+	jne	.L1301
+	movq	168(%rbx), %rax
+	cmpq	%rax, 160(%rbx)
+	jbe	.L1301
+	leaq	8(%rsp), %rdi
+	call	pipe
+	testl	%eax, %eax
+	js	.L1348
+	call	fork
+	testl	%eax, %eax
+	jns	.L1303
+.L1347:
+	movl	$.LC159, %esi
+.L1345:
+	movl	$3, %edi
+	xorl	%eax, %eax
+	call	syslog
+.L1346:
+	movq	208(%rbx), %r9
+	movl	$.LC98, %r8d
+	movl	$.LC27, %ecx
+	movl	$.LC99, %edx
+	movl	$500, %esi
+	movq	%rbx, %rdi
+	call	httpd_send_err
+	movq	%rbx, %rdi
+	call	httpd_write_response
+	movl	$1, %edi
+	call	exit
+.L1303:
+	jne	.L1304
+	movl	8(%rsp), %edi
+	movl	$1, sub_process(%rip)
+	call	close
+	movl	12(%rsp), %esi
+	movq	%rbx, %rdi
+	call	cgi_interpose_input
+	xorl	%edi, %edi
+	call	exit
+.L1304:
+	movl	12(%rsp), %edi
+	call	close
+	movl	8(%rsp), %edi
+	testl	%edi, %edi
+	je	.L1306
+	xorl	%esi, %esi
+	call	dup2
+	movl	8(%rsp), %edi
+	call	close
+	jmp	.L1306
+.L1301:
+	movl	704(%rbx), %edi
+	testl	%edi, %edi
+	je	.L1306
+	xorl	%esi, %esi
+	call	dup2
+.L1306:
+	movq	0(%r13), %rdi
+	movl	$4, %edx
+	movl	$.LC178, %esi
+	call	strncmp
+	testl	%eax, %eax
+	je	.L1307
+	cmpl	$0, 520(%rbx)
+	je	.L1307
+	leaq	8(%rsp), %rdi
+	call	pipe
+	testl	%eax, %eax
+	jns	.L1308
+.L1348:
+	movl	$.LC177, %esi
+	jmp	.L1345
+.L1308:
+	call	fork
+	testl	%eax, %eax
+	js	.L1347
+	jne	.L1310
+	movl	12(%rsp), %edi
+	movl	$1, sub_process(%rip)
+	call	close
+	movl	8(%rsp), %esi
+	leaq	704(%rbx), %rdi
+	call	cgi_interpose_output.isra.4
+	xorl	%edi, %edi
+	call	exit
+.L1310:
+	movl	8(%rsp), %edi
+	call	close
+	movl	12(%rsp), %edi
+	cmpl	$1, %edi
+	je	.L1311
+	movl	$1, %esi
+	call	dup2
+.L1311:
+	movl	12(%rsp), %edi
+	cmpl	$2, %edi
+	je	.L1312
+	movl	$2, %esi
+	call	dup2
+.L1312:
+	movl	12(%rsp), %edi
+	leal	-1(%rdi), %eax
+	cmpl	$1, %eax
+	jbe	.L1314
+	call	close
+	jmp	.L1314
+.L1307:
+	movl	704(%rbx), %edi
+	cmpl	$1, %edi
+	je	.L1315
+	movl	$1, %esi
+	call	dup2
+.L1315:
+	movl	704(%rbx), %edi
+	cmpl	$2, %edi
+	je	.L1314
+	movl	$2, %esi
+	call	dup2
+.L1314:
+	movl	$10, %edi
+	call	nice
+	movq	240(%rbx), %rbp
+	movq	%rbp, %rdi
+	call	strdup
+	testq	%rax, %rax
+	movq	%rax, %r12
+	je	.L1316
+	movl	$47, %esi
+	movq	%rax, %rdi
+	call	strrchr
+	testq	%rax, %rax
+	je	.L1316
+	movb	$0, (%rax)
+	movq	%r12, %rdi
+	leaq	1(%rax), %rbp
+	call	chdir
+.L1316:
+	xorl	%esi, %esi
+	movl	$13, %edi
+	xorl	%eax, %eax
+	call	sigset
+	movq	%r14, %rdx
+	movq	%r13, %rsi
+	movq	%rbp, %rdi
+	call	execve
+	movq	240(%rbx), %rdx
+	movl	$.LC179, %esi
+	movl	$3, %edi
+	xorl	%eax, %eax
+	call	syslog
+	jmp	.L1346
+	.cfi_endproc
+.LFE51:
+	.size	cgi_child, .-cgi_child
+	.section	.rodata.str1.8
+	.align 8
+.LC180:
+	.string	"spawned CGI process %d for file '%.200s'"
+	.align 8
+.LC181:
+	.string	"tmr_create(cgi_kill child) failed"
+	.text
+	.p2align 4,,15
+	.type	cgi, @function
+cgi:
+.LFB52:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushq	%rbx
+	.cfi_def_cfa_offset 24
+	.cfi_offset 3, -24
+	movq	%rdi, %rbx
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 32
+	movl	180(%rdi), %edi
+	movl	%edi, %eax
+	andl	$-3, %eax
+	cmpl	$1, %eax
+	jne	.L1350
+	movq	8(%rbx), %rdx
+	movl	32(%rdx), %ecx
+	movl	36(%rdx), %eax
+	testl	%ecx, %ecx
+	je	.L1351
+	cmpl	%ecx, %eax
+	jge	.L1360
+.L1351:
+	movl	704(%rbx), %edi
+	addl	$1, %eax
+	movl	%eax, 36(%rdx)
+	call	httpd_clear_ndelay
+	call	fork
+	testl	%eax, %eax
+	movl	%eax, %ebp
+	js	.L1361
+	je	.L1362
+	movq	240(%rbx), %rcx
+	movl	%eax, %edx
+	movl	$.LC180, %esi
+	xorl	%eax, %eax
+	movl	$6, %edi
+	call	syslog
+	xorl	%r8d, %r8d
+	xorl	%edi, %edi
+	movl	%ebp, %edx
+	movl	$30000, %ecx
+	movl	$cgi_kill, %esi
+	call	tmr_create
+	testq	%rax, %rax
+	je	.L1363
+	movl	$200, 184(%rbx)
+	movq	$25000, 200(%rbx)
+	xorl	%eax, %eax
+	movl	$0, 556(%rbx)
+.L1349:
+	addq	$8, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 24
+	popq	%rbx
+	.cfi_def_cfa_offset 16
+	popq	%rbp
+	.cfi_def_cfa_offset 8
+	ret
+.L1350:
+	.cfi_restore_state
+	call	httpd_method_str
+	movl	$.LC75, %r8d
+	movq	%rax, %r9
+	movl	$.LC27, %ecx
+	movl	$.LC76, %edx
+	movl	$501, %esi
+	movq	%rbx, %rdi
+	call	httpd_send_err
+	movl	$-1, %eax
+	jmp	.L1349
+.L1360:
+	movq	208(%rbx), %r9
+	movq	httpd_err503form(%rip), %r8
+	movl	$.LC27, %ecx
+	movq	httpd_err503title(%rip), %rdx
+	movl	$503, %esi
+	movq	%rbx, %rdi
+	call	httpd_send_err
+	movl	$-1, %eax
+	jmp	.L1349
+.L1361:
+	xorl	%eax, %eax
+	movl	$.LC159, %esi
+	movl	$3, %edi
+	call	syslog
+	movq	208(%rbx), %r9
+	movl	$.LC98, %r8d
+	movl	$.LC27, %ecx
+	movl	$.LC99, %edx
+	movl	$500, %esi
+	movq	%rbx, %rdi
+	call	httpd_send_err
+	movl	$-1, %eax
+	jmp	.L1349
+.L1363:
+	movl	$2, %edi
+	movl	$.LC181, %esi
+	call	syslog
+	movl	$1, %edi
+	call	exit
+.L1362:
+	movq	8(%rbx), %rdi
+	movl	$1, sub_process(%rip)
+	call	httpd_unlisten
+	movq	%rbx, %rdi
+	call	cgi_child
+	.cfi_endproc
+.LFE52:
+	.size	cgi, .-cgi
+	.section	.rodata.str1.1
+.LC182:
+	.string	"index.html"
+	.section	.rodata.str1.8
+	.align 8
+.LC183:
+	.string	"%.80s URL \"%.80s\" resolves to a non world-readable file"
+	.align 8
+.LC184:
+	.string	"The requested URL '%.80s' resolves to a file that is not world-readable.\n"
+	.align 8
+.LC185:
+	.string	"%.80s URL \"%.80s\" tried to index a directory with indexing disabled"
+	.align 8
+.LC186:
+	.string	"The requested URL '%.80s' resolves to a directory that has indexing disabled.\n"
+	.align 8
+.LC187:
+	.string	"%.80s URL \"%.80s\" resolves to a non-world-readable index file"
+	.align 8
+.LC188:
+	.string	"The requested URL '%.80s' resolves to an index file that is not world-readable.\n"
+	.align 8
+.LC189:
+	.string	"%.80s URL \"%.80s\" tried to retrieve an auth file"
+	.align 8
+.LC190:
+	.string	"The requested URL '%.80s' is an authorization file, retrieving it is not permitted.\n"
+	.align 8
+.LC191:
+	.string	"%.80s URL \"%.80s\" is executable but isn't CGI"
+	.align 8
+.LC192:
+	.string	"The requested URL '%.80s' resolves to a file which is marked executable but is not a CGI file; retrieving it is forbidden.\n"
+	.align 8
+.LC193:
+	.string	"%.80s URL \"%.80s\" has pathinfo but isn't CGI"
+	.align 8
+.LC194:
+	.string	"The requested URL '%.80s' resolves to a file plus CGI-style pathinfo, but the file is not a valid CGI file.\n"
+	.text
+	.p2align 4,,15
+	.type	really_start_request, @function
+really_start_request:
+.LFB53:
+	.cfi_startproc
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	movq	%rdi, %rbx
+	subq	$40, %rsp
+	.cfi_def_cfa_offset 96
+	movq	240(%rdi), %r12
+	movq	%rsi, 8(%rsp)
+	movq	%r12, %rdi
+	call	strlen
+	movl	180(%rbx), %edi
+	movq	%rax, %r13
+	movq	%rax, %rbp
+	leal	-1(%rdi), %eax
+	cmpl	$2, %eax
+	ja	.L1434
+	leaq	560(%rbx), %r14
+	movq	%r12, %rdi
+	movq	%r14, %rsi
+	call	stat
+	testl	%eax, %eax
+	js	.L1433
+	movl	584(%rbx), %eax
+	testb	$5, %al
+	je	.L1435
+	andl	$61440, %eax
+	cmpl	$16384, %eax
+	jne	.L1369
+	movq	256(%rbx), %rax
+	cmpb	$0, (%rax)
+	jne	.L1436
+	movq	232(%rbx), %rbp
+	cmpb	$0, 0(%rbp)
+	je	.L1371
+	movl	$.LC116, %edi
+	movl	$2, %ecx
+	movq	%rbp, %rsi
+	repz cmpsb
+	jne	.L1437
+.L1371:
+	addq	$1, %r13
+	movl	$index_names.6094+8, %ebp
+	movl	$10, %eax
+	movl	$.LC182, %r12d
+.L1377:
+	leaq	0(%r13,%rax), %rdx
+	movl	$maxindexname.6093, %esi
+	movl	$indexname.6092, %edi
+	call	httpd_realloc_str
+	movq	240(%rbx), %rsi
+	movq	indexname.6092(%rip), %rdi
+	call	strcpy
+	movq	indexname.6092(%rip), %r15
+	movq	%r15, %rdi
+	call	strlen
+	testq	%rax, %rax
+	je	.L1372
+	cmpb	$47, -1(%r15,%rax)
+	je	.L1373
+.L1372:
+	movl	$47, %r9d
+	movw	%r9w, (%r15,%rax)
+	movq	indexname.6092(%rip), %r15
+.L1373:
+	movl	$3, %ecx
+	movq	%r15, %rsi
+	movl	$.LC1, %edi
+	repz cmpsb
+	jne	.L1374
+	movb	$0, (%r15)
+	movq	indexname.6092(%rip), %r15
+.L1374:
+	movq	%r12, %rsi
+	movq	%r15, %rdi
+	call	strcat
+	movq	indexname.6092(%rip), %rdi
+	movq	%r14, %rsi
+	call	stat
+	testl	%eax, %eax
+	jns	.L1375
+	movl	$index_names.6094+48, %eax
+	cmpq	%rbp, %rax
+	je	.L1376
+	movq	0(%rbp), %r12
+	addq	$8, %rbp
+	movq	%r12, %rdi
+	call	strlen
+	jmp	.L1377
+	.p2align 4,,10
+	.p2align 3
+.L1375:
+	movq	8(%rbx), %rax
+	movl	532(%rbx), %ecx
+	leaq	24(%rsp), %rsi
+	movq	indexname.6092(%rip), %rdi
+	movl	96(%rax), %edx
+	call	expand_symlinks
+	testq	%rax, %rax
+	movq	%rax, %r12
+	je	.L1433
+	movq	24(%rsp), %rax
+	cmpb	$0, (%rax)
+	jne	.L1433
+	movq	%r12, %rdi
+	call	strlen
+	leaq	392(%rbx), %rsi
+	leaq	240(%rbx), %rdi
+	movq	%rax, %rdx
+	movq	%rax, %rbp
+	call	httpd_realloc_str
+	movq	240(%rbx), %rdi
+	movq	%r12, %rsi
+	call	strcpy
+	testb	$5, 584(%rbx)
+	je	.L1438
+.L1369:
+	movq	%rbp, %rdx
+	movl	$maxdirname.6097, %esi
+	movl	$dirname.6096, %edi
+	call	httpd_realloc_str
+	movq	240(%rbx), %rsi
+	movq	dirname.6096(%rip), %rdi
+	call	strcpy
+	movq	dirname.6096(%rip), %r12
+	movl	$47, %esi
+	movq	%r12, %rdi
+	call	strrchr
+	testq	%rax, %rax
+	je	.L1439
+	movb	$0, (%rax)
+.L1384:
+	movq	dirname.6096(%rip), %rsi
+	movq	%rbx, %rdi
+	call	auth_check
+	cmpl	$-1, %eax
+	je	.L1432
+	cmpq	$9, %rbp
+	je	.L1440
+	jbe	.L1386
+	movq	240(%rbx), %rax
+	movl	$.LC111, %edi
+	movl	$10, %ecx
+	leaq	-9(%rax,%rbp), %rsi
+	repz cmpsb
+	jne	.L1386
+	cmpb	$47, -10(%rax,%rbp)
+	jne	.L1386
+.L1387:
+	movq	208(%rbx), %rbp
+	leaq	16(%rbx), %rdi
+	call	httpd_ntoa
+	movq	%rbp, %rcx
+	movq	%rax, %rdx
+	movl	$.LC189, %esi
+	movl	$5, %edi
+	xorl	%eax, %eax
+	call	syslog
+	movq	208(%rbx), %r9
+	movl	$.LC190, %r8d
+	jmp	.L1431
+	.p2align 4,,10
+	.p2align 3
+.L1440:
+	movq	240(%rbx), %rsi
+	movl	$.LC111, %edi
+	movl	$10, %ecx
+	repz cmpsb
+	je	.L1387
+.L1386:
+	movq	%rbx, %rdi
+	call	check_referer
+	testl	%eax, %eax
+	je	.L1432
+	movq	8(%rbx), %rax
+	movq	24(%rax), %rdi
+	movl	584(%rbx), %eax
+	andl	$1, %eax
+	testq	%rdi, %rdi
+	je	.L1388
+	testl	%eax, %eax
+	jne	.L1441
+.L1389:
+	movq	256(%rbx), %rax
+	cmpb	$0, (%rax)
+	jne	.L1442
+	movl	528(%rbx), %edi
+	testl	%edi, %edi
+	je	.L1392
+	movq	544(%rbx), %rdx
+	movq	608(%rbx), %rax
+	cmpq	$-1, %rdx
+	je	.L1393
+	cmpq	%rax, %rdx
+	jl	.L1392
+.L1393:
+	subq	$1, %rax
+	movq	%rax, 544(%rbx)
+.L1392:
+	movq	%rbx, %rdi
+	call	figure_mime
+	cmpl	$2, 180(%rbx)
+	je	.L1396
+	movq	480(%rbx), %rax
+	cmpq	$-1, %rax
+	je	.L1395
+	movq	648(%rbx), %rdx
+	cmpq	%rdx, %rax
+	jge	.L1443
+.L1395:
+	movq	240(%rbx), %rdi
+	movq	8(%rsp), %rdx
+	movq	%r14, %rsi
+	call	mmc_map
+	testq	%rax, %rax
+	movq	%rax, 712(%rbx)
+	je	.L1433
+.L1396:
+	movq	248(%rbx), %rcx
+	movq	504(%rbx), %r9
+	movl	$.LC158, %edx
+	pushq	648(%rbx)
+	.cfi_def_cfa_offset 104
+	pushq	608(%rbx)
+	.cfi_def_cfa_offset 112
+	movl	$.LC27, %r8d
+	movl	$200, %esi
+	movq	%rbx, %rdi
+	call	send_mime
+	popq	%rax
+	.cfi_def_cfa_offset 104
+	popq	%rdx
+	.cfi_def_cfa_offset 96
+	xorl	%eax, %eax
+.L1364:
+	addq	$40, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 56
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L1376:
+	.cfi_restore_state
+	testb	$4, 584(%rbx)
+	je	.L1444
+	movq	240(%rbx), %rsi
+	movq	%rbx, %rdi
+	call	auth_check
+	cmpl	$-1, %eax
+	je	.L1432
+	movq	%rbx, %rdi
+	call	check_referer
+	testl	%eax, %eax
+	je	.L1432
+	movq	%rbx, %rdi
+	call	ls
+	addq	$40, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 56
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L1441:
+	.cfi_restore_state
+	movq	240(%rbx), %rsi
+	call	match
+	testl	%eax, %eax
+	jne	.L1390
+	movl	584(%rbx), %eax
+	andl	$1, %eax
+.L1388:
+	testl	%eax, %eax
+	je	.L1389
+	movq	208(%rbx), %rbp
+	leaq	16(%rbx), %rdi
+	call	httpd_ntoa
+	movq	%rbp, %rcx
+	movq	%rax, %rdx
+	movl	$.LC191, %esi
+	movl	$5, %edi
+	xorl	%eax, %eax
+	call	syslog
+	movq	208(%rbx), %r9
+	movl	$.LC192, %r8d
+	.p2align 4,,10
+	.p2align 3
+.L1431:
+	movl	$.LC27, %ecx
+	movl	$.LC102, %edx
+	movl	$403, %esi
+	movq	%rbx, %rdi
+	call	httpd_send_err
+	movl	$-1, %eax
+	jmp	.L1364
+	.p2align 4,,10
+	.p2align 3
+.L1437:
+	movq	%rbp, %rdi
+	call	strlen
+	cmpb	$47, -1(%rbp,%rax)
+	je	.L1371
+	movq	%rbx, %rdi
+	call	send_dirredirect
+	movl	$-1, %eax
+	jmp	.L1364
+	.p2align 4,,10
+	.p2align 3
+.L1439:
+	movl	$46, %r8d
+	movw	%r8w, (%r12)
+	jmp	.L1384
+	.p2align 4,,10
+	.p2align 3
+.L1443:
+	movq	248(%rbx), %rcx
+	movq	504(%rbx), %r9
+	movl	$304, %esi
+	pushq	%rdx
+	.cfi_def_cfa_offset 104
+	pushq	$-1
+	.cfi_def_cfa_offset 112
+	movq	%rbx, %rdi
+	movl	$.LC27, %r8d
+	movl	$.LC170, %edx
+	call	send_mime
+	popq	%rcx
+	.cfi_def_cfa_offset 104
+	popq	%rsi
+	.cfi_def_cfa_offset 96
+	xorl	%eax, %eax
+	addq	$40, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 56
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+.L1433:
+	.cfi_restore_state
+	movq	208(%rbx), %r9
+	movl	$.LC98, %r8d
+	movl	$.LC27, %ecx
+	movl	$.LC99, %edx
+	movl	$500, %esi
+	movq	%rbx, %rdi
+	call	httpd_send_err
+.L1432:
+	movl	$-1, %eax
+	jmp	.L1364
+.L1438:
+	movq	208(%rbx), %rbp
+	leaq	16(%rbx), %rdi
+	call	httpd_ntoa
+	movq	%rbp, %rcx
+	movq	%rax, %rdx
+	movl	$.LC187, %esi
+	movl	$6, %edi
+	xorl	%eax, %eax
+	call	syslog
+	movq	208(%rbx), %r9
+	movl	$.LC188, %r8d
+	jmp	.L1431
+	.p2align 4,,10
+	.p2align 3
+.L1390:
+	movq	%rbx, %rdi
+	call	cgi
+	jmp	.L1364
+.L1434:
+	call	httpd_method_str
+	movl	$.LC75, %r8d
+	movq	%rax, %r9
+	movl	$.LC27, %ecx
+	movl	$.LC76, %edx
+	movl	$501, %esi
+	movq	%rbx, %rdi
+	call	httpd_send_err
+	movl	$-1, %eax
+	jmp	.L1364
+.L1435:
+	movq	208(%rbx), %rbp
+	leaq	16(%rbx), %rdi
+	call	httpd_ntoa
+	movq	%rbp, %rcx
+	movq	%rax, %rdx
+	movl	$.LC183, %esi
+	movl	$6, %edi
+	xorl	%eax, %eax
+	call	syslog
+	movq	208(%rbx), %r9
+	movl	$.LC184, %r8d
+	jmp	.L1431
+.L1444:
+	movq	208(%rbx), %rbp
+	leaq	16(%rbx), %rdi
+	call	httpd_ntoa
+	movq	%rbp, %rcx
+	movq	%rax, %rdx
+	movl	$.LC185, %esi
+	movl	$6, %edi
+	xorl	%eax, %eax
+	call	syslog
+	movq	208(%rbx), %r9
+	movl	$.LC186, %r8d
+	jmp	.L1431
+.L1442:
+	movq	208(%rbx), %rbp
+	leaq	16(%rbx), %rdi
+	call	httpd_ntoa
+	movq	%rbp, %rcx
+	movq	%rax, %rdx
+	movl	$.LC193, %esi
+	movl	$6, %edi
+	xorl	%eax, %eax
+	call	syslog
+	movq	208(%rbx), %r9
+	movl	$.LC194, %r8d
+	jmp	.L1431
+.L1436:
+	movq	208(%rbx), %r9
+	movl	$.LC156, %r8d
+	movl	$.LC27, %ecx
+	movl	$.LC157, %edx
+	movl	$404, %esi
+	movq	%rbx, %rdi
+	call	httpd_send_err
+	movl	$-1, %eax
+	jmp	.L1364
+	.cfi_endproc
+.LFE53:
+	.size	really_start_request, .-really_start_request
+	.p2align 4,,15
+	.globl	httpd_start_request
+	.type	httpd_start_request, @function
+httpd_start_request:
+.LFB54:
+	.cfi_startproc
+	jmp	really_start_request
+	.cfi_endproc
+.LFE54:
+	.size	httpd_start_request, .-httpd_start_request
+	.section	.rodata.str1.8
+	.align 8
+.LC195:
+	.string	"  libhttpd - %d strings allocated, %lu bytes (%g bytes/str)"
+	.text
+	.p2align 4,,15
+	.globl	httpd_logstats
+	.type	httpd_logstats, @function
+httpd_logstats:
+.LFB64:
+	.cfi_startproc
+	movl	str_alloc_count(%rip), %edx
+	testl	%edx, %edx
+	jle	.L1446
+	movq	str_alloc_size(%rip), %rcx
+	testq	%rcx, %rcx
+	js	.L1448
+	pxor	%xmm0, %xmm0
+	cvtsi2ssq	%rcx, %xmm0
+.L1449:
+	movl	$.LC195, %esi
+	movl	$6, %edi
+	movl	$1, %eax
+	pxor	%xmm1, %xmm1
+	cvtsi2ss	%edx, %xmm1
+	divss	%xmm1, %xmm0
+	cvtss2sd	%xmm0, %xmm0
+	jmp	syslog
+	.p2align 4,,10
+	.p2align 3
+.L1446:
+	rep ret
+	.p2align 4,,10
+	.p2align 3
+.L1448:
+	movq	%rcx, %rax
+	movq	%rcx, %rsi
+	pxor	%xmm0, %xmm0
+	shrq	%rax
+	andl	$1, %esi
+	orq	%rsi, %rax
+	cvtsi2ssq	%rax, %xmm0
+	addss	%xmm0, %xmm0
+	jmp	.L1449
+	.cfi_endproc
+.LFE64:
+	.size	httpd_logstats, .-httpd_logstats
+	.section	.rodata.str1.1
+.LC196:
+	.string	"GET"
+.LC197:
+	.string	"HEAD"
+.LC198:
+	.string	"POST"
+	.section	.rodata
+	.align 16
+	.type	CSWTCH.362, @object
+	.size	CSWTCH.362, 24
+CSWTCH.362:
+	.quad	.LC196
+	.quad	.LC197
+	.quad	.LC198
+	.local	str.6153
+	.comm	str.6153,200,32
+	.local	buf.6003
+	.comm	buf.6003,8,8
+	.local	maxbuf.6004
+	.comm	maxbuf.6004,8,8
+	.local	envp.6008
+	.comm	envp.6008,400,32
+	.local	refhost_size.6138
+	.comm	refhost_size.6138,8,8
+	.local	refhost.6137
+	.comm	refhost.6137,8,8
+	.data
+	.align 32
+	.type	headstr.5595, @object
+	.size	headstr.5595, 32
+headstr.5595:
+	.string	"WWW-Authenticate: Basic realm=\""
+	.local	maxheader.5594
+	.comm	maxheader.5594,8,8
+	.local	header.5593
+	.comm	header.5593,8,8
+	.local	maxprevcryp.5643
+	.comm	maxprevcryp.5643,8,8
+	.local	maxprevuser.5641
+	.comm	maxprevuser.5641,8,8
+	.local	prevcryp.5642
+	.comm	prevcryp.5642,8,8
+	.local	prevuser.5640
+	.comm	prevuser.5640,8,8
+	.local	prevmtime.5639
+	.comm	prevmtime.5639,8,8
+	.local	prevauthpath.5637
+	.comm	prevauthpath.5637,8,8
+	.local	maxprevauthpath.5638
+	.comm	maxprevauthpath.5638,8,8
+	.local	maxauthpath.5628
+	.comm	maxauthpath.5628,8,8
+	.local	authpath.5627
+	.comm	authpath.5627,8,8
+	.local	maxencrname.5959
+	.comm	maxencrname.5959,8,8
+	.local	encrname.5958
+	.comm	encrname.5958,8,8
+	.local	maxrname.5957
+	.comm	maxrname.5957,8,8
+	.local	rname.5956
+	.comm	rname.5956,8,8
+	.local	maxname.5955
+	.comm	maxname.5955,8,8
+	.local	name.5954
+	.comm	name.5954,8,8
+	.local	nameptrs.5953
+	.comm	nameptrs.5953,8,8
+	.local	names.5952
+	.comm	names.5952,8,8
+	.local	maxnames.5950
+	.comm	maxnames.5950,4,4
+	.align 8
+	.type	headstr.5655, @object
+	.size	headstr.5655, 11
+headstr.5655:
+	.string	"Location: "
+	.local	maxheader.5654
+	.comm	maxheader.5654,8,8
+	.local	header.5652
+	.comm	header.5652,8,8
+	.local	maxlocation.5653
+	.comm	maxlocation.5653,8,8
+	.local	location.5651
+	.comm	location.5651,8,8
+	.local	maxdirname.6097
+	.comm	maxdirname.6097,8,8
+	.local	dirname.6096
+	.comm	dirname.6096,8,8
+	.local	maxindexname.6093
+	.comm	maxindexname.6093,8,8
+	.local	indexname.6092
+	.comm	indexname.6092,8,8
+	.section	.rodata.str1.1
+.LC199:
+	.string	"index.htm"
+.LC200:
+	.string	"index.xhtml"
+.LC201:
+	.string	"index.xht"
+.LC202:
+	.string	"Default.htm"
+.LC203:
+	.string	"index.cgi"
+	.section	.rodata
+	.align 32
+	.type	index_names.6094, @object
+	.size	index_names.6094, 48
+index_names.6094:
+	.quad	.LC182
+	.quad	.LC199
+	.quad	.LC200
+	.quad	.LC201
+	.quad	.LC202
+	.quad	.LC203
+	.local	maxrest.5708
+	.comm	maxrest.5708,8,8
+	.local	rest.5705
+	.comm	rest.5705,8,8
+	.local	maxchecked.5707
+	.comm	maxchecked.5707,8,8
+	.local	checked.5704
+	.comm	checked.5704,8,8
+	.local	maxtempfilename.5689
+	.comm	maxtempfilename.5689,8,8
+	.local	tempfilename.5688
+	.comm	tempfilename.5688,8,8
+	.local	ghnbuf.5450
+	.comm	ghnbuf.5450,256,32
+	.section	.rodata.str1.1
+.LC204:
+	.string	"a"
+.LC205:
+	.string	"aab"
+.LC206:
+	.string	"application/x-authorware-bin"
+.LC207:
+	.string	"aam"
+.LC208:
+	.string	"application/x-authorware-map"
+.LC209:
+	.string	"aas"
+.LC210:
+	.string	"application/x-authorware-seg"
+.LC211:
+	.string	"ai"
+.LC212:
+	.string	"application/postscript"
+.LC213:
+	.string	"aif"
+.LC214:
+	.string	"audio/x-aiff"
+.LC215:
+	.string	"aifc"
+.LC216:
+	.string	"aiff"
+.LC217:
+	.string	"asc"
+.LC218:
+	.string	"text/plain"
+.LC219:
+	.string	"asf"
+.LC220:
+	.string	"video/x-ms-asf"
+.LC221:
+	.string	"asx"
+.LC222:
+	.string	"au"
+.LC223:
+	.string	"audio/basic"
+.LC224:
+	.string	"avi"
+.LC225:
+	.string	"video/x-msvideo"
+.LC226:
+	.string	"bcpio"
+.LC227:
+	.string	"application/x-bcpio"
+.LC228:
+	.string	"bin"
+.LC229:
+	.string	"bmp"
+.LC230:
+	.string	"image/bmp"
+.LC231:
+	.string	"cdf"
+.LC232:
+	.string	"application/x-netcdf"
+.LC233:
+	.string	"class"
+.LC234:
+	.string	"application/x-java-vm"
+.LC235:
+	.string	"cpio"
+.LC236:
+	.string	"application/x-cpio"
+.LC237:
+	.string	"cpt"
+.LC238:
+	.string	"application/mac-compactpro"
+.LC239:
+	.string	"crl"
+.LC240:
+	.string	"application/x-pkcs7-crl"
+.LC241:
+	.string	"crt"
+.LC242:
+	.string	"application/x-x509-ca-cert"
+.LC243:
+	.string	"csh"
+.LC244:
+	.string	"application/x-csh"
+.LC245:
+	.string	"css"
+.LC246:
+	.string	"text/css"
+.LC247:
+	.string	"dcr"
+.LC248:
+	.string	"application/x-director"
+.LC249:
+	.string	"dir"
+.LC250:
+	.string	"djv"
+.LC251:
+	.string	"image/vnd.djvu"
+.LC252:
+	.string	"djvu"
+.LC253:
+	.string	"dll"
+.LC254:
+	.string	"dms"
+.LC255:
+	.string	"doc"
+.LC256:
+	.string	"application/msword"
+.LC257:
+	.string	"dtd"
+.LC258:
+	.string	"text/xml"
+.LC259:
+	.string	"dump"
+.LC260:
+	.string	"dvi"
+.LC261:
+	.string	"application/x-dvi"
+.LC262:
+	.string	"dxr"
+.LC263:
+	.string	"eps"
+.LC264:
+	.string	"etx"
+.LC265:
+	.string	"text/x-setext"
+.LC266:
+	.string	"exe"
+.LC267:
+	.string	"ez"
+.LC268:
+	.string	"application/andrew-inset"
+.LC269:
+	.string	"fgd"
+.LC270:
+	.string	"fh"
+.LC271:
+	.string	"image/x-freehand"
+.LC272:
+	.string	"fh4"
+.LC273:
+	.string	"fh5"
+.LC274:
+	.string	"fh7"
+.LC275:
+	.string	"fhc"
+.LC276:
+	.string	"gif"
+.LC277:
+	.string	"image/gif"
+.LC278:
+	.string	"gtar"
+.LC279:
+	.string	"application/x-gtar"
+.LC280:
+	.string	"hdf"
+.LC281:
+	.string	"application/x-hdf"
+.LC282:
+	.string	"hqx"
+.LC283:
+	.string	"application/mac-binhex40"
+.LC284:
+	.string	"htm"
+.LC285:
+	.string	"html"
+.LC286:
+	.string	"ice"
+.LC287:
+	.string	"x-conference/x-cooltalk"
+.LC288:
+	.string	"ief"
+.LC289:
+	.string	"image/ief"
+.LC290:
+	.string	"iges"
+.LC291:
+	.string	"model/iges"
+.LC292:
+	.string	"igs"
+.LC293:
+	.string	"iv"
+.LC294:
+	.string	"application/x-inventor"
+.LC295:
+	.string	"jar"
+.LC296:
+	.string	"application/x-java-archive"
+.LC297:
+	.string	"jfif"
+.LC298:
+	.string	"image/jpeg"
+.LC299:
+	.string	"jpe"
+.LC300:
+	.string	"jpeg"
+.LC301:
+	.string	"jpg"
+.LC302:
+	.string	"js"
+.LC303:
+	.string	"application/x-javascript"
+.LC304:
+	.string	"kar"
+.LC305:
+	.string	"audio/midi"
+.LC306:
+	.string	"latex"
+.LC307:
+	.string	"application/x-latex"
+.LC308:
+	.string	"lha"
+.LC309:
+	.string	"lzh"
+.LC310:
+	.string	"m3u"
+.LC311:
+	.string	"audio/x-mpegurl"
+.LC312:
+	.string	"man"
+.LC313:
+	.string	"application/x-troff-man"
+.LC314:
+	.string	"mathml"
+.LC315:
+	.string	"application/mathml+xml"
+.LC316:
+	.string	"me"
+.LC317:
+	.string	"application/x-troff-me"
+.LC318:
+	.string	"mesh"
+.LC319:
+	.string	"model/mesh"
+.LC320:
+	.string	"mid"
+.LC321:
+	.string	"midi"
+.LC322:
+	.string	"mif"
+.LC323:
+	.string	"application/vnd.mif"
+.LC324:
+	.string	"mime"
+.LC325:
+	.string	"message/rfc822"
+.LC326:
+	.string	"mml"
+.LC327:
+	.string	"mov"
+.LC328:
+	.string	"video/quicktime"
+.LC329:
+	.string	"movie"
+.LC330:
+	.string	"video/x-sgi-movie"
+.LC331:
+	.string	"mp2"
+.LC332:
+	.string	"audio/mpeg"
+.LC333:
+	.string	"mp3"
+.LC334:
+	.string	"mp4"
+.LC335:
+	.string	"video/mp4"
+.LC336:
+	.string	"mpe"
+.LC337:
+	.string	"video/mpeg"
+.LC338:
+	.string	"mpeg"
+.LC339:
+	.string	"mpg"
+.LC340:
+	.string	"mpga"
+.LC341:
+	.string	"ms"
+.LC342:
+	.string	"application/x-troff-ms"
+.LC343:
+	.string	"msh"
+.LC344:
+	.string	"mv"
+.LC345:
+	.string	"mxu"
+.LC346:
+	.string	"video/vnd.mpegurl"
+.LC347:
+	.string	"nc"
+.LC348:
+	.string	"o"
+.LC349:
+	.string	"oda"
+.LC350:
+	.string	"application/oda"
+.LC351:
+	.string	"ogg"
+.LC352:
+	.string	"application/ogg"
+.LC353:
+	.string	"pac"
+	.section	.rodata.str1.8
+	.align 8
+.LC354:
+	.string	"application/x-ns-proxy-autoconfig"
+	.section	.rodata.str1.1
+.LC355:
+	.string	"pbm"
+.LC356:
+	.string	"image/x-portable-bitmap"
+.LC357:
+	.string	"pdb"
+.LC358:
+	.string	"chemical/x-pdb"
+.LC359:
+	.string	"pdf"
+.LC360:
+	.string	"application/pdf"
+.LC361:
+	.string	"pgm"
+.LC362:
+	.string	"image/x-portable-graymap"
+.LC363:
+	.string	"pgn"
+.LC364:
+	.string	"application/x-chess-pgn"
+.LC365:
+	.string	"png"
+.LC366:
+	.string	"image/png"
+.LC367:
+	.string	"pnm"
+.LC368:
+	.string	"image/x-portable-anymap"
+.LC369:
+	.string	"ppm"
+.LC370:
+	.string	"image/x-portable-pixmap"
+.LC371:
+	.string	"ppt"
+.LC372:
+	.string	"application/vnd.ms-powerpoint"
+.LC373:
+	.string	"ps"
+.LC374:
+	.string	"qt"
+.LC375:
+	.string	"ra"
+.LC376:
+	.string	"audio/x-realaudio"
+.LC377:
+	.string	"ram"
+.LC378:
+	.string	"audio/x-pn-realaudio"
+.LC379:
+	.string	"ras"
+.LC380:
+	.string	"image/x-cmu-raster"
+.LC381:
+	.string	"rdf"
+.LC382:
+	.string	"application/rdf+xml"
+.LC383:
+	.string	"rgb"
+.LC384:
+	.string	"image/x-rgb"
+.LC385:
+	.string	"rm"
+.LC386:
+	.string	"roff"
+.LC387:
+	.string	"application/x-troff"
+.LC388:
+	.string	"rpm"
+.LC389:
+	.string	"audio/x-pn-realaudio-plugin"
+.LC390:
+	.string	"rss"
+.LC391:
+	.string	"application/rss+xml"
+.LC392:
+	.string	"rtf"
+.LC393:
+	.string	"text/rtf"
+.LC394:
+	.string	"rtx"
+.LC395:
+	.string	"text/richtext"
+.LC396:
+	.string	"sgm"
+.LC397:
+	.string	"text/sgml"
+.LC398:
+	.string	"sgml"
+.LC399:
+	.string	"sh"
+.LC400:
+	.string	"application/x-sh"
+.LC401:
+	.string	"shar"
+.LC402:
+	.string	"application/x-shar"
+.LC403:
+	.string	"silo"
+.LC404:
+	.string	"sit"
+.LC405:
+	.string	"application/x-stuffit"
+.LC406:
+	.string	"skd"
+.LC407:
+	.string	"application/x-koan"
+.LC408:
+	.string	"skm"
+.LC409:
+	.string	"skp"
+.LC410:
+	.string	"skt"
+.LC411:
+	.string	"smi"
+.LC412:
+	.string	"application/smil"
+.LC413:
+	.string	"smil"
+.LC414:
+	.string	"snd"
+.LC415:
+	.string	"so"
+.LC416:
+	.string	"spl"
+.LC417:
+	.string	"application/x-futuresplash"
+.LC418:
+	.string	"src"
+.LC419:
+	.string	"application/x-wais-source"
+.LC420:
+	.string	"stc"
+	.section	.rodata.str1.8
+	.align 8
+.LC421:
+	.string	"application/vnd.sun.xml.calc.template"
+	.section	.rodata.str1.1
+.LC422:
+	.string	"std"
+	.section	.rodata.str1.8
+	.align 8
+.LC423:
+	.string	"application/vnd.sun.xml.draw.template"
+	.section	.rodata.str1.1
+.LC424:
+	.string	"sti"
+	.section	.rodata.str1.8
+	.align 8
+.LC425:
+	.string	"application/vnd.sun.xml.impress.template"
+	.section	.rodata.str1.1
+.LC426:
+	.string	"stw"
+	.section	.rodata.str1.8
+	.align 8
+.LC427:
+	.string	"application/vnd.sun.xml.writer.template"
+	.section	.rodata.str1.1
+.LC428:
+	.string	"sv4cpio"
+.LC429:
+	.string	"application/x-sv4cpio"
+.LC430:
+	.string	"sv4crc"
+.LC431:
+	.string	"application/x-sv4crc"
+.LC432:
+	.string	"svg"
+.LC433:
+	.string	"image/svg+xml"
+.LC434:
+	.string	"svgz"
+.LC435:
+	.string	"swf"
+.LC436:
+	.string	"application/x-shockwave-flash"
+.LC437:
+	.string	"sxc"
+.LC438:
+	.string	"application/vnd.sun.xml.calc"
+.LC439:
+	.string	"sxd"
+.LC440:
+	.string	"application/vnd.sun.xml.draw"
+.LC441:
+	.string	"sxg"
+	.section	.rodata.str1.8
+	.align 8
+.LC442:
+	.string	"application/vnd.sun.xml.writer.global"
+	.section	.rodata.str1.1
+.LC443:
+	.string	"sxi"
+	.section	.rodata.str1.8
+	.align 8
+.LC444:
+	.string	"application/vnd.sun.xml.impress"
+	.section	.rodata.str1.1
+.LC445:
+	.string	"sxm"
+.LC446:
+	.string	"application/vnd.sun.xml.math"
+.LC447:
+	.string	"sxw"
+	.section	.rodata.str1.8
+	.align 8
+.LC448:
+	.string	"application/vnd.sun.xml.writer"
+	.section	.rodata.str1.1
+.LC449:
+	.string	"t"
+.LC450:
+	.string	"tar"
+.LC451:
+	.string	"application/x-tar"
+.LC452:
+	.string	"tcl"
+.LC453:
+	.string	"application/x-tcl"
+.LC454:
+	.string	"tex"
+.LC455:
+	.string	"application/x-tex"
+.LC456:
+	.string	"texi"
+.LC457:
+	.string	"application/x-texinfo"
+.LC458:
+	.string	"texinfo"
+.LC459:
+	.string	"tif"
+.LC460:
+	.string	"image/tiff"
+.LC461:
+	.string	"tiff"
+.LC462:
+	.string	"tr"
+.LC463:
+	.string	"tsp"
+.LC464:
+	.string	"application/dsptype"
+.LC465:
+	.string	"tsv"
+.LC466:
+	.string	"text/tab-separated-values"
+.LC467:
+	.string	"txt"
+.LC468:
+	.string	"text/plain; charset=%s"
+.LC469:
+	.string	"ustar"
+.LC470:
+	.string	"application/x-ustar"
+.LC471:
+	.string	"vcd"
+.LC472:
+	.string	"application/x-cdlink"
+.LC473:
+	.string	"vrml"
+.LC474:
+	.string	"model/vrml"
+.LC475:
+	.string	"vx"
+.LC476:
+	.string	"video/x-rad-screenplay"
+.LC477:
+	.string	"wav"
+.LC478:
+	.string	"audio/x-wav"
+.LC479:
+	.string	"wax"
+.LC480:
+	.string	"audio/x-ms-wax"
+.LC481:
+	.string	"wbmp"
+.LC482:
+	.string	"image/vnd.wap.wbmp"
+.LC483:
+	.string	"wbxml"
+.LC484:
+	.string	"application/vnd.wap.wbxml"
+.LC485:
+	.string	"wm"
+.LC486:
+	.string	"video/x-ms-wm"
+.LC487:
+	.string	"wma"
+.LC488:
+	.string	"audio/x-ms-wma"
+.LC489:
+	.string	"wmd"
+.LC490:
+	.string	"application/x-ms-wmd"
+.LC491:
+	.string	"wml"
+.LC492:
+	.string	"text/vnd.wap.wml"
+.LC493:
+	.string	"wmlc"
+.LC494:
+	.string	"application/vnd.wap.wmlc"
+.LC495:
+	.string	"wmls"
+.LC496:
+	.string	"text/vnd.wap.wmlscript"
+.LC497:
+	.string	"wmlsc"
+	.section	.rodata.str1.8
+	.align 8
+.LC498:
+	.string	"application/vnd.wap.wmlscriptc"
+	.section	.rodata.str1.1
+.LC499:
+	.string	"wmv"
+.LC500:
+	.string	"video/x-ms-wmv"
+.LC501:
+	.string	"wmx"
+.LC502:
+	.string	"video/x-ms-wmx"
+.LC503:
+	.string	"wmz"
+.LC504:
+	.string	"application/x-ms-wmz"
+.LC505:
+	.string	"wrl"
+.LC506:
+	.string	"wsrc"
+.LC507:
+	.string	"wvx"
+.LC508:
+	.string	"video/x-ms-wvx"
+.LC509:
+	.string	"xbm"
+.LC510:
+	.string	"image/x-xbitmap"
+.LC511:
+	.string	"xht"
+.LC512:
+	.string	"application/xhtml+xml"
+.LC513:
+	.string	"xhtml"
+.LC514:
+	.string	"xls"
+.LC515:
+	.string	"application/vnd.ms-excel"
+.LC516:
+	.string	"xml"
+.LC517:
+	.string	"xpm"
+.LC518:
+	.string	"image/x-xpixmap"
+.LC519:
+	.string	"xsl"
+.LC520:
+	.string	"xwd"
+.LC521:
+	.string	"image/x-xwindowdump"
+.LC522:
+	.string	"xyz"
+.LC523:
+	.string	"chemical/x-xyz"
+.LC524:
+	.string	"zip"
+.LC525:
+	.string	"application/zip"
+	.data
+	.align 32
+	.type	typ_tab, @object
+	.size	typ_tab, 6080
+typ_tab:
+	.quad	.LC204
+	.quad	0
+	.quad	.LC42
+	.quad	0
+	.quad	.LC205
+	.quad	0
+	.quad	.LC206
+	.quad	0
+	.quad	.LC207
+	.quad	0
+	.quad	.LC208
+	.quad	0
+	.quad	.LC209
+	.quad	0
+	.quad	.LC210
+	.quad	0
+	.quad	.LC211
+	.quad	0
+	.quad	.LC212
+	.quad	0
+	.quad	.LC213
+	.quad	0
+	.quad	.LC214
+	.quad	0
+	.quad	.LC215
+	.quad	0
+	.quad	.LC214
+	.quad	0
+	.quad	.LC216
+	.quad	0
+	.quad	.LC214
+	.quad	0
+	.quad	.LC217
+	.quad	0
+	.quad	.LC218
+	.quad	0
+	.quad	.LC219
+	.quad	0
+	.quad	.LC220
+	.quad	0
+	.quad	.LC221
+	.quad	0
+	.quad	.LC220
+	.quad	0
+	.quad	.LC222
+	.quad	0
+	.quad	.LC223
+	.quad	0
+	.quad	.LC224
+	.quad	0
+	.quad	.LC225
+	.quad	0
+	.quad	.LC226
+	.quad	0
+	.quad	.LC227
+	.quad	0
+	.quad	.LC228
+	.quad	0
+	.quad	.LC42
+	.quad	0
+	.quad	.LC229
+	.quad	0
+	.quad	.LC230
+	.quad	0
+	.quad	.LC231
+	.quad	0
+	.quad	.LC232
+	.quad	0
+	.quad	.LC233
+	.quad	0
+	.quad	.LC234
+	.quad	0
+	.quad	.LC235
+	.quad	0
+	.quad	.LC236
+	.quad	0
+	.quad	.LC237
+	.quad	0
+	.quad	.LC238
+	.quad	0
+	.quad	.LC239
+	.quad	0
+	.quad	.LC240
+	.quad	0
+	.quad	.LC241
+	.quad	0
+	.quad	.LC242
+	.quad	0
+	.quad	.LC243
+	.quad	0
+	.quad	.LC244
+	.quad	0
+	.quad	.LC245
+	.quad	0
+	.quad	.LC246
+	.quad	0
+	.quad	.LC247
+	.quad	0
+	.quad	.LC248
+	.quad	0
+	.quad	.LC249
+	.quad	0
+	.quad	.LC248
+	.quad	0
+	.quad	.LC250
+	.quad	0
+	.quad	.LC251
+	.quad	0
+	.quad	.LC252
+	.quad	0
+	.quad	.LC251
+	.quad	0
+	.quad	.LC253
+	.quad	0
+	.quad	.LC42
+	.quad	0
+	.quad	.LC254
+	.quad	0
+	.quad	.LC42
+	.quad	0
+	.quad	.LC255
+	.quad	0
+	.quad	.LC256
+	.quad	0
+	.quad	.LC257
+	.quad	0
+	.quad	.LC258
+	.quad	0
+	.quad	.LC259
+	.quad	0
+	.quad	.LC42
+	.quad	0
+	.quad	.LC260
+	.quad	0
+	.quad	.LC261
+	.quad	0
+	.quad	.LC262
+	.quad	0
+	.quad	.LC248
+	.quad	0
+	.quad	.LC263
+	.quad	0
+	.quad	.LC212
+	.quad	0
+	.quad	.LC264
+	.quad	0
+	.quad	.LC265
+	.quad	0
+	.quad	.LC266
+	.quad	0
+	.quad	.LC42
+	.quad	0
+	.quad	.LC267
+	.quad	0
+	.quad	.LC268
+	.quad	0
+	.quad	.LC269
+	.quad	0
+	.quad	.LC248
+	.quad	0
+	.quad	.LC270
+	.quad	0
+	.quad	.LC271
+	.quad	0
+	.quad	.LC272
+	.quad	0
+	.quad	.LC271
+	.quad	0
+	.quad	.LC273
+	.quad	0
+	.quad	.LC271
+	.quad	0
+	.quad	.LC274
+	.quad	0
+	.quad	.LC271
+	.quad	0
+	.quad	.LC275
+	.quad	0
+	.quad	.LC271
+	.quad	0
+	.quad	.LC276
+	.quad	0
+	.quad	.LC277
+	.quad	0
+	.quad	.LC278
+	.quad	0
+	.quad	.LC279
+	.quad	0
+	.quad	.LC280
+	.quad	0
+	.quad	.LC281
+	.quad	0
+	.quad	.LC282
+	.quad	0
+	.quad	.LC283
+	.quad	0
+	.quad	.LC284
+	.quad	0
+	.quad	.LC26
+	.quad	0
+	.quad	.LC285
+	.quad	0
+	.quad	.LC26
+	.quad	0
+	.quad	.LC286
+	.quad	0
+	.quad	.LC287
+	.quad	0
+	.quad	.LC288
+	.quad	0
+	.quad	.LC289
+	.quad	0
+	.quad	.LC290
+	.quad	0
+	.quad	.LC291
+	.quad	0
+	.quad	.LC292
+	.quad	0
+	.quad	.LC291
+	.quad	0
+	.quad	.LC293
+	.quad	0
+	.quad	.LC294
+	.quad	0
+	.quad	.LC295
+	.quad	0
+	.quad	.LC296
+	.quad	0
+	.quad	.LC297
+	.quad	0
+	.quad	.LC298
+	.quad	0
+	.quad	.LC299
+	.quad	0
+	.quad	.LC298
+	.quad	0
+	.quad	.LC300
+	.quad	0
+	.quad	.LC298
+	.quad	0
+	.quad	.LC301
+	.quad	0
+	.quad	.LC298
+	.quad	0
+	.quad	.LC302
+	.quad	0
+	.quad	.LC303
+	.quad	0
+	.quad	.LC304
+	.quad	0
+	.quad	.LC305
+	.quad	0
+	.quad	.LC306
+	.quad	0
+	.quad	.LC307
+	.quad	0
+	.quad	.LC308
+	.quad	0
+	.quad	.LC42
+	.quad	0
+	.quad	.LC309
+	.quad	0
+	.quad	.LC42
+	.quad	0
+	.quad	.LC310
+	.quad	0
+	.quad	.LC311
+	.quad	0
+	.quad	.LC312
+	.quad	0
+	.quad	.LC313
+	.quad	0
+	.quad	.LC314
+	.quad	0
+	.quad	.LC315
+	.quad	0
+	.quad	.LC316
+	.quad	0
+	.quad	.LC317
+	.quad	0
+	.quad	.LC318
+	.quad	0
+	.quad	.LC319
+	.quad	0
+	.quad	.LC320
+	.quad	0
+	.quad	.LC305
+	.quad	0
+	.quad	.LC321
+	.quad	0
+	.quad	.LC305
+	.quad	0
+	.quad	.LC322
+	.quad	0
+	.quad	.LC323
+	.quad	0
+	.quad	.LC324
+	.quad	0
+	.quad	.LC325
+	.quad	0
+	.quad	.LC326
+	.quad	0
+	.quad	.LC315
+	.quad	0
+	.quad	.LC327
+	.quad	0
+	.quad	.LC328
+	.quad	0
+	.quad	.LC329
+	.quad	0
+	.quad	.LC330
+	.quad	0
+	.quad	.LC331
+	.quad	0
+	.quad	.LC332
+	.quad	0
+	.quad	.LC333
+	.quad	0
+	.quad	.LC332
+	.quad	0
+	.quad	.LC334
+	.quad	0
+	.quad	.LC335
+	.quad	0
+	.quad	.LC336
+	.quad	0
+	.quad	.LC337
+	.quad	0
+	.quad	.LC338
+	.quad	0
+	.quad	.LC337
+	.quad	0
+	.quad	.LC339
+	.quad	0
+	.quad	.LC337
+	.quad	0
+	.quad	.LC340
+	.quad	0
+	.quad	.LC332
+	.quad	0
+	.quad	.LC341
+	.quad	0
+	.quad	.LC342
+	.quad	0
+	.quad	.LC343
+	.quad	0
+	.quad	.LC319
+	.quad	0
+	.quad	.LC344
+	.quad	0
+	.quad	.LC330
+	.quad	0
+	.quad	.LC345
+	.quad	0
+	.quad	.LC346
+	.quad	0
+	.quad	.LC347
+	.quad	0
+	.quad	.LC232
+	.quad	0
+	.quad	.LC348
+	.quad	0
+	.quad	.LC42
+	.quad	0
+	.quad	.LC349
+	.quad	0
+	.quad	.LC350
+	.quad	0
+	.quad	.LC351
+	.quad	0
+	.quad	.LC352
+	.quad	0
+	.quad	.LC353
+	.quad	0
+	.quad	.LC354
+	.quad	0
+	.quad	.LC355
+	.quad	0
+	.quad	.LC356
+	.quad	0
+	.quad	.LC357
+	.quad	0
+	.quad	.LC358
+	.quad	0
+	.quad	.LC359
+	.quad	0
+	.quad	.LC360
+	.quad	0
+	.quad	.LC361
+	.quad	0
+	.quad	.LC362
+	.quad	0
+	.quad	.LC363
+	.quad	0
+	.quad	.LC364
+	.quad	0
+	.quad	.LC365
+	.quad	0
+	.quad	.LC366
+	.quad	0
+	.quad	.LC367
+	.quad	0
+	.quad	.LC368
+	.quad	0
+	.quad	.LC369
+	.quad	0
+	.quad	.LC370
+	.quad	0
+	.quad	.LC371
+	.quad	0
+	.quad	.LC372
+	.quad	0
+	.quad	.LC373
+	.quad	0
+	.quad	.LC212
+	.quad	0
+	.quad	.LC374
+	.quad	0
+	.quad	.LC328
+	.quad	0
+	.quad	.LC375
+	.quad	0
+	.quad	.LC376
+	.quad	0
+	.quad	.LC377
+	.quad	0
+	.quad	.LC378
+	.quad	0
+	.quad	.LC379
+	.quad	0
+	.quad	.LC380
+	.quad	0
+	.quad	.LC381
+	.quad	0
+	.quad	.LC382
+	.quad	0
+	.quad	.LC383
+	.quad	0
+	.quad	.LC384
+	.quad	0
+	.quad	.LC385
+	.quad	0
+	.quad	.LC378
+	.quad	0
+	.quad	.LC386
+	.quad	0
+	.quad	.LC387
+	.quad	0
+	.quad	.LC388
+	.quad	0
+	.quad	.LC389
+	.quad	0
+	.quad	.LC390
+	.quad	0
+	.quad	.LC391
+	.quad	0
+	.quad	.LC392
+	.quad	0
+	.quad	.LC393
+	.quad	0
+	.quad	.LC394
+	.quad	0
+	.quad	.LC395
+	.quad	0
+	.quad	.LC396
+	.quad	0
+	.quad	.LC397
+	.quad	0
+	.quad	.LC398
+	.quad	0
+	.quad	.LC397
+	.quad	0
+	.quad	.LC399
+	.quad	0
+	.quad	.LC400
+	.quad	0
+	.quad	.LC401
+	.quad	0
+	.quad	.LC402
+	.quad	0
+	.quad	.LC403
+	.quad	0
+	.quad	.LC319
+	.quad	0
+	.quad	.LC404
+	.quad	0
+	.quad	.LC405
+	.quad	0
+	.quad	.LC406
+	.quad	0
+	.quad	.LC407
+	.quad	0
+	.quad	.LC408
+	.quad	0
+	.quad	.LC407
+	.quad	0
+	.quad	.LC409
+	.quad	0
+	.quad	.LC407
+	.quad	0
+	.quad	.LC410
+	.quad	0
+	.quad	.LC407
+	.quad	0
+	.quad	.LC411
+	.quad	0
+	.quad	.LC412
+	.quad	0
+	.quad	.LC413
+	.quad	0
+	.quad	.LC412
+	.quad	0
+	.quad	.LC414
+	.quad	0
+	.quad	.LC223
+	.quad	0
+	.quad	.LC415
+	.quad	0
+	.quad	.LC42
+	.quad	0
+	.quad	.LC416
+	.quad	0
+	.quad	.LC417
+	.quad	0
+	.quad	.LC418
+	.quad	0
+	.quad	.LC419
+	.quad	0
+	.quad	.LC420
+	.quad	0
+	.quad	.LC421
+	.quad	0
+	.quad	.LC422
+	.quad	0
+	.quad	.LC423
+	.quad	0
+	.quad	.LC424
+	.quad	0
+	.quad	.LC425
+	.quad	0
+	.quad	.LC426
+	.quad	0
+	.quad	.LC427
+	.quad	0
+	.quad	.LC428
+	.quad	0
+	.quad	.LC429
+	.quad	0
+	.quad	.LC430
+	.quad	0
+	.quad	.LC431
+	.quad	0
+	.quad	.LC432
+	.quad	0
+	.quad	.LC433
+	.quad	0
+	.quad	.LC434
+	.quad	0
+	.quad	.LC433
+	.quad	0
+	.quad	.LC435
+	.quad	0
+	.quad	.LC436
+	.quad	0
+	.quad	.LC437
+	.quad	0
+	.quad	.LC438
+	.quad	0
+	.quad	.LC439
+	.quad	0
+	.quad	.LC440
+	.quad	0
+	.quad	.LC441
+	.quad	0
+	.quad	.LC442
+	.quad	0
+	.quad	.LC443
+	.quad	0
+	.quad	.LC444
+	.quad	0
+	.quad	.LC445
+	.quad	0
+	.quad	.LC446
+	.quad	0
+	.quad	.LC447
+	.quad	0
+	.quad	.LC448
+	.quad	0
+	.quad	.LC449
+	.quad	0
+	.quad	.LC387
+	.quad	0
+	.quad	.LC450
+	.quad	0
+	.quad	.LC451
+	.quad	0
+	.quad	.LC452
+	.quad	0
+	.quad	.LC453
+	.quad	0
+	.quad	.LC454
+	.quad	0
+	.quad	.LC455
+	.quad	0
+	.quad	.LC456
+	.quad	0
+	.quad	.LC457
+	.quad	0
+	.quad	.LC458
+	.quad	0
+	.quad	.LC457
+	.quad	0
+	.quad	.LC459
+	.quad	0
+	.quad	.LC460
+	.quad	0
+	.quad	.LC461
+	.quad	0
+	.quad	.LC460
+	.quad	0
+	.quad	.LC462
+	.quad	0
+	.quad	.LC387
+	.quad	0
+	.quad	.LC463
+	.quad	0
+	.quad	.LC464
+	.quad	0
+	.quad	.LC465
+	.quad	0
+	.quad	.LC466
+	.quad	0
+	.quad	.LC467
+	.quad	0
+	.quad	.LC468
+	.quad	0
+	.quad	.LC469
+	.quad	0
+	.quad	.LC470
+	.quad	0
+	.quad	.LC471
+	.quad	0
+	.quad	.LC472
+	.quad	0
+	.quad	.LC473
+	.quad	0
+	.quad	.LC474
+	.quad	0
+	.quad	.LC475
+	.quad	0
+	.quad	.LC476
+	.quad	0
+	.quad	.LC477
+	.quad	0
+	.quad	.LC478
+	.quad	0
+	.quad	.LC479
+	.quad	0
+	.quad	.LC480
+	.quad	0
+	.quad	.LC481
+	.quad	0
+	.quad	.LC482
+	.quad	0
+	.quad	.LC483
+	.quad	0
+	.quad	.LC484
+	.quad	0
+	.quad	.LC485
+	.quad	0
+	.quad	.LC486
+	.quad	0
+	.quad	.LC487
+	.quad	0
+	.quad	.LC488
+	.quad	0
+	.quad	.LC489
+	.quad	0
+	.quad	.LC490
+	.quad	0
+	.quad	.LC491
+	.quad	0
+	.quad	.LC492
+	.quad	0
+	.quad	.LC493
+	.quad	0
+	.quad	.LC494
+	.quad	0
+	.quad	.LC495
+	.quad	0
+	.quad	.LC496
+	.quad	0
+	.quad	.LC497
+	.quad	0
+	.quad	.LC498
+	.quad	0
+	.quad	.LC499
+	.quad	0
+	.quad	.LC500
+	.quad	0
+	.quad	.LC501
+	.quad	0
+	.quad	.LC502
+	.quad	0
+	.quad	.LC503
+	.quad	0
+	.quad	.LC504
+	.quad	0
+	.quad	.LC505
+	.quad	0
+	.quad	.LC474
+	.quad	0
+	.quad	.LC506
+	.quad	0
+	.quad	.LC419
+	.quad	0
+	.quad	.LC507
+	.quad	0
+	.quad	.LC508
+	.quad	0
+	.quad	.LC509
+	.quad	0
+	.quad	.LC510
+	.quad	0
+	.quad	.LC511
+	.quad	0
+	.quad	.LC512
+	.quad	0
+	.quad	.LC513
+	.quad	0
+	.quad	.LC512
+	.quad	0
+	.quad	.LC514
+	.quad	0
+	.quad	.LC515
+	.quad	0
+	.quad	.LC516
+	.quad	0
+	.quad	.LC258
+	.quad	0
+	.quad	.LC517
+	.quad	0
+	.quad	.LC518
+	.quad	0
+	.quad	.LC519
+	.quad	0
+	.quad	.LC258
+	.quad	0
+	.quad	.LC520
+	.quad	0
+	.quad	.LC521
+	.quad	0
+	.quad	.LC522
+	.quad	0
+	.quad	.LC523
+	.quad	0
+	.quad	.LC524
+	.quad	0
+	.quad	.LC525
+	.quad	0
+	.section	.rodata.str1.1
+.LC526:
+	.string	"Z"
+.LC527:
+	.string	"compress"
+.LC528:
+	.string	"gz"
+.LC529:
+	.string	"gzip"
+.LC530:
+	.string	"uu"
+.LC531:
+	.string	"x-uuencode"
+	.data
+	.align 32
+	.type	enc_tab, @object
+	.size	enc_tab, 128
+enc_tab:
+	.quad	.LC526
+	.quad	0
+	.quad	.LC527
+	.quad	0
+	.quad	.LC528
+	.quad	0
+	.quad	.LC529
+	.quad	0
+	.quad	.LC434
+	.quad	0
+	.quad	.LC529
+	.quad	0
+	.quad	.LC530
+	.quad	0
+	.quad	.LC531
+	.quad	0
+	.section	.rodata
+	.align 32
+	.type	b64_decode_table, @object
+	.size	b64_decode_table, 1024
+b64_decode_table:
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	62
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	63
+	.long	52
+	.long	53
+	.long	54
+	.long	55
+	.long	56
+	.long	57
+	.long	58
+	.long	59
+	.long	60
+	.long	61
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	0
+	.long	1
+	.long	2
+	.long	3
+	.long	4
+	.long	5
+	.long	6
+	.long	7
+	.long	8
+	.long	9
+	.long	10
+	.long	11
+	.long	12
+	.long	13
+	.long	14
+	.long	15
+	.long	16
+	.long	17
+	.long	18
+	.long	19
+	.long	20
+	.long	21
+	.long	22
+	.long	23
+	.long	24
+	.long	25
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	26
+	.long	27
+	.long	28
+	.long	29
+	.long	30
+	.long	31
+	.long	32
+	.long	33
+	.long	34
+	.long	35
+	.long	36
+	.long	37
+	.long	38
+	.long	39
+	.long	40
+	.long	41
+	.long	42
+	.long	43
+	.long	44
+	.long	45
+	.long	46
+	.long	47
+	.long	48
+	.long	49
+	.long	50
+	.long	51
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.long	-1
+	.local	str_alloc_size
+	.comm	str_alloc_size,8,8
+	.local	str_alloc_count
+	.comm	str_alloc_count,4,4
+	.globl	httpd_err503form
+	.section	.rodata.str1.8
+	.align 8
+.LC532:
+	.string	"The requested URL '%.80s' is temporarily overloaded.  Please try again later.\n"
+	.data
+	.align 8
+	.type	httpd_err503form, @object
+	.size	httpd_err503form, 8
+httpd_err503form:
+	.quad	.LC532
+	.globl	httpd_err503title
+	.section	.rodata.str1.8
+	.align 8
+.LC533:
+	.string	"Service Temporarily Overloaded"
+	.data
+	.align 8
+	.type	httpd_err503title, @object
+	.size	httpd_err503title, 8
+httpd_err503title:
+	.quad	.LC533
+	.globl	httpd_err408form
+	.section	.rodata.str1.8
+	.align 8
+.LC534:
+	.string	"No request appeared within a reasonable time period.\n"
+	.data
+	.align 8
+	.type	httpd_err408form, @object
+	.size	httpd_err408form, 8
+httpd_err408form:
+	.quad	.LC534
+	.globl	httpd_err408title
+	.section	.rodata.str1.1
+.LC535:
+	.string	"Request Timeout"
+	.data
+	.align 8
+	.type	httpd_err408title, @object
+	.size	httpd_err408title, 8
+httpd_err408title:
+	.quad	.LC535
+	.globl	httpd_err400form
+	.section	.rodata.str1.8
+	.align 8
+.LC536:
+	.string	"Your request has bad syntax or is inherently impossible to satisfy.\n"
+	.data
+	.align 8
+	.type	httpd_err400form, @object
+	.size	httpd_err400form, 8
+httpd_err400form:
+	.quad	.LC536
+	.globl	httpd_err400title
+	.section	.rodata.str1.1
+.LC537:
+	.string	"Bad Request"
+	.data
+	.align 8
+	.type	httpd_err400title, @object
+	.size	httpd_err400title, 8
+httpd_err400title:
+	.quad	.LC537
+	.local	sub_process
+	.comm	sub_process,4,4
+	.ident	"GCC: (GNU) 7.2.0"
+	.section	.note.GNU-stack,"",@progbits

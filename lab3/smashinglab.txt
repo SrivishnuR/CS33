@@ -1,0 +1,401 @@
+Smashing Lab Log
+
+cd // go to home directory
+emacs .bash_profile // put /usr/local/cs/bin is in the start of the path
+
+### in emacs ###
+PATH=/usr/local/cs/bin/gcc
+save and exit
+###
+
+cd ~/Documents/CS33/lab3
+curl -O http://web.cs.ucla.edu/classes/fall17/cs33/lab/sthttpd-2.27.0.tar.gz // download sthttpd
+
+tar -xvf sthttpd-2.27.0.tar.gz // unzip sthttpd
+cd sthttpd-2.27.0/
+emacs src/thttpd.c // used to edit in patch
+
+### in emacs ###
+M-g M-g 1002
+C-k
+TAB char line[100];
+M-g M-g 1015
+C-k
+TAB while ( fgets( line, 1000, fp ) != (char*) 0 )
+save and exit
+###
+
+emacs src/libhttpd.c // used to edit in patch
+
+### in emacs ###
+M-g M-g 4081
+C-k
+TAB (void) memmove( str, &str[7], strlen (&str[7]) + 1 );
+save and exit
+###
+
+./configure \
+   LDFLAGS="-Xlinker --rpath=/usr/local/cs/gcc-$(gcc -dumpversion)/lib" // configure the build path
+
+make clean
+make CFLAGS='-g3 -O2 -fno-inline -fstack-protector-strong'
+mv src/thttpd src/thttpd-sp // build with strong stack protection
+
+make clean
+make CFLAGS='-g3 -O2 -fno-inline -static-libasan -fsanitize=address'
+mv src/thttpd src/thttpd-as // build with address sanitization
+
+make clean
+make CFLAGS='-g3 -O2 -fno-inline -fno-stack-protector -zexecstack'
+mv src/thttpd src/thttpd-no // build with neither
+
+###
+ID - 504845437
+For SP we use port 13183 
+For AS we use port 13184
+For NO we use port 13185
+###
+
+cd ../Documents/CS33/lab3/sthttpd-2.27.0
+emacs foo.txt // type in hello world
+src/thttpd-sp -p 13183 -D // this runs the server on terminal one
+
+// in terminal two
+curl http://localhost:13183/foo.txt // this prints out hello world
+// server works!
+
+src/thttpd-as -p 13184 -D // this runs the server on terminal one
+
+// in terminal two
+curl http://localhost:13184/foo.txt // this prints out hello world
+// server works!
+
+src/thttpd-no -p 13185 -D // this runs the server on terminal one
+
+// in terminal two
+curl http://localhost:13185/foo.txt // this prints out hello world
+// server works!
+
+5. Making the SP version crash
+I first analyze the bug we introduced in thttpd.c
+We see how we make the char array line to only hold 100 characters in read_config and how fgets can read up to 1000 characters.
+Using this knowledge, we can assume that if we make a file that is at least a 100 bytes long, we would cause a segmentation fault and crash the program.
+However, when we just create a file that has a 100 characters and use it as our config file, we don't get a segmentation fault.
+Instead we just get a warning that says unknown config option. This is due to the fact that read_config ignores config options unless they start with
+debug, port, dir, chroot, nochroot, data_dir, symlink, nosymlink, symlinks, user, cgipat, cgilimit, urlpat,
+noemptyreferers, localpat, throttles, host, logfile, vhost, novhost, globalpasswd, noglobalpasswd,
+pidfile, charset, p3p, or max_age followed immediatly by an =.
+Otherwise It just prints out unknown config option. This is all found by analyzing the read_config function.
+
+So, to create make this variant of thttpd crash, what I do is make a file called file.txt which contains the word dir= followed by 100 random characters in emacs.
+Then I do
+
+gdb thttpd-sp
+### In GDB ###
+r -p 13183 -D -C file.txt // The -C option is used to take in a config file
+
+  ### This causes the crash and we get ###
+Using host libthread_db library "/lib64/libthread_db.so.1".
+*** stack smashing detected ***: /w/home.13/cs/ugrad/srivishn/Documents/CS33/lab3/sthttpd-2.27.0/src/thttpd-sp terminated
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff6db3118 in ?? () from /lib64/libgcc_s.so.1
+  ###
+
+bt // this is done to create the backtrace
+
+  ### The backtrace shows us ###
+#0  0x00007ffff6db3118 in ?? () from /lib64/libgcc_s.so.1
+#1  0x00007ffff6db4019 in _Unwind_Backtrace () from /lib64/libgcc_s.so.1
+#2  0x00007ffff76e8636 in backtrace () from /lib64/libc.so.6
+#3  0x00007ffff7651f24 in __libc_message () from /lib64/libc.so.6
+#4  0x00007ffff76ec047 in __fortify_fail () from /lib64/libc.so.6
+#5  0x00007ffff76ec010 in __stack_chk_fail () from /lib64/libc.so.6
+#6  0x0000000000405056 in read_config (filename=<optimized out>) at thttpd.c:1190
+#7  0x6161616161616161 in ?? ()
+#8  0x6161616161616161 in ?? ()
+#9  0x6161616161616161 in ?? ()
+#10 0x6161616161616161 in ?? ()
+#11 0x6161616161616161 in ?? ()
+#12 0x6161616161616161 in ?? ()
+#13 0x6161616161616161 in ?? ()
+#14 0x6161616161616161 in ?? ()
+#15 0x6161616161616161 in ?? ()
+#16 0x6161616161616161 in ?? ()
+#17 0x6161616161616161 in ?? ()
+#18 0x6161616161616161 in ?? ()
+#19 0x6161616161616161 in ?? ()
+#20 0x6161616161616161 in ?? ()
+#21 0x6161616161616161 in ?? ()
+#22 0x6161616161616161 in ?? ()
+#23 0x6161616161616161 in ?? ()
+#24 0x6161616161616161 in ?? ()
+#25 0x6161616161616161 in ?? ()
+#26 0x6161616161616161 in ?? ()
+#27 0x6161616161616161 in ?? ()
+#28 0x6161616161616161 in ?? ()
+   ###
+
+   ###
+We can see from this backtrace that __stack_chk_fail() is called in the function read_config, so then we do
+   ###
+   
+disas 0x0000000000405056
+###
+
+to read the assembly of read_config so we can identify which machine instruction called __stack_chk_fail () and eventually caused the crash
+
+By scrolling through the disas, we can find where the next function in the backtrace is called, and we find it at the line here -
+
+0x0000000000405051 <+1521>:  callq  0x4024b0 <__stack_chk_fail@plt>
+
+the line before this is
+
+0x000000000040504c <+1516>:  callq  0x402940 <exit@plt>
+
+which is a call to exit, so we know that the call to stack_chk_fail has to be jumped to.
+By analysis, we find the line that jumps to the call stack_chk_fail is
+
+0x0000000000404f31 <+1233>:  jne    0x405051 <read_config+1521>
+
+the line before this is
+
+0x0000000000404f28 <+1224>:  xor    %fs:0x28,%rax
+
+and we can conclude that this xor caused the crash as it would have set the flags for the jne.
+
+6. Making the AS version crash
+For the AS version we do the exact same thing to replicate the bug
+We first do
+
+gdb thttpd-as
+
+### In GDB ###
+r -p 13184 -D -C file.txt // we run the command
+
+   ### This causes the crash and we get ###
+==32105==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7fffffffcec4 at pc 0x00000043aec9 bp 0x7fffffffce20 sp 0x7fffffffc5d0
+READ of size 744 at 0x7fffffffcec4 thread T0
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7075118 in ?? () from /lib64/libgcc_s.so.1
+   ###
+
+bt // this is done to create the backtrace
+
+   ### The backtrace shows us ###
+#0  0x00007ffff7075118 in ?? () from /lib64/libgcc_s.so.1
+#1  0x00007ffff7076019 in _Unwind_Backtrace () from /lib64/libgcc_s.so.1
+#2  0x00000000004b8ae3 in __sanitizer::BufferedStackTrace::SlowUnwindStack (this=0x7fffffffbd40, pc=4435657,
+    max_depth=<optimized out>)
+    at ../../../../gcc-6.3.0/libsanitizer/sanitizer_common/sanitizer_unwind_linux_libcdep.cc:113
+#3  0x00000000004b42e1 in __asan::GetStackTraceWithPcBpAndContext (fast=false, context=0x0, bp=140737488342560,
+    pc=4435657, max_depth=256, stack=0x7fffffffbd40) at ../../../../gcc-6.3.0/libsanitizer/asan/asan_stack.h:49
+#4  __asan::ReportGenericError (pc=<optimized out>, bp=bp@entry=140737488342560, sp=sp@entry=140737488340432,
+    addr=addr@entry=140737488342724, is_write=is_write@entry=false, access_size=access_size@entry=744,
+    exp=<optimized out>, fatal=<optimized out>) at ../../../../gcc-6.3.0/libsanitizer/asan/asan_report.cc:1092
+#5  0x000000000043aee4 in __interceptor_strchr (str=<optimized out>, c=<optimized out>)
+    at ../../../../gcc-6.3.0/libsanitizer/asan/asan_interceptors.cc:468
+#6  0x00000000004e0b51 in read_config (filename=<optimized out>) at thttpd.c:1018
+#7  0x6161616161616161 in ?? ()
+#8  0x6161616161616161 in ?? ()
+#9  0x6161616161616161 in ?? ()
+#10 0x6161616161616161 in ?? ()
+#11 0x6161616161616161 in ?? ()
+#12 0x6161616161616161 in ?? ()
+#13 0x6161616161616161 in ?? ()
+#14 0x6161616161616161 in ?? ()
+#15 0x6161616161616161 in ?? ()
+#16 0x6161616161616161 in ?? ()
+#17 0x6161616161616161 in ?? ()
+#18 0x6161616161616161 in ?? ()
+#19 0x6161616161616161 in ?? ()
+#20 0x6161616161616161 in ?? ()
+#21 0x6161616161616161 in ?? ()
+#22 0x6161616161616161 in ?? ()
+#23 0x6161616161616161 in ?? ()
+#24 0x6161616161616161 in ?? ()
+#25 0x6161616161616161 in ?? ()
+#26 0x6161616161616161 in ?? ()
+#27 0x6161616161616161 in ?? ()
+#28 0x6161616161616161 in ?? ()
+#29 0x6161616161616161 in ?? ()
+#30 0x6161616161616161 in ?? ()
+#31 0x6161616161616161 in ?? ()
+#32 0x6161616161616161 in ?? ()
+#33 0x6161616161616161 in ?? ()
+#34 0x6161616161616161 in ?? ()
+#35 0x6161616161616161 in ?? ()
+#36 0x6161616161616161 in ?? ()
+#37 0x6161616161616161 in ?? ()
+#38 0x6161616161616161 in ?? ()
+#39 0x6161616161616161 in ?? ()
+#40 0x6161616161616161 in ?? ()
+#41 0x6161616161616161 in ?? ()
+#42 0x6161616161616161 in ?? ()
+#43 0x6161616161616161 in ?? ()
+#44 0x6161616161616161 in ?? ()
+#45 0x6161616161616161 in ?? ()
+#46 0x6161616161616161 in ?? ()
+#47 0x6161616161616161 in ?? ()
+#48 0x6161616161616161 in ?? ()
+#49 0x6161616161616161 in ?? ()
+#50 0x6161616161616161 in ?? ()
+#51 0x6161616161616161 in ?? ()
+#52 0x6161616161616161 in ?? ()
+#53 0x6161616161616161 in ?? ()
+#54 0x6161616161616161 in ?? ()
+   ###
+
+   ###
+We can see from this backtrace that __asan::ReportGenericError is called in the function __interceptor_strchr, which we can assume is some sort of error checking function.
+So we then want to get the disas of __interceptor_strchr so we do
+   ###
+
+disas 0x000000000043aee4
+###
+
+to read the assembly of __interceptor_strchr so we can identify which machine instruction called  __asan::ReportGenericError and eventually caused the crash
+
+By scrolling through the disas, we can find where the next function in the backtrace is called, and we find these lines here that are of importance  -
+
+0x000000000043aebc <+428>:   test   %al,%al
+0x000000000043aebe <+430>:   jne    0x43ad3d <__interceptor_strchr(char const*, int)+45>
+0x000000000043aec4 <+436>:   callq  0x4be230 <__sanitizer::StackTrace::GetCurrentPc()>
+0x000000000043aec9 <+441>:   pushq  $0x0
+0x000000000043aecb <+443>:   pushq  $0x0
+0x000000000043aecd <+445>:   mov    %r14,%r9
+0x000000000043aed0 <+448>:   xor    %r8d,%r8d
+0x000000000043aed3 <+451>:   mov    %rbx,%rcx
+0x000000000043aed6 <+454>:   mov    %r13,%rdx
+0x000000000043aed9 <+457>:   mov    %rbp,%rsi
+0x000000000043aedc <+460>:   mov    %rax,%rdi
+0x000000000043aedf <+463>:   callq  0x4b3f30 <__asan::ReportGenericError(unsigned long, unsigned long, unsigned lo
+
+We can see that the call to Report Generic Error is controlled by the line
+
+0x000000000043aebe <+430>:   jne    0x43ad3d <__interceptor_strchr(char const*, int)+45>
+
+and this line in turn is controlled by the line
+
+0x000000000043aebc <+428>:   test   %al,%al
+
+We can conclude that this line causes the crash.
+
+7. Making the NO version crash
+For the NO version we do the exact same thing to replicate the bug
+We first do
+
+gdb thttpd-no
+
+### In GDB ###
+r -p 13185 -D -C file.txt // we run the command
+
+   ### This causes the crash and we get ###
+Using host libthread_db library "/lib64/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0000000000404d9f in read_config (filename=<optimized out>) at thttpd.c:1190
+   ###
+
+bt // this is done to create the backtrace
+
+   ### The backtrace shows us ###
+#0  0x0000000000404d9f in read_config (filename=<optimized out>) at thttpd.c:1190
+#1  0x6161616161616161 in ?? ()
+#2  0x6161616161616161 in ?? ()
+#3  0x6161616161616161 in ?? ()
+#4  0x6161616161616161 in ?? ()
+#5  0x6161616161616161 in ?? ()
+#6  0x6161616161616161 in ?? ()
+#7  0x6161616161616161 in ?? ()
+#8  0x6161616161616161 in ?? ()
+#9  0x6161616161616161 in ?? ()
+#10 0x6161616161616161 in ?? ()
+#11 0x6161616161616161 in ?? ()
+#12 0x6161616161616161 in ?? ()
+#13 0x6161616161616161 in ?? ()
+#14 0x6161616161616161 in ?? ()
+#15 0x6161616161616161 in ?? ()
+#16 0x6161616161616161 in ?? ()
+#17 0x6161616161616161 in ?? ()
+#18 0x6161616161616161 in ?? ()
+#19 0x6161616161616161 in ?? ()
+#20 0x6161616161616161 in ?? ()
+#21 0x6161616161616161 in ?? ()
+#22 0x6161616161616161 in ?? ()
+#23 0x6161616161616161 in ?? ()
+#24 0x6161616161616161 in ?? ()
+#25 0x6161616161616161 in ?? ()
+#26 0x6161616161616161 in ?? ()
+#27 0x6161616161616161 in ?? ()
+#28 0x6161616161616161 in ?? ()
+   ###
+
+   ###
+We can see from this backtrace that the error and crash is produced in read_config itself. We then do
+   ###
+
+disas 0x0000000000404d9f 
+###
+
+to read the assembly of read_config
+
+By scrolling through the disas, we can find this line  -
+
+=> 0x0000000000404d9f <+1215>:  retq
+
+The disas shows us that we run all the way through to this line
+
+This is also the only retq in the function, and thus we can assume that the function is run through normally, as there is no stack protection checking as opposed to the other two versions.
+We can assume that here that some of the return values instead where overwritten.
+
+8. Creating and comparing the assembly files
+cd Documents/CS33/lab3/sthttpd-2.27.0
+
+./configure \
+   LDFLAGS="-Xlinker --rpath=/usr/local/cs/gcc-$(gcc -dumpversion)/lib"
+
+make clean
+make CFLAGS='-S -O2 -fno-inline -fstack-protector-strong'
+mv src/thttpd.o src/thttpd-sp.s // creating the sp assembly file
+
+make clean
+make CFLAGS='-S -O2 -fno-inline -static-libasan -fsanitize=address'
+mv src/thttpd.o src/thttpd-as.s // creating the as assembly file
+
+make clean
+make CFLAGS='-S -O2 -fno-inline -fno-stack-protector -zexecstack'
+mv src/thttpd.o src/thttpd-no.s // creating the no assembly file
+
+wc -l src/thttpd-sp.s // returns 4397
+wc -l src/thttpd-as.s // returns 10072
+wc -l src/thttpd-no.s // returns 4369
+
+I first compare thttpd-sp.s and thttpd-no.s since they have similiar line counts
+What I found out by this is that the handle_read functions in -no and -sp are identical code wise.
+This is due to the fact that handle_read does not create an array of any sorts and also does not use a local variable's address in a function argument.
+Due to this fact handle_read is not given any stack protection under -fstack-protector-strong.
+
+On the other hand, there are a lot of differences between the -sp and -as versions.
+First thing we notice is that the -as version pushes way more of the registers onto the stack.
+This is due to the fact that it needs the registers to do checking for stack overflow.
+The as version also calls __asan_report_loadx where x is an integer a lot of times which seem to abort the program and send an error message.
+
+All in all, the -as version is definitely safer than the -sp or -no versions.
+
+9.
+ut by this is that the handle_read functions in -no and -sp are identical code wise.
+This is due to the fact that handle_read does not create an array of any sorts and also does not use a local variable's address in a function argument.
+Due to this fact handle_read is not given any stack protection under -fstack-protector-strong.
+
+On the other hand, there are a lot of differences between the -sp and -as versions.
+First thing we notice is that the -as version pushes way more of the registers onto the stack.
+This is due to the fact that it needs the registers to do checking for stack overflow.
+The as version also calls __asan_report_loadx where x is an integer a lot of times which seem to abort the program and send an error message.
+
+All in all, the -as versino is definitely safer than the -sp or -no versions.
+
+9. Creating the no exploit
+
+It is not possible to create an exploit via abusing handle_read due to the fact that handle_read only configures the prots and does not have any power to destroy files.

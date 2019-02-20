@@ -1,0 +1,872 @@
+	.file	"tdate_parse.c"
+	.text
+	.p2align 4,,15
+	.type	is_leap, @function
+is_leap:
+.LFB7:
+	.cfi_startproc
+	movl	%edi, %eax
+	movl	$1374389535, %edx
+	movl	%edi, %esi
+	imull	%edx
+	sarl	$31, %esi
+	movl	$1, %eax
+	movl	%edx, %ecx
+	sarl	$7, %ecx
+	subl	%esi, %ecx
+	imull	$400, %ecx, %ecx
+	cmpl	%ecx, %edi
+	je	.L1
+	sarl	$5, %edx
+	movl	%edx, %eax
+	subl	%esi, %eax
+	imull	$100, %eax, %edx
+	movl	%edi, %eax
+	subl	%edx, %eax
+	je	.L1
+	xorl	%eax, %eax
+	andl	$3, %edi
+	sete	%al
+.L1:
+	rep ret
+	.cfi_endproc
+.LFE7:
+	.size	is_leap, .-is_leap
+	.p2align 4,,15
+	.type	tm_to_time, @function
+tm_to_time:
+.LFB8:
+	.cfi_startproc
+	movq	%rdi, %r8
+	movl	20(%rdi), %edi
+	leal	-70(%rdi), %eax
+	leal	-69(%rdi), %ecx
+	imull	$365, %eax, %eax
+	testl	%ecx, %ecx
+	movslq	%eax, %rdx
+	leal	3(%rcx), %eax
+	cmovns	%ecx, %eax
+	movslq	16(%r8), %rcx
+	sarl	$2, %eax
+	cltq
+	addq	%rdx, %rax
+	movslq	monthtab.3187(,%rcx,4), %r9
+	addq	%rax, %r9
+	cmpl	$1, %ecx
+	jle	.L10
+	addl	$1900, %edi
+	call	is_leap
+	cmpl	$1, %eax
+	sbbq	$-1, %r9
+.L10:
+	movl	12(%r8), %eax
+	subl	$1, %eax
+	cltq
+	addq	%r9, %rax
+	leaq	(%rax,%rax,2), %rdx
+	movslq	8(%r8), %rax
+	leaq	(%rax,%rdx,8), %rdx
+	movq	%rdx, %rax
+	salq	$4, %rax
+	subq	%rdx, %rax
+	movslq	4(%r8), %rdx
+	leaq	(%rdx,%rax,4), %rdx
+	movq	%rdx, %rax
+	salq	$4, %rax
+	subq	%rdx, %rax
+	movslq	(%r8), %rdx
+	leaq	(%rdx,%rax,4), %rax
+	ret
+	.cfi_endproc
+.LFE8:
+	.size	tm_to_time, .-tm_to_time
+	.p2align 4,,15
+	.type	strlong_compare, @function
+strlong_compare:
+.LFB3:
+	.cfi_startproc
+	movq	(%rsi), %rsi
+	movq	(%rdi), %rdi
+	jmp	strcmp
+	.cfi_endproc
+.LFE3:
+	.size	strlong_compare, .-strlong_compare
+	.p2align 4,,15
+	.type	strlong_search, @function
+strlong_search:
+.LFB4:
+	.cfi_startproc
+	pushq	%r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	pushq	%r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	leal	-1(%rdx), %r15d
+	pushq	%r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	pushq	%r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	xorl	%r13d, %r13d
+	pushq	%rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	pushq	%rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	movq	%rdi, %r12
+	movq	%rsi, %rbp
+	subq	$24, %rsp
+	.cfi_def_cfa_offset 80
+	movq	%rcx, 8(%rsp)
+	jmp	.L19
+	.p2align 4,,10
+	.p2align 3
+.L15:
+	je	.L17
+	leal	1(%rbx), %r13d
+	cmpl	%r13d, %r15d
+	jl	.L22
+.L19:
+	leal	(%r15,%r13), %eax
+	movq	%r12, %rdi
+	movl	%eax, %ebx
+	shrl	$31, %ebx
+	addl	%eax, %ebx
+	sarl	%ebx
+	movslq	%ebx, %r14
+	salq	$4, %r14
+	addq	%rbp, %r14
+	movq	(%r14), %rsi
+	call	strcmp
+	testl	%eax, %eax
+	jns	.L15
+	leal	-1(%rbx), %r15d
+	cmpl	%r13d, %r15d
+	jge	.L19
+.L22:
+	addq	$24, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 56
+	xorl	%eax, %eax
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L17:
+	.cfi_restore_state
+	movq	8(%r14), %rax
+	movq	8(%rsp), %rcx
+	movq	%rax, (%rcx)
+	addq	$24, %rsp
+	.cfi_def_cfa_offset 56
+	movl	$1, %eax
+	popq	%rbx
+	.cfi_def_cfa_offset 48
+	popq	%rbp
+	.cfi_def_cfa_offset 40
+	popq	%r12
+	.cfi_def_cfa_offset 32
+	popq	%r13
+	.cfi_def_cfa_offset 24
+	popq	%r14
+	.cfi_def_cfa_offset 16
+	popq	%r15
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE4:
+	.size	strlong_search, .-strlong_search
+	.p2align 4,,15
+	.type	pound_case, @function
+pound_case:
+.LFB2:
+	.cfi_startproc
+	pushq	%r12
+	.cfi_def_cfa_offset 16
+	.cfi_offset 12, -16
+	pushq	%rbp
+	.cfi_def_cfa_offset 24
+	.cfi_offset 6, -24
+	pushq	%rbx
+	.cfi_def_cfa_offset 32
+	.cfi_offset 3, -32
+	movzbl	(%rdi), %ebx
+	testb	%bl, %bl
+	je	.L23
+	movq	%rdi, %rbp
+	call	__ctype_b_loc
+	movq	%rax, %r12
+	.p2align 4,,10
+	.p2align 3
+.L26:
+	movq	(%r12), %rdx
+	movsbq	%bl, %rax
+	testb	$1, 1(%rdx,%rax,2)
+	je	.L25
+	movsbl	%bl, %edi
+	call	tolower
+	movb	%al, 0(%rbp)
+.L25:
+	addq	$1, %rbp
+	movzbl	0(%rbp), %ebx
+	testb	%bl, %bl
+	jne	.L26
+.L23:
+	popq	%rbx
+	.cfi_def_cfa_offset 24
+	popq	%rbp
+	.cfi_def_cfa_offset 16
+	popq	%r12
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE2:
+	.size	pound_case, .-pound_case
+	.p2align 4,,15
+	.type	scan_wday, @function
+scan_wday:
+.LFB5:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushq	%rbx
+	.cfi_def_cfa_offset 24
+	.cfi_offset 3, -24
+	movq	%rsi, %rbp
+	movq	%rdi, %rbx
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 32
+	movl	sorted.3173(%rip), %eax
+	testl	%eax, %eax
+	jne	.L36
+	movl	$strlong_compare, %ecx
+	movl	$16, %edx
+	movl	$14, %esi
+	movl	$wday_tab.3172, %edi
+	call	qsort
+	movl	$1, sorted.3173(%rip)
+.L36:
+	movq	%rbx, %rdi
+	call	pound_case
+	addq	$8, %rsp
+	.cfi_def_cfa_offset 24
+	movq	%rbp, %rcx
+	movq	%rbx, %rdi
+	popq	%rbx
+	.cfi_def_cfa_offset 16
+	popq	%rbp
+	.cfi_def_cfa_offset 8
+	movl	$14, %edx
+	movl	$wday_tab.3172, %esi
+	jmp	strlong_search
+	.cfi_endproc
+.LFE5:
+	.size	scan_wday, .-scan_wday
+	.p2align 4,,15
+	.type	scan_mon, @function
+scan_mon:
+.LFB6:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushq	%rbx
+	.cfi_def_cfa_offset 24
+	.cfi_offset 3, -24
+	movq	%rsi, %rbp
+	movq	%rdi, %rbx
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 32
+	movl	sorted.3179(%rip), %eax
+	testl	%eax, %eax
+	jne	.L39
+	movl	$strlong_compare, %ecx
+	movl	$16, %edx
+	movl	$23, %esi
+	movl	$mon_tab.3178, %edi
+	call	qsort
+	movl	$1, sorted.3179(%rip)
+.L39:
+	movq	%rbx, %rdi
+	call	pound_case
+	addq	$8, %rsp
+	.cfi_def_cfa_offset 24
+	movq	%rbp, %rcx
+	movq	%rbx, %rdi
+	popq	%rbx
+	.cfi_def_cfa_offset 16
+	popq	%rbp
+	.cfi_def_cfa_offset 8
+	movl	$23, %edx
+	movl	$mon_tab.3178, %esi
+	jmp	strlong_search
+	.cfi_endproc
+.LFE6:
+	.size	scan_mon, .-scan_mon
+	.section	.rodata.str1.8,"aMS",@progbits,1
+	.align 8
+.LC0:
+	.string	"%d-%400[a-zA-Z]-%d %d:%d:%d GMT"
+	.align 8
+.LC1:
+	.string	"%d %400[a-zA-Z] %d %d:%d:%d GMT"
+	.align 8
+.LC2:
+	.string	"%d:%d:%d GMT %d-%400[a-zA-Z]-%d"
+	.align 8
+.LC3:
+	.string	"%d:%d:%d GMT %d %400[a-zA-Z] %d"
+	.align 8
+.LC4:
+	.string	"%400[a-zA-Z], %d-%400[a-zA-Z]-%d %d:%d:%d GMT"
+	.align 8
+.LC5:
+	.string	"%400[a-zA-Z], %d %400[a-zA-Z] %d %d:%d:%d GMT"
+	.align 8
+.LC6:
+	.string	"%400[a-zA-Z] %400[a-zA-Z] %d %d:%d:%d GMT %d"
+	.text
+	.p2align 4,,15
+	.globl	tdate_parse
+	.type	tdate_parse, @function
+tdate_parse:
+.LFB9:
+	.cfi_startproc
+	pushq	%r14
+	.cfi_def_cfa_offset 16
+	.cfi_offset 14, -16
+	pushq	%r13
+	.cfi_def_cfa_offset 24
+	.cfi_offset 13, -24
+	pushq	%r12
+	.cfi_def_cfa_offset 32
+	.cfi_offset 12, -32
+	pushq	%rbp
+	.cfi_def_cfa_offset 40
+	.cfi_offset 6, -40
+	pushq	%rbx
+	.cfi_def_cfa_offset 48
+	.cfi_offset 3, -48
+	pxor	%xmm0, %xmm0
+	movq	%rdi, %rbx
+	subq	$1136, %rsp
+	.cfi_def_cfa_offset 1184
+	movzbl	(%rdi), %eax
+	movaps	%xmm0, 48(%rsp)
+	movq	$0, 96(%rsp)
+	movaps	%xmm0, 64(%rsp)
+	cmpb	$9, %al
+	movaps	%xmm0, 80(%rsp)
+	je	.L79
+	cmpb	$32, %al
+	je	.L79
+.L42:
+	leaq	12(%rsp), %r13
+	leaq	28(%rsp), %r14
+	leaq	112(%rsp), %rbp
+	xorl	%eax, %eax
+	movl	$.LC0, %esi
+	movq	%rbx, %rdi
+	pushq	%r13
+	.cfi_def_cfa_offset 1192
+	movq	%r14, %r8
+	movq	%rbp, %rcx
+	leaq	24(%rsp), %r12
+	pushq	%r12
+	.cfi_def_cfa_offset 1200
+	leaq	36(%rsp), %r9
+	leaq	40(%rsp), %rdx
+	call	__isoc99_sscanf
+	cmpl	$6, %eax
+	popq	%r10
+	.cfi_def_cfa_offset 1192
+	popq	%r11
+	.cfi_def_cfa_offset 1184
+	je	.L96
+.L45:
+	pushq	%r13
+	.cfi_def_cfa_offset 1192
+	pushq	%r12
+	.cfi_def_cfa_offset 1200
+	movq	%r14, %r8
+	xorl	%eax, %eax
+	movq	%rbp, %rcx
+	movl	$.LC1, %esi
+	leaq	36(%rsp), %r9
+	leaq	40(%rsp), %rdx
+	movq	%rbx, %rdi
+	call	__isoc99_sscanf
+	cmpl	$6, %eax
+	popq	%r8
+	.cfi_def_cfa_offset 1192
+	popq	%r9
+	.cfi_def_cfa_offset 1184
+	je	.L97
+.L47:
+	pushq	%r14
+	.cfi_def_cfa_offset 1192
+	pushq	%rbp
+	.cfi_def_cfa_offset 1200
+	movl	$.LC2, %esi
+	movq	%rbx, %rdi
+	xorl	%eax, %eax
+	movq	%r13, %r8
+	leaq	40(%rsp), %r9
+	leaq	36(%rsp), %rdx
+	movq	%r12, %rcx
+	call	__isoc99_sscanf
+	cmpl	$6, %eax
+	popq	%rsi
+	.cfi_def_cfa_offset 1192
+	popq	%rdi
+	.cfi_def_cfa_offset 1184
+	je	.L98
+.L48:
+	pushq	%r14
+	.cfi_def_cfa_offset 1192
+	pushq	%rbp
+	.cfi_def_cfa_offset 1200
+	movq	%r12, %rcx
+	xorl	%eax, %eax
+	movq	%r13, %r8
+	movl	$.LC3, %esi
+	leaq	40(%rsp), %r9
+	leaq	36(%rsp), %rdx
+	movq	%rbx, %rdi
+	call	__isoc99_sscanf
+	cmpl	$6, %eax
+	popq	%rdx
+	.cfi_def_cfa_offset 1192
+	popq	%rcx
+	.cfi_def_cfa_offset 1184
+	je	.L99
+.L49:
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 1192
+	movq	%r14, %r9
+	movq	%rbp, %r8
+	pushq	%r13
+	.cfi_def_cfa_offset 1200
+	pushq	%r12
+	.cfi_def_cfa_offset 1208
+	movl	$.LC4, %esi
+	movq	%rbx, %rdi
+	leaq	44(%rsp), %rax
+	pushq	%rax
+	.cfi_def_cfa_offset 1216
+	xorl	%eax, %eax
+	leaq	56(%rsp), %rcx
+	leaq	656(%rsp), %rdx
+	call	__isoc99_sscanf
+	addq	$32, %rsp
+	.cfi_def_cfa_offset 1184
+	cmpl	$7, %eax
+	je	.L100
+.L50:
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 1192
+	movq	%r14, %r9
+	movq	%rbp, %r8
+	pushq	%r13
+	.cfi_def_cfa_offset 1200
+	pushq	%r12
+	.cfi_def_cfa_offset 1208
+	movl	$.LC5, %esi
+	movq	%rbx, %rdi
+	leaq	44(%rsp), %rax
+	pushq	%rax
+	.cfi_def_cfa_offset 1216
+	xorl	%eax, %eax
+	leaq	56(%rsp), %rcx
+	leaq	656(%rsp), %rdx
+	call	__isoc99_sscanf
+	addq	$32, %rsp
+	.cfi_def_cfa_offset 1184
+	cmpl	$7, %eax
+	je	.L101
+.L51:
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 1192
+	xorl	%eax, %eax
+	movq	%rbp, %rcx
+	pushq	%r14
+	.cfi_def_cfa_offset 1200
+	pushq	%r13
+	.cfi_def_cfa_offset 1208
+	movl	$.LC6, %esi
+	pushq	%r12
+	.cfi_def_cfa_offset 1216
+	movq	%rbx, %rdi
+	leaq	52(%rsp), %r9
+	leaq	56(%rsp), %r8
+	leaq	656(%rsp), %rdx
+	call	__isoc99_sscanf
+	addq	$32, %rsp
+	.cfi_def_cfa_offset 1184
+	cmpl	$7, %eax
+	jne	.L54
+	leaq	40(%rsp), %rsi
+	leaq	624(%rsp), %rdi
+	call	scan_wday
+	testl	%eax, %eax
+	je	.L54
+	leaq	32(%rsp), %rsi
+	movq	%rbp, %rdi
+	call	scan_mon
+	testl	%eax, %eax
+	je	.L54
+	movq	40(%rsp), %rax
+	movl	%eax, 72(%rsp)
+	movq	32(%rsp), %rax
+	movl	%eax, 64(%rsp)
+	movl	24(%rsp), %eax
+	movl	%eax, 60(%rsp)
+	movl	20(%rsp), %eax
+	movl	%eax, 56(%rsp)
+	movl	16(%rsp), %eax
+	movl	%eax, 52(%rsp)
+	movl	12(%rsp), %eax
+	movl	%eax, 48(%rsp)
+	movl	28(%rsp), %eax
+	movl	%eax, 68(%rsp)
+.L46:
+	cmpl	$1900, %eax
+	jle	.L55
+.L102:
+	subl	$1900, %eax
+	movl	%eax, 68(%rsp)
+.L56:
+	leaq	48(%rsp), %rdi
+	call	tm_to_time
+.L41:
+	addq	$1136, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 48
+	popq	%rbx
+	.cfi_def_cfa_offset 40
+	popq	%rbp
+	.cfi_def_cfa_offset 32
+	popq	%r12
+	.cfi_def_cfa_offset 24
+	popq	%r13
+	.cfi_def_cfa_offset 16
+	popq	%r14
+	.cfi_def_cfa_offset 8
+	ret
+	.p2align 4,,10
+	.p2align 3
+.L98:
+	.cfi_restore_state
+	leaq	32(%rsp), %rsi
+	movq	%rbp, %rdi
+	call	scan_mon
+	testl	%eax, %eax
+	je	.L48
+.L95:
+	movl	20(%rsp), %eax
+	movl	%eax, 56(%rsp)
+	movl	16(%rsp), %eax
+	movl	%eax, 52(%rsp)
+	movl	12(%rsp), %eax
+	movl	%eax, 48(%rsp)
+	movl	24(%rsp), %eax
+	movl	%eax, 60(%rsp)
+	movq	32(%rsp), %rax
+	movl	%eax, 64(%rsp)
+	movl	28(%rsp), %eax
+	cmpl	$1900, %eax
+	movl	%eax, 68(%rsp)
+	jg	.L102
+.L55:
+	cmpl	$69, %eax
+	jg	.L56
+	addl	$100, %eax
+	movl	%eax, 68(%rsp)
+	jmp	.L56
+	.p2align 4,,10
+	.p2align 3
+.L79:
+	addq	$1, %rbx
+	movzbl	(%rbx), %eax
+	cmpb	$32, %al
+	je	.L79
+	cmpb	$9, %al
+	jne	.L42
+	jmp	.L79
+	.p2align 4,,10
+	.p2align 3
+.L96:
+	leaq	32(%rsp), %rsi
+	movq	%rbp, %rdi
+	call	scan_mon
+	testl	%eax, %eax
+	je	.L45
+.L93:
+	movl	24(%rsp), %eax
+	movl	20(%rsp), %edx
+	movl	%eax, 60(%rsp)
+	movl	%edx, 56(%rsp)
+	movq	32(%rsp), %rax
+	movl	16(%rsp), %edx
+	movl	%eax, 64(%rsp)
+	movl	%edx, 52(%rsp)
+	movl	28(%rsp), %eax
+	movl	12(%rsp), %edx
+	movl	%eax, 68(%rsp)
+	movl	%edx, 48(%rsp)
+	jmp	.L46
+	.p2align 4,,10
+	.p2align 3
+.L97:
+	leaq	32(%rsp), %rsi
+	movq	%rbp, %rdi
+	call	scan_mon
+	testl	%eax, %eax
+	je	.L47
+	jmp	.L93
+	.p2align 4,,10
+	.p2align 3
+.L99:
+	leaq	32(%rsp), %rsi
+	movq	%rbp, %rdi
+	call	scan_mon
+	testl	%eax, %eax
+	je	.L49
+	jmp	.L95
+	.p2align 4,,10
+	.p2align 3
+.L100:
+	leaq	40(%rsp), %rsi
+	leaq	624(%rsp), %rdi
+	call	scan_wday
+	testl	%eax, %eax
+	je	.L50
+	leaq	32(%rsp), %rsi
+	movq	%rbp, %rdi
+	call	scan_mon
+	testl	%eax, %eax
+	je	.L50
+.L94:
+	movq	40(%rsp), %rax
+	movl	%eax, 72(%rsp)
+	jmp	.L93
+	.p2align 4,,10
+	.p2align 3
+.L101:
+	leaq	40(%rsp), %rsi
+	leaq	624(%rsp), %rdi
+	call	scan_wday
+	testl	%eax, %eax
+	je	.L51
+	leaq	32(%rsp), %rsi
+	movq	%rbp, %rdi
+	call	scan_mon
+	testl	%eax, %eax
+	je	.L51
+	jmp	.L94
+	.p2align 4,,10
+	.p2align 3
+.L54:
+	movq	$-1, %rax
+	jmp	.L41
+	.cfi_endproc
+.LFE9:
+	.size	tdate_parse, .-tdate_parse
+	.section	.rodata
+	.align 32
+	.type	monthtab.3187, @object
+	.size	monthtab.3187, 48
+monthtab.3187:
+	.long	0
+	.long	31
+	.long	59
+	.long	90
+	.long	120
+	.long	151
+	.long	181
+	.long	212
+	.long	243
+	.long	273
+	.long	304
+	.long	334
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC7:
+	.string	"jan"
+.LC8:
+	.string	"january"
+.LC9:
+	.string	"feb"
+.LC10:
+	.string	"february"
+.LC11:
+	.string	"mar"
+.LC12:
+	.string	"march"
+.LC13:
+	.string	"apr"
+.LC14:
+	.string	"april"
+.LC15:
+	.string	"may"
+.LC16:
+	.string	"jun"
+.LC17:
+	.string	"june"
+.LC18:
+	.string	"jul"
+.LC19:
+	.string	"july"
+.LC20:
+	.string	"aug"
+.LC21:
+	.string	"august"
+.LC22:
+	.string	"sep"
+.LC23:
+	.string	"september"
+.LC24:
+	.string	"oct"
+.LC25:
+	.string	"october"
+.LC26:
+	.string	"nov"
+.LC27:
+	.string	"november"
+.LC28:
+	.string	"dec"
+.LC29:
+	.string	"december"
+	.data
+	.align 32
+	.type	mon_tab.3178, @object
+	.size	mon_tab.3178, 368
+mon_tab.3178:
+	.quad	.LC7
+	.quad	0
+	.quad	.LC8
+	.quad	0
+	.quad	.LC9
+	.quad	1
+	.quad	.LC10
+	.quad	1
+	.quad	.LC11
+	.quad	2
+	.quad	.LC12
+	.quad	2
+	.quad	.LC13
+	.quad	3
+	.quad	.LC14
+	.quad	3
+	.quad	.LC15
+	.quad	4
+	.quad	.LC16
+	.quad	5
+	.quad	.LC17
+	.quad	5
+	.quad	.LC18
+	.quad	6
+	.quad	.LC19
+	.quad	6
+	.quad	.LC20
+	.quad	7
+	.quad	.LC21
+	.quad	7
+	.quad	.LC22
+	.quad	8
+	.quad	.LC23
+	.quad	8
+	.quad	.LC24
+	.quad	9
+	.quad	.LC25
+	.quad	9
+	.quad	.LC26
+	.quad	10
+	.quad	.LC27
+	.quad	10
+	.quad	.LC28
+	.quad	11
+	.quad	.LC29
+	.quad	11
+	.local	sorted.3179
+	.comm	sorted.3179,4,4
+	.section	.rodata.str1.1
+.LC30:
+	.string	"sun"
+.LC31:
+	.string	"sunday"
+.LC32:
+	.string	"mon"
+.LC33:
+	.string	"monday"
+.LC34:
+	.string	"tue"
+.LC35:
+	.string	"tuesday"
+.LC36:
+	.string	"wed"
+.LC37:
+	.string	"wednesday"
+.LC38:
+	.string	"thu"
+.LC39:
+	.string	"thursday"
+.LC40:
+	.string	"fri"
+.LC41:
+	.string	"friday"
+.LC42:
+	.string	"sat"
+.LC43:
+	.string	"saturday"
+	.data
+	.align 32
+	.type	wday_tab.3172, @object
+	.size	wday_tab.3172, 224
+wday_tab.3172:
+	.quad	.LC30
+	.quad	0
+	.quad	.LC31
+	.quad	0
+	.quad	.LC32
+	.quad	1
+	.quad	.LC33
+	.quad	1
+	.quad	.LC34
+	.quad	2
+	.quad	.LC35
+	.quad	2
+	.quad	.LC36
+	.quad	3
+	.quad	.LC37
+	.quad	3
+	.quad	.LC38
+	.quad	4
+	.quad	.LC39
+	.quad	4
+	.quad	.LC40
+	.quad	5
+	.quad	.LC41
+	.quad	5
+	.quad	.LC42
+	.quad	6
+	.quad	.LC43
+	.quad	6
+	.local	sorted.3173
+	.comm	sorted.3173,4,4
+	.ident	"GCC: (GNU) 7.2.0"
+	.section	.note.GNU-stack,"",@progbits
